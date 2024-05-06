@@ -8,7 +8,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.entity.UserEntity;
+import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.repository.UserRepository;
 
 @Service
@@ -19,7 +21,7 @@ public class CustomUserDetailService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findUserByDeletedFalseAndEmail(email).orElseThrow(()-> new UsernameNotFoundException("User not found with email: " + email));
+        UserEntity user = userRepository.findUserByDeletedFalseAndEmail(email).orElseThrow(()-> new MessageException(ErrorConstants.INVALID_CREDENTIALS_MESSAGE, ErrorConstants.INVALID_CREDENTIALS_CODE));
         return UserPrinciple.build(user);
 
     }

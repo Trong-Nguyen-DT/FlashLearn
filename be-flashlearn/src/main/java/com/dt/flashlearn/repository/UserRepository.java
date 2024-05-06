@@ -11,4 +11,6 @@ import com.dt.flashlearn.entity.UserEntity;
 public interface UserRepository extends JpaRepository<UserEntity, Long>{
         
     Optional<UserEntity> findUserByDeletedFalseAndEmail(String email);
+
+    boolean existsByEmail(String email);
 }
