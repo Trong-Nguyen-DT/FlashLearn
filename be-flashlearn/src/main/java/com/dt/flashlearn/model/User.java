@@ -1,35 +1,18 @@
-package com.dt.flashlearn.entity;
+package com.dt.flashlearn.model;
 
-import org.hibernate.annotations.NaturalId;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
-@Table(name = "users", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {
-            "email"
-    })
-})
-public class UserEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class User {
 
-    @NaturalId
+    private Long id;
+    
     @NotBlank
     @Size(max = 50)
     @Email(message = "Email không đúng định dạng")
@@ -50,10 +33,4 @@ public class UserEntity {
     @Size(min = 10, max = 10, message = "Số điện thoại phải có 10 chữ số")
     @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$", message = "Số điện thoại không đúng định dạng")
     private String phone;
-
-    private String role;
-
-    @NotNull
-    private Boolean deleted;
-    
 }
