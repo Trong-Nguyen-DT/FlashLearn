@@ -1,0 +1,14 @@
+@use 'src/components/scss/vars' as *;
+@use 'src/components/scss/mixin' as *;
+
+.cmp-link {
+  display: inline-flex;
+  color: $info;
+  font-weight: 500;
+  font-size: 1rem;
+
+  @include hover {
+    text-decoration: underline;
+    color: $info;
+  }
+}
