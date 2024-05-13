@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.dt.flashlearn.constant.ErrorConstants;
-import com.dt.flashlearn.entity.UserEntity;
+import com.dt.flashlearn.entity.User.UserEntity;
 import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.repository.UserRepository;
 

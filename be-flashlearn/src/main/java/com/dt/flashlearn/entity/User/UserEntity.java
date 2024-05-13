@@ -1,11 +1,19 @@
-package com.dt.flashlearn.entity;
+package com.dt.flashlearn.entity.User;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.NaturalId;
 
+import com.dt.flashlearn.entity.StudentEntity;
+import com.dt.flashlearn.entity.Course.CourseEntity;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
@@ -51,7 +59,18 @@ public class UserEntity {
     @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$", message = "Số điện thoại không đúng định dạng")
     private String phone;
 
+    private String avatar;
+
     private String role;
+
+    private LocalDateTime createAt;
+    private LocalDateTime updateAt;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseEntity> courses;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentEntity> students;
 
     @NotNull
     private Boolean deleted;

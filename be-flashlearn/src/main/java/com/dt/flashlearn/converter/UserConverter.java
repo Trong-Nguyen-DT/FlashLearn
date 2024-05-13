@@ -3,7 +3,7 @@ package com.dt.flashlearn.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dt.flashlearn.entity.UserEntity;
+import com.dt.flashlearn.entity.User.UserEntity;
 import com.dt.flashlearn.model.User;
 import com.dt.flashlearn.security.userprical.UserPrinciple;
 
