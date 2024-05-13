@@ -1,0 +1,9 @@
+@use 'src/components/scss/vars' as *;
+@use 'src/components/scss/mixin' as *;
+@use 'src/components/scss/helpers' as *;
+@import 'src/components/scss/styles';
+@import './assets/fonts/styles.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
