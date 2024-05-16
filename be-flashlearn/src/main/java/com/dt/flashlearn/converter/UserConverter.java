@@ -13,6 +13,9 @@ public class UserConverter {
         user.setId(entity.getId());
         user.setEmail(entity.getEmail());
         user.setName(entity.getName());
+        if (entity.getAvatar() != null){
+            user.setAvatar(entity.getAvatar());
+        }
         if (entity.getPhone() != null) {
             user.setPhone(entity.getPhone());
         }

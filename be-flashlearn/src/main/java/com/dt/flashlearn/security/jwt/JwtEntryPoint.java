@@ -8,6 +8,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
+import com.dt.flashlearn.constant.ErrorConstants;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +22,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint{
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         logger.error("Unauthorized error Message {}", authException.getMessage());
-        response.sendError(HttpServletResponse.SC_ACCEPTED,"Error -> Unauthorized");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ErrorConstants.UNAUTHORIZED_MESSAGE);
     }
     
 }
