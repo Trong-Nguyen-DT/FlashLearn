@@ -3,7 +3,8 @@ package com.dt.flashlearn.entity.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.hibernate.annotations.NaturalId;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import com.dt.flashlearn.entity.StudentEntity;
 import com.dt.flashlearn.entity.Course.CourseEntity;
@@ -37,7 +38,6 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NaturalId
     @NotBlank
     @Size(max = 50)
     @Email(message = "Email không đúng định dạng")
