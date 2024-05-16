@@ -6,9 +6,10 @@
   color: $info;
   font-weight: 500;
   font-size: 1rem;
+  cursor: pointer;
 
-  @include hover {
-    text-decoration: underline;
-    color: $info;
-  }
+  // @include hover {
+  //   text-decoration: underline;
+  //   color: $info;
+  // }
 }

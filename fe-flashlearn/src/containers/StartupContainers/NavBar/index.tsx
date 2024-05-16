@@ -1,18 +1,23 @@
-import { IMAGES } from '@appConfig/images';
+import { IMAGES } from '@appConfig';
 import { PATHS } from '@appConfig/paths';
-import { AppBar, Stack, Toolbar, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
-import LoadingContainer from '@components/LoadingContainer';
-import { COLOR_CODE } from '@appConfig';
-import { Image } from '@components';
+import { Image, Link, Tabs } from '@components';
+import { AppBar, Button, Stack, Toolbar } from '@mui/material';
+import { IRootState } from '@redux/store';
+import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import UserMenu from './UserMenu';
 
-const Navbar = () => {
-  // const { profile, isLoading } = useGetProfile({});
-  const isLoading = false;
+const tabItems = [
+  { label: 'Trang Chủ', path: PATHS.welcome },
+  { label: 'Các khóa học', path: PATHS.courses },
+];
 
-  if (isLoading) {
-    return <LoadingContainer />;
-  }
+const Navbar: React.FC<Props> = ({ isAuthenticated }) => {
+  const navigate = useNavigate();
+
+  const displayTabs = isAuthenticated
+    ? tabItems.concat({ label: 'Khóa học của tôi', path: PATHS.myCourse })
+    : tabItems;
 
   return (
     <>
@@ -20,7 +25,7 @@ const Navbar = () => {
         variant="elevation"
         elevation={0}
         position="fixed"
-        style={{ background: COLOR_CODE.WHITE }}
+        style={{ background: 'transparent', border: 0 }}
       >
         <Toolbar variant="regular">
           <Stack
@@ -29,16 +34,33 @@ const Navbar = () => {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Stack direction="row" justifyItems="center" gap={1}>
-              <Link to={PATHS.root} className="is-flex">
-                <Image src={IMAGES.logo} sx={{ height: '34px' }} />
+            <Stack direction="row" justifyContent="center" gap={1} alignItems="center">
+              <Link
+                onClick={() => navigate(PATHS.root)}
+                className="is-flex"
+                style={{ alignItems: 'end', cursor: 'pointer' }}
+              >
+                <Image src={IMAGES.logo} sx={{ height: '40px' }} />
+                <Image
+                  src={IMAGES.fullLogo}
+                  sx={{ height: '30px', paddingLeft: 2, paddingBottom: '2px' }}
+                />
               </Link>
-              <Typography fontSize={24} color={COLOR_CODE.GREY_900}>
-                FLASH LEARN
-              </Typography>
             </Stack>
-
-            {/* <UserMenu profile={profile} /> */}
+            <Stack direction="row" justifyContent="center">
+              <Tabs items={displayTabs} />
+            </Stack>
+            {isAuthenticated && <UserMenu />}
+            {!isAuthenticated && (
+              <Stack direction="row" gap={2} my={2}>
+                <Button variant="outlined" onClick={() => navigate(PATHS.signIn)}>
+                  Đăng nhập
+                </Button>
+                <Button variant="contained" onClick={() => navigate(PATHS.signUp)}>
+                  Đăng Ký
+                </Button>
+              </Stack>
+            )}
           </Stack>
         </Toolbar>
       </AppBar>
@@ -46,4 +68,10 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+type Props = ReturnType<typeof mapStateToProps>;
+
+const mapStateToProps = (state: IRootState) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps)(Navbar);

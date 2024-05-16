@@ -1,28 +1,13 @@
-import { MINI_SIDE_BAR_WIDTH, NAVBAR_HEIGHT } from '@appConfig/constants';
 import { Stack } from '@mui/material';
 import { IRootState } from '@redux/rootReducer';
 import React, { HTMLProps } from 'react';
 import { connect } from 'react-redux';
 const Navbar = React.lazy(() => import('../NavBar'));
 
-const Screen: React.FC<Props> = ({ isAuthenticated, children }) => {
+const Screen: React.FC<Props> = ({ children }) => {
   return (
-    <Stack
-      sx={
-        isAuthenticated
-          ? {
-              paddingTop: `${NAVBAR_HEIGHT}px`,
-              paddingLeft: `${MINI_SIDE_BAR_WIDTH}px`,
-            }
-          : {}
-      }
-    >
-      {isAuthenticated && (
-        <>
-          <Navbar />
-        </>
-      )}
-
+    <Stack justifyContent="space-between" alignItems="center">
+      <Navbar />
       {children}
     </Stack>
   );

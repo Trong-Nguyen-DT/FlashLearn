@@ -1,18 +1,18 @@
 import { QueryFunction, UseQueryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { ApiKey } from '../keys';
-import { ProfileResponse } from '.';
+import { UserResponse } from '.';
 import { ProfileApi } from '.';
 import { ApiResponseType, Callback, responseWrapper } from '@utils';
 
 export function useGetProfile(
-  options?: UseQueryOptions<ApiResponseType<ProfileResponse>, Error, ProfileResponse> & {
+  options?: UseQueryOptions<ApiResponseType<UserResponse>, Error, UserResponse> & {
     onSuccessCallback?: Callback;
     onErrorCallback?: Callback;
   },
 ) {
-  const handleGetProfile: QueryFunction<ApiResponseType<ProfileResponse>> = () =>
-    responseWrapper<ApiResponseType<ProfileResponse>>(ProfileApi.getProfile);
+  const handleGetProfile: QueryFunction<ApiResponseType<UserResponse>> = () =>
+    responseWrapper<ApiResponseType<UserResponse>>(ProfileApi.getProfile);
 
   const {
     data,
@@ -20,7 +20,7 @@ export function useGetProfile(
     isError,
     isFetching: isLoading,
     isSuccess,
-  } = useQuery<ApiResponseType<ProfileResponse>, Error, ProfileResponse>([ApiKey.USERS], {
+  } = useQuery<ApiResponseType<UserResponse>, Error, UserResponse>([ApiKey.USERS], {
     queryFn: handleGetProfile,
     notifyOnChangeProps: ['data', 'isFetching'],
     select: (data) => data.data.objectData,

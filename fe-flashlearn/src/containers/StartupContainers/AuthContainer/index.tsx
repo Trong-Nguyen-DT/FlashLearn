@@ -3,19 +3,18 @@
 import { useGetProfile } from '@queries/Profile';
 import { setAuthenticated, setProfile } from '@redux/auth/authSlice';
 import { IRootState } from '@redux/store';
-import { AuthService, Toastify } from '@services';
+import { AuthService } from '@services';
 import { connect } from 'react-redux';
 
-const AuthContainer: React.FC<Props> = ({ onSetAuth, onSetProfile, isAuthenticated }) => {
+const AuthContainer: React.FC<Props> = ({ onSetAuth, onSetProfile }) => {
   useGetProfile({
     onSuccessCallback: (data) => {
       onSetAuth(true);
       onSetProfile(data);
     },
     onErrorCallback: () => {
+      console.log;
       clearAuth();
-      isAuthenticated !== null &&
-        Toastify.error('Failed to get profile. Please try to login again!');
     },
   });
 

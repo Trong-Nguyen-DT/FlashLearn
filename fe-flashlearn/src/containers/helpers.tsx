@@ -7,6 +7,8 @@ import SplashScreen from './StartupContainers/SplashScreen';
 import OnDevelop from './StartupContainers/OnDevelop';
 import { SignIn, SignUp } from './UAMContainer';
 import { CustomErrorBoundary } from '@components';
+import Welcome from './Welcome';
+import Course from './Course';
 
 type RouteWrapperProps = {
   isAuthenticated: boolean;
@@ -32,6 +34,8 @@ export const CustomRoute: React.FC<PropsWithChildren<RouteWrapperProps>> = ({
 
 export const routerGroup = [
   { path: PATHS.root, element: <OnDevelop />, isRequireAuth: true },
+  { path: PATHS.welcome, element: <Welcome />, isRequireAuth: false },
+  { path: PATHS.courses, element: <Course />, isRequireAuth: false },
   { path: PATHS.signIn, element: <SignIn />, isRequireAuth: false },
   { path: PATHS.signUp, element: <SignUp />, isRequireAuth: false },
   { path: PATHS.forgotPassword, element: <OnDevelop />, isRequireAuth: false },

@@ -2,6 +2,8 @@ export const PATHS = {
   root: '/',
   dev: '/dev',
   welcome: '/welcome',
+  courses: '/courses',
+  myCourse: '/myCourse',
   profile: '/profile',
   dashboard: '/dashboard',
   signIn: '/login',

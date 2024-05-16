@@ -61,15 +61,9 @@ const SignIn = () => {
         }}
       >
         <form onSubmit={handleSubmit}>
-          <Stack gap={3} alignItems={'center'} justifyContent={'center'}>
+          <Stack gap={4} alignItems={'center'} justifyContent={'center'}>
             <LogoContainer />
             <Stack sx={{ width: '500px' }} mt={2} gap={2}>
-              <Typography textAlign={'center'} variant="h2" color={COLOR_CODE.GREY_700}>
-                Chào mừng bạn đến với Flashleasn
-              </Typography>
-              <Typography textAlign={'center'} color={COLOR_CODE.GREY_700}>
-                Website giúp bạn chinh phục tiếng Anh một cách dễ dàng và thú vị!
-              </Typography>
               <Stack gap={3}>
                 <Input
                   required

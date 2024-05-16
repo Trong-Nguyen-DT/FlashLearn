@@ -41,24 +41,34 @@ const CustomDialog = () => {
       fullWidth={fullWidth}
       className="cmp-dialog__content--visible"
     >
-      <DialogTitle>
-        <Stack
-          flexDirection={hideTitle ? 'row-reverse' : 'row'}
-          justifyContent={'space-between'}
-          alignItems={'center'}
+      {!hideCloseButton && (
+        <IconButton
+          onClick={closeModal}
+          sx={{
+            color: COLOR_CODE.GREY_600,
+            position: 'absolute !important',
+            width: 'fit-content',
+            top: 1,
+            right: 1,
+            zIndex: 12,
+          }}
         >
-          {!hideTitle && (
+          <AiOutlineClose />
+        </IconButton>
+      )}
+      {!hideTitle && (
+        <DialogTitle>
+          <Stack
+            flexDirection={hideTitle ? 'row-reverse' : 'row'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
+          >
             <Typography variant={maxWidth === 'md' ? 'h2' : 'h3'} fontWeight={600}>
               {title}
             </Typography>
-          )}
-          {!hideCloseButton && (
-            <IconButton onClick={closeModal} sx={{ color: COLOR_CODE.GREY_600 }}>
-              <AiOutlineClose />
-            </IconButton>
-          )}
-        </Stack>
-      </DialogTitle>
+          </Stack>
+        </DialogTitle>
+      )}
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: '35px' }}>
         {data}
         {type === DialogType.YESNO_DIALOG && (
