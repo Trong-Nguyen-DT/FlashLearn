@@ -15,5 +15,4 @@ public class Student {
     private int rating;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private List<LearningHistory> learningHistories;
 }

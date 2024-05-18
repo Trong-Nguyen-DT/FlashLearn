@@ -8,14 +8,16 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.dt.flashlearn.entity.Course.CourseEntity;
+import com.dt.flashlearn.entity.User.UserEntity;
 
 @Repository
 public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
 
         @Query("SELECT c FROM CourseEntity c " +
                 "JOIN c.owner o " +
-                "WHERE " +
-                "(:searchText IS NULL OR " +
+                "WHERE ((:userEntity IS NULL) OR (c.owner = :userEntity)) " +
+                "AND (c.deleted = false) " +
+                "AND (:searchText IS NULL OR " +
                 "c.name LIKE %:searchText% OR " +
                 "c.description LIKE %:searchText% OR " +
                 "o.name LIKE %:searchText%) " +
@@ -33,31 +35,35 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
                         @Param("rating") int rating,
                         @Param("startCount") int startCount,
                         @Param("endCount") int endCount,
+                        @Param("userEntity") UserEntity userEntity,
                         @Param("status") String status,
                         @Param("orderBy") String orderBy,
                         Pageable pageable);
-                        @Query("SELECT c FROM CourseEntity c " +
-                        "JOIN c.owner o " +
-                        "WHERE " +
-                        "(:searchText IS NULL OR " +
-                        "c.name LIKE %:searchText% OR " +
-                        "c.description LIKE %:searchText% OR " +
-                        "o.name LIKE %:searchText%) " +
-                        "AND (c.avgRating >= :rating) " +
-                        "AND (c.totalVocal BETWEEN :startCount AND :endCount) " +
-                        "AND (:status IS NULL OR c.status = :status) " +
-                        "ORDER BY " +
-                        "CASE " +
-                        "    WHEN :orderBy = 'createAt' THEN c.createAt " +
-                        "    WHEN :orderBy = 'rating' THEN c.avgRating " +
-                        "    WHEN :orderBy = 'wordCount' THEN c.totalVocal " +
-                        "    WHEN :orderBy = 'name' THEN c.name " +
-                        "END ASC")
-                Page<CourseEntity> findAllCourseAsc(@Param("searchText") String searchText,
-                                @Param("rating") int rating,
-                                @Param("startCount") int startCount,
-                                @Param("endCount") int endCount,
-                                @Param("status") String status,
-                                @Param("orderBy") String orderBy,
-                                Pageable pageable);
+
+        @Query("SELECT c FROM CourseEntity c " +
+                "JOIN c.owner o " +
+                "WHERE ((:userEntity IS NULL) OR (c.owner = :userEntity)) " +
+                "AND (c.deleted = false) " +
+                "AND (:searchText IS NULL OR " +
+                "c.name LIKE %:searchText% OR " +
+                "c.description LIKE %:searchText% OR " +
+                "o.name LIKE %:searchText%) " +
+                "AND (c.avgRating >= :rating) " +
+                "AND (c.totalVocal BETWEEN :startCount AND :endCount) " +
+                "AND (:status IS NULL OR c.status = :status) " +
+                "ORDER BY " +
+                "CASE " +
+                "    WHEN :orderBy = 'createAt' THEN c.createAt " +
+                "    WHEN :orderBy = 'rating' THEN c.avgRating " +
+                "    WHEN :orderBy = 'wordCount' THEN c.totalVocal " +
+                "    WHEN :orderBy = 'name' THEN c.name " +
+                "END ASC")
+        Page<CourseEntity> findAllCourseAsc(@Param("searchText") String searchText,
+                        @Param("rating") int rating,
+                        @Param("startCount") int startCount,
+                        @Param("endCount") int endCount,
+                        @Param("userEntity") UserEntity userEntity,
+                        @Param("status") String status,
+                        @Param("orderBy") String orderBy,
+                        Pageable pageable);
 }

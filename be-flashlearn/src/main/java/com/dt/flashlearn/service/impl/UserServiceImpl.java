@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService{
 
     private Authentication getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        if (authentication == null || authentication.getName().equals("anonymousUser")) {
             throwUnauthorizedException();
         }
         return authentication;
