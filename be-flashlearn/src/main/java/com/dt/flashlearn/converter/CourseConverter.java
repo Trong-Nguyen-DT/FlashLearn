@@ -14,8 +14,12 @@ public class CourseConverter {
         model.setName(entity.getName());
         model.setDescription(entity.getDescription());
         model.setImage(entity.getImage());
+        model.setAvgRating(entity.getAvgRating());
+        model.setStatus(entity.getStatus());
+        model.setTotalVocal(entity.getTotalVocal());
         model.setCreateAt(entity.getCreateAt());
         model.setUpdateAt(entity.getUpdateAt());
+        model.setOwner(UserConverter.toModel(entity.getOwner()));
         return model;
     
     }

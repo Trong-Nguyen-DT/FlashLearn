@@ -1,7 +1,6 @@
 package com.dt.flashlearn.model;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +15,7 @@ public class Course {
     private String status;
     private double avgRating;
     private User owner;
+    private Long totalVocal;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    List<Student> students;
-    List<Lesson> lessons;
 }

@@ -17,5 +17,4 @@ public class Vocabulary {
     private String partOfSpeech;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private List<SimilarWord> similarWords;
 }

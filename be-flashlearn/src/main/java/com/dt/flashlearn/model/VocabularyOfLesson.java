@@ -14,5 +14,4 @@ public class VocabularyOfLesson {
     private Vocabulary vocabulary;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private List<LearningHistory> learningHistories;
 }
