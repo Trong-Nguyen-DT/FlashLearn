@@ -1,5 +1,7 @@
 package com.dt.flashlearn.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -66,4 +68,6 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
                         @Param("status") String status,
                         @Param("orderBy") String orderBy,
                         Pageable pageable);
+
+        Optional<CourseEntity> findByIdAndDeletedFalse(Long id);
 }

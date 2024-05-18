@@ -24,6 +24,7 @@ import com.dt.flashlearn.repository.CourseRepository;
 import com.dt.flashlearn.repository.UserRepository;
 import com.dt.flashlearn.service.CourseService;
 import com.dt.flashlearn.service.ImageService;
+import com.dt.flashlearn.validate.CourseValidate;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -91,6 +92,7 @@ public class CourseServiceImpl implements CourseService {
         courseEntity.setStatus(input.getStatus());
         courseEntity.setAvgRating(0);
         courseEntity.setTotalVocal(0L);
+        courseEntity.setTotalStudent(0L);
         courseEntity.setCreateAt(now);
         courseEntity.setUpdateAt(now);
         courseEntity.setOwner(getUserEntity());
@@ -123,17 +125,10 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ResponseData getCourseById(Long id) {
-        CourseEntity courseEntity = courseRepository.findById(id)
+        CourseEntity courseEntity = courseRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
-        String currentUserEmail = getAuthentication().getName();
         
-        if (courseEntity.getStatus().equals(CourseStatus.PRIVATE.name())) {
-            boolean isOwner = courseEntity.getOwner().getEmail().equals(currentUserEmail);
-            boolean isStudent = courseEntity.getStudents().stream()
-                    .anyMatch(student -> student.getUser().getEmail().equals(currentUserEmail));
-            if (!isOwner && !isStudent) {
-                throwUnauthorizedException();
-        }
+        CourseValidate.validateCoursePrivate(courseEntity);
         return new ResponseData(CourseConverter.toModel(courseEntity));
     }
 
@@ -141,7 +136,7 @@ public class CourseServiceImpl implements CourseService {
         return getUserEntity()
                 .getCourses()
                 .stream()
-                .filter(course -> course.getId().equals(id))
+                .filter(course -> course.getId().equals(id) && course.getDeleted().equals(false))
                 .findFirst()
                 .orElseThrow(() -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
     }

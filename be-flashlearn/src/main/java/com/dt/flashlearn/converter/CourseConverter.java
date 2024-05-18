@@ -17,6 +17,7 @@ public class CourseConverter {
         model.setAvgRating(entity.getAvgRating());
         model.setStatus(entity.getStatus());
         model.setTotalVocal(entity.getTotalVocal());
+        model.setTotalStudent(entity.getTotalStudent());
         model.setCreateAt(entity.getCreateAt());
         model.setUpdateAt(entity.getUpdateAt());
         model.setOwner(UserConverter.toModel(entity.getOwner()));
