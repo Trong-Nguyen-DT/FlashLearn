@@ -46,6 +46,8 @@ public class CourseEntity {
     private double avgRating;
 
     private Long totalVocal;
+
+    private Long totalStudent;
     
     @NotNull
     @ManyToOne
