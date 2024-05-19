@@ -1,5 +1,8 @@
 package com.dt.flashlearn.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.dt.flashlearn.entity.VocabularyOfLessonEntity;
 import com.dt.flashlearn.entity.Vocabulary.SimilarWordEntity;
 import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
@@ -40,6 +43,14 @@ public class VocabularyConverter {
         model.setCreateAt(entity.getCreateAt());
         model.setUpdateAt(entity.getUpdateAt());
         return model;
+    }
+
+    public static List<Object> convertToObjects(List<Vocabulary> vocabularies) {
+        List<Object> objects = new ArrayList<>();
+        for (Vocabulary vocabulary : vocabularies) {
+            objects.add(vocabulary);
+        }
+        return objects;
     }
     
 }

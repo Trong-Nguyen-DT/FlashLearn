@@ -44,7 +44,8 @@ public class LessonServiceImpl implements LessonService {
                 .orElseThrow(() -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
 
         CourseValidate.validateCoursePrivate(courseEntity);
-        return new ResponseData(courseEntity.getLessons().stream().map(LessonConverter::toModel).toList());
+        return new ResponseData(LessonConverter
+                    .convertToObjects(courseEntity.getLessons().stream().map(LessonConverter::toModel).toList()));
         
     }
 
@@ -62,7 +63,9 @@ public class LessonServiceImpl implements LessonService {
         LessonEntity lessonEntity = new LessonEntity();
         lessonEntity.setName(input.getName());
         lessonEntity.setDescription(input.getDescription());
-        lessonEntity.setImage(imageService.upload(input.getImage(), TypeImageConstants.LESSON_IMAGE));
+        if (input.getImage() != null) {
+            lessonEntity.setImage(imageService.upload(input.getImage(), TypeImageConstants.LESSON_IMAGE));
+        }
         lessonEntity.setCourse(courseEntity);
         lessonEntity.setCreateAt(now);
         lessonEntity.setUpdateAt(now);

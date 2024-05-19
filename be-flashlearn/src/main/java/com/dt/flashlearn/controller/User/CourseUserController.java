@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@RequestMapping("api/user/courses")
+@RequestMapping("api/user/course")
 public class CourseUserController {
 
     @Autowired
@@ -77,9 +77,6 @@ public class CourseUserController {
     @PostMapping()
     public ResponseEntity<?> createCourse(@Valid CourseInput input) {
         try {
-            if (input.getImage() == null) {
-                throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
-            }
             input.setStatus(parseStatus(input.getStatus()));
             return ResponseEntity.ok(createSuccessResponse(courseService.createCourse(input)));
         } catch (MessageException e) {

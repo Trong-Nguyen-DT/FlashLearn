@@ -12,7 +12,6 @@ public class CourseInput {
     private Long id;
     @NotBlank
     private String name;
-    @NotBlank
     private String description;
     private MultipartFile image;
     @NotBlank

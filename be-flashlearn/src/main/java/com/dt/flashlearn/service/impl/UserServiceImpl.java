@@ -62,14 +62,12 @@ public class UserServiceImpl implements UserService{
     @Override
     public ResponseData updateProfile(UserInput input) {
         UserEntity entity = getUserEntity();
-        if (input.getEmail() != null && !input.getEmail().equals(entity.getEmail()) && checkEmail(input.getEmail())){
+        if (checkEmail(input.getEmail())){
             throw new MessageException(ErrorConstants.EMAIL_ALREADY_EXISTS_MESSAGE, ErrorConstants.EMAIL_ALREADY_EXISTS_CODE);
         }
         entity.setEmail(input.getEmail());
         entity.setName(input.getName());
-        if (input.getPhone() != null){
-            entity.setPhone(input.getPhone());
-        }
+        entity.setPhone(input.getPhone() == null ? null : input.getPhone());
         entity.setUpdateAt(LocalDateTime.now());
         return new ResponseData(UserConverter.toModel(userRepository.save(entity)));
     }
@@ -77,8 +75,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public ResponseData updateAvatar(MultipartFile uploadFile) {
         UserEntity entity = getUserEntity();
-        String url = imageService.upload(uploadFile, TypeImageConstants.AVATAR);
-        entity.setAvatar(url);
+        entity.setAvatar(imageService.upload(uploadFile, TypeImageConstants.AVATAR));
         entity.setUpdateAt(LocalDateTime.now());
         return new ResponseData(UserConverter.toModel(userRepository.save(entity)));
     }

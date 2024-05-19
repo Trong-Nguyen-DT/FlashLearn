@@ -88,7 +88,9 @@ public class CourseServiceImpl implements CourseService {
         CourseEntity courseEntity = new CourseEntity();
         courseEntity.setName(input.getName());
         courseEntity.setDescription(input.getDescription());
-        courseEntity.setImage(imageService.upload(input.getImage(), TypeImageConstants.COURSE_IMAGE));
+        if (input.getImage() != null) {
+            courseEntity.setImage(imageService.upload(input.getImage(), TypeImageConstants.COURSE_IMAGE));
+        }
         courseEntity.setStatus(input.getStatus());
         courseEntity.setAvgRating(0);
         courseEntity.setTotalVocal(0L);

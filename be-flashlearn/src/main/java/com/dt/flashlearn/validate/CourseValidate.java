@@ -8,7 +8,7 @@ import com.dt.flashlearn.entity.Course.CourseStatus;
 import com.dt.flashlearn.exception.MessageException;
 
 public class CourseValidate {
-    
+
     public static void validateCoursePrivate(CourseEntity entity) {
         if (entity.getStatus().equals(CourseStatus.PRIVATE.name())) {
             String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
