@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@RequestMapping("api/lessons")
+@RequestMapping("api/lesson")
 public class LessonController {
 
     @Autowired
     private LessonService lessonService;
     
     @GetMapping()
-    public ResponseEntity<?> getAllLessonByCourse(@RequestParam Long courseId) {
+    public ResponseEntity<?> getAllLessonByCourse(@RequestParam(required = true) Long courseId) {
         try {
             return ResponseEntity.ok(createSuccessResponse(lessonService.getAllLessonByCourse(courseId)));
         } catch (MessageException e) {

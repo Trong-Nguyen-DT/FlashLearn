@@ -34,10 +34,8 @@ public class CourseEntity {
     @NotBlank
     private String name;
 
-    @NotBlank
     private String description;
 
-    @NotNull
     private String image;
 
     @NotBlank

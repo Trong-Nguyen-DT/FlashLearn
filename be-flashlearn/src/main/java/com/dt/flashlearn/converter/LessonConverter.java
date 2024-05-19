@@ -1,5 +1,8 @@
 package com.dt.flashlearn.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.dt.flashlearn.entity.LessonEntity;
 import com.dt.flashlearn.model.Lesson;
 
@@ -14,5 +17,13 @@ public class LessonConverter {
         model.setCreateAt(entity.getCreateAt());
         model.setUpdateAt(entity.getUpdateAt());
         return model;
+    }
+
+    public static List<Object> convertToObjects(List<Lesson> lessons) {
+        List<Object> objects = new ArrayList<>();
+        for (Lesson lesson : lessons) {
+            objects.add(lesson);
+        }
+        return objects;
     }
 }

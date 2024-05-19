@@ -70,4 +70,5 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
                         Pageable pageable);
 
         Optional<CourseEntity> findByIdAndDeletedFalse(Long id);
+        Optional<CourseEntity> findByIdAndStatusAndDeletedFalse(Long id, String status);
 }
