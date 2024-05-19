@@ -72,6 +72,11 @@ const SelectCmp = ({
 
   return (
     <Stack>
+      {label && (
+        <Typography variant="h5" color={COLOR_CODE.GREY_700} mb={1} fontWeight={800}>
+          {label} {required && <span className="text-danger font-bold text-md">*</span>}
+        </Typography>
+      )}
       <Select
         id={id.current}
         isClearable={isClearable}

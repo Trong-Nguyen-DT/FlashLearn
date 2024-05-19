@@ -65,7 +65,7 @@ const configTheme = createTheme({
     },
   },
   typography: {
-    fontFamily: ['Public Sans', 'sans-serif'].join(','),
+    fontFamily: ['Nunito', 'sans-serif'].join(','),
   },
   components: {
     MuiTypography: {

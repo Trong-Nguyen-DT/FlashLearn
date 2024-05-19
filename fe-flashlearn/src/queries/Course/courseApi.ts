@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApiKey } from '@queries/keys';
 import apisauce from 'apisauce';
 import axios from 'axios';
@@ -5,6 +6,7 @@ import appConfig from 'src/appConfig';
 import { AuthService } from '@services';
 import { stringify } from '@utils';
 import { TableParams } from '@components';
+import { CoursePayload } from './type';
 
 axios.defaults.withCredentials = true;
 const create = (baseURL = `${appConfig.API_URL}`) => {
@@ -29,14 +31,35 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.get(`${ApiKey.COURSE}?${queryString}`);
   };
 
-  // const getProductDetail = (id: string, storeId: string) => {
-  //   const queryString = stringify({ storeId });
-  //   return api.get(`${ApiKey.COURSE}/${id}?${queryString}`);
-  // };
+  const getCourseDetail = (id: string) => {
+    return api.get(`${ApiKey.COURSE}/${id}`);
+  };
+
+  const createCourse = (body: CoursePayload) => {
+    const { id: _, ...rest } = body;
+    const payload = {
+      ...rest,
+      image: rest.image.file,
+    };
+    // eslint-disable-next-line prefer-const
+    let formData = new FormData();
+
+    formData.append('name', payload.name);
+    formData.append('description', payload.description);
+    formData.append('status', payload.status);
+    formData.append('image', payload.image);
+
+    return api.post(`${ApiKey.USERS}${ApiKey.COURSE}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };
 
   return {
     getCourseList,
-    // getProductDetail,
+    getCourseDetail,
+    createCourse,
   };
 };
 

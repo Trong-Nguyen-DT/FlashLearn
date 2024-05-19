@@ -43,3 +43,5 @@ export default {
 
 export * from './theme';
 export * from './images';
+export * from './constants';
+export * from './paths';

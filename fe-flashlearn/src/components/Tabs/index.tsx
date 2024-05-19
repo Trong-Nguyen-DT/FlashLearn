@@ -42,7 +42,9 @@ const TabsComponent: React.FC<Props> = ({ items, ...props }) => {
       {items.map((item) => (
         <Tab
           key={item.path}
-          onClick={() => navigate(item.path)}
+          onClick={() => {
+            navigate(item.path);
+          }}
           label={
             <h3>
               <b>{item.label}</b>

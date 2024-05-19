@@ -73,7 +73,9 @@ const CourseHeader = () => {
     openModal();
   };
 
-  const handleAddCourse = () => {};
+  const handleAddCourse = () => {
+    navigate(PATHS.courseCreate);
+  };
 
   return (
     <Stack

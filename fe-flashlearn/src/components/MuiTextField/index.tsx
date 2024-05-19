@@ -54,7 +54,7 @@ const MuiTextField: React.FC<InputProps> = ({
   return (
     <Stack gap={1}>
       {hasLabel && (
-        <Typography variant="h5" color={COLOR_CODE.GREY_700}>
+        <Typography variant="h5" color={COLOR_CODE.GREY_700} fontWeight={800}>
           {label} {required && <span className="text-danger font-bold text-md">*</span>}
         </Typography>
       )}

@@ -13,8 +13,12 @@ export { default as Table } from './Table';
 export { default as TableBasic } from './TableBasic';
 export { default as Tabs } from './Tabs';
 export { default as FilterContainer } from './CustomTableFilterContainer';
+export { default as LazyCheckPoint } from './LazyCheckPoint';
+export { default as FileUpload } from './FileUpload';
+export { default as ImagePreview } from './ImagePreview';
 
 export * from './CustomDropdown';
 export * from './Dialog';
 export * from './Table';
 export * from './Tabs';
+export * from './FileUpload';

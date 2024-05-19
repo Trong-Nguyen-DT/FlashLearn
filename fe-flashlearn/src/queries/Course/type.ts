@@ -1,7 +1,9 @@
+import { UploadFileType } from '@components';
 import { UserResponse } from '@queries';
 
 export enum CourseStatus {
   PUBLIC = 'PUBLIC',
+  PRIVATE = 'PRIVATE',
 }
 
 export interface CourseResponse {
@@ -16,4 +18,12 @@ export interface CourseResponse {
   totalStudent: number;
   createAt: string;
   updateAt: string;
+}
+
+export interface CoursePayload {
+  id: string;
+  name: string;
+  description: string;
+  image: UploadFileType;
+  status: CourseStatus;
 }
