@@ -1,4 +1,4 @@
-package com.dt.flashlearn.service;
+package com.dt.flashlearn.service.component;
 
 import java.io.InputStream;
 import java.util.Map;

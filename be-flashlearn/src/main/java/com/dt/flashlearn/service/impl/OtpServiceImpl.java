@@ -12,6 +12,7 @@ import com.dt.flashlearn.model.request.EmailInput;
 import com.dt.flashlearn.model.response.ResponseData;
 import com.dt.flashlearn.repository.OtpRepository;
 import com.dt.flashlearn.service.OtpService;
+import com.dt.flashlearn.service.component.MailServiceImpl;
 
 @Service
 public class OtpServiceImpl implements OtpService {

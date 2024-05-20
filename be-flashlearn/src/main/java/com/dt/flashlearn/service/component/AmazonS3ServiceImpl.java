@@ -1,4 +1,4 @@
-package com.dt.flashlearn.service.impl;
+package com.dt.flashlearn.service.component;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -13,7 +13,6 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
-import com.dt.flashlearn.service.AmazonS3Service;
 
 import lombok.extern.slf4j.Slf4j;
 

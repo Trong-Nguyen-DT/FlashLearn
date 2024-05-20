@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.dt.flashlearn.constant.ErrorConstants;
@@ -21,9 +19,8 @@ import com.dt.flashlearn.model.request.CourseInput;
 import com.dt.flashlearn.model.response.ResponseData;
 import com.dt.flashlearn.model.response.ResponsePage;
 import com.dt.flashlearn.repository.CourseRepository;
-import com.dt.flashlearn.repository.UserRepository;
 import com.dt.flashlearn.service.CourseService;
-import com.dt.flashlearn.service.ImageService;
+import com.dt.flashlearn.service.component.ImageService;
 import com.dt.flashlearn.validate.CourseValidate;
 
 @Service
@@ -33,10 +30,10 @@ public class CourseServiceImpl implements CourseService {
     private CourseRepository courseRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private ImageService imageService;
 
     @Autowired
-    private ImageService imageService;
+    private QueryService queryService;
 
     @Override
     public ResponseData getAllCoursePublic(int page, int perPage,
@@ -68,7 +65,7 @@ public class CourseServiceImpl implements CourseService {
                                         String status,
                                         String orderBy, String sortBy) {
         Page<CourseEntity> courses;
-        UserEntity userEntity = getUserEntity();
+        UserEntity userEntity = queryService.getUserEntity();
         if (OrderByConstants.SORT_BY_DESC.equalsIgnoreCase(sortBy.toUpperCase())) {
             courses = courseRepository.findAllCourseDesc(searchText, rating, startCount, endCount, userEntity, status, orderBy,
                     PageRequest.of(page - 1, perPage));
@@ -83,29 +80,34 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public ResponseData getAllMyCourseStudy() {
+        UserEntity userEntity = queryService.getUserEntity();
+        return new ResponseData(
+                CourseConverter.convertToObjects(courseRepository.findAllCourseByStudents(userEntity).stream().map(CourseConverter::toModel).toList()));
+    }
+
+    @Override
     public ResponseData createCourse(CourseInput input) {
         LocalDateTime now = LocalDateTime.now();
         CourseEntity courseEntity = new CourseEntity();
         courseEntity.setName(input.getName());
         courseEntity.setDescription(input.getDescription());
-        if (input.getImage() != null) {
-            courseEntity.setImage(imageService.upload(input.getImage(), TypeImageConstants.COURSE_IMAGE));
-        }
+        courseEntity.setImage(input.getImage() != null ? imageService.upload(input.getImage(), TypeImageConstants.COURSE_IMAGE) : null);
         courseEntity.setStatus(input.getStatus());
         courseEntity.setAvgRating(0);
         courseEntity.setTotalVocal(0L);
         courseEntity.setTotalStudent(0L);
         courseEntity.setCreateAt(now);
         courseEntity.setUpdateAt(now);
-        courseEntity.setOwner(getUserEntity());
+        courseEntity.setOwner(queryService.getUserEntity());
         courseEntity.setDeleted(false);
-        return new ResponseData(CourseConverter.toModel(courseRepository.save(courseEntity)));
+        return createResponseData(courseRepository.save(courseEntity));
     }
 
     
     @Override
     public ResponseData updateCourse(CourseInput input) {
-        CourseEntity courseEntity = getCourseEntityById(input.getId());
+        CourseEntity courseEntity = queryService.getCourseEntityById(input.getId());
         courseEntity.setName(input.getName());
         courseEntity.setDescription(input.getDescription());
         courseEntity.setStatus(input.getStatus());
@@ -114,15 +116,15 @@ public class CourseServiceImpl implements CourseService {
         }
         courseEntity.setUpdateAt(LocalDateTime.now());
         courseRepository.save(courseEntity);
-        return new ResponseData(CourseConverter.toModel(courseEntity));
+        return createResponseData(courseRepository.save(courseEntity));
     }
 
     @Override
     public ResponseData deleteCourse(Long id) {
-        CourseEntity courseEntity = getCourseEntityById(id);
+        CourseEntity courseEntity = queryService.getCourseEntityById(id);
         courseEntity.setDeleted(true);
         courseRepository.save(courseEntity);
-        return new ResponseData(CourseConverter.toModel(courseEntity));
+        return createResponseData(courseRepository.save(courseEntity));
     }
 
     @Override
@@ -131,32 +133,11 @@ public class CourseServiceImpl implements CourseService {
                 .orElseThrow(() -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
         
         CourseValidate.validateCoursePrivate(courseEntity);
+        return createResponseData(courseRepository.save(courseEntity));
+    }
+
+    private ResponseData createResponseData(CourseEntity courseEntity) {
         return new ResponseData(CourseConverter.toModel(courseEntity));
-    }
-
-    private CourseEntity getCourseEntityById(Long id) {
-        return getUserEntity()
-                .getCourses()
-                .stream()
-                .filter(course -> course.getId().equals(id) && course.getDeleted().equals(false))
-                .findFirst()
-                .orElseThrow(() -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
-    }
-
-    private UserEntity getUserEntity() {
-        return userRepository.findUserByDeletedFalseAndEmail(getAuthentication().getName()).orElseThrow(() -> new MessageException(ErrorConstants.USER_NOT_FOUND_MESSAGE, ErrorConstants.USER_NOT_FOUND_CODE));
-    }
-
-    private Authentication getAuthentication() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getName().equals("anonymousUser")) {
-            throwUnauthorizedException();
-        }
-        return authentication;
-    }
-
-    private void throwUnauthorizedException() {
-        throw new MessageException(ErrorConstants.UNAUTHORIZED_MESSAGE, ErrorConstants.UNAUTHORIZED_CODE);
     }
 
 }

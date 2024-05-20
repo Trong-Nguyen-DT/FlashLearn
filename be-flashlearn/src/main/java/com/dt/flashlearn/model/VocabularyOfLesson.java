@@ -1,7 +1,6 @@
 package com.dt.flashlearn.model;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +9,9 @@ import lombok.Setter;
 @Setter
 public class VocabularyOfLesson {
     private Long id;
-    private Lesson lesson;
     private Vocabulary vocabulary;
+    private String image;
+    private String meaning;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 }

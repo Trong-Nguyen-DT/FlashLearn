@@ -16,6 +16,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,7 +33,10 @@ public class LessonEntity {
     @NotBlank
     private String name;
 
+    @Size(max = 1024, message = "Mô tả không quá 1024 kí tự")
     private String description;
+
+    private Long totalVocabOfLesson;
 
     private String image;
 

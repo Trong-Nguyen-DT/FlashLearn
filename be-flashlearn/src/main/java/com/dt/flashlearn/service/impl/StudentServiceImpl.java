@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.dt.flashlearn.constant.ErrorConstants;
@@ -36,6 +34,9 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private QueryService queryService;
+
     @Override
     public ResponseData getAllStudentByCourse(Long courseId) {
         CourseEntity courseEntity = courseRepository.findByIdAndDeletedFalse(courseId)
@@ -48,7 +49,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseData addStudent(AddStudentInput input) {
-        CourseEntity courseEntity = getCourseEntityById(input.getCourseId());
+        CourseEntity courseEntity = queryService.getCourseEntityById(input.getCourseId());
         for (String email : input.getEmailStudents()) {
             courseEntity.getStudents().stream().filter(student -> student.getUser().getEmail().equals(email))
                     .findFirst().ifPresentOrElse(
@@ -72,7 +73,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseData joinCourse(Long courseId) {
-        UserEntity userEntity = getUserEntity();
+        UserEntity userEntity = queryService.getUserEntity();
         CourseEntity courseEntity = courseRepository
                 .findByIdAndStatusAndDeletedFalse(courseId, CourseStatus.PUBLIC.name())
                 .orElseThrow(
@@ -105,7 +106,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseData removeStudent(Long courseId, Long studentId) {
-        CourseEntity courseEntity = getCourseEntityById(courseId);
+        CourseEntity courseEntity = queryService.getCourseEntityById(courseId);
         StudentEntity studentEntity = courseEntity.getStudents().stream()
                 .filter(student -> student.getId().equals(studentId) && student.getDeleted().equals(false)).findFirst()
                 .orElseThrow(
@@ -121,7 +122,7 @@ public class StudentServiceImpl implements StudentService {
         CourseEntity courseEntity = courseRepository.findByIdAndDeletedFalse(courseId)
                 .orElseThrow(
                         () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
-        UserEntity userEntity = getUserEntity();
+        UserEntity userEntity = queryService.getUserEntity();
         courseEntity.getStudents().stream().filter(student -> student.getUser().getId().equals(userEntity.getId()))
                 .findFirst().ifPresent(student -> {
                     student.setDeleted(true);
@@ -137,33 +138,6 @@ public class StudentServiceImpl implements StudentService {
         courseEntity.getStudents().stream().filter(student -> student.getDeleted().equals(false))
                 .forEach(student -> totalStudent.getAndIncrement());
         return totalStudent.get();
-    }
-
-    private CourseEntity getCourseEntityById(Long id) {
-        return getUserEntity()
-                .getCourses()
-                .stream()
-                .filter(course -> course.getId().equals(id) && course.getDeleted().equals(false))
-                .findFirst()
-                .orElseThrow(
-                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
-    }
-
-    private UserEntity getUserEntity() {
-        return userRepository.findUserByDeletedFalseAndEmail(getAuthentication().getName()).orElseThrow(
-                () -> new MessageException(ErrorConstants.USER_NOT_FOUND_MESSAGE, ErrorConstants.USER_NOT_FOUND_CODE));
-    }
-
-    private Authentication getAuthentication() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getName().equals("anonymousUser")) {
-            throwUnauthorizedException();
-        }
-        return authentication;
-    }
-
-    private void throwUnauthorizedException() {
-        throw new MessageException(ErrorConstants.UNAUTHORIZED_MESSAGE, ErrorConstants.UNAUTHORIZED_CODE);
     }
 
     private ResponseData createResponseData(CourseEntity courseEntity) {

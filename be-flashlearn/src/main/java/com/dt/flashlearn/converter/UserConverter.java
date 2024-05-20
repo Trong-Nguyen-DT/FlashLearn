@@ -13,12 +13,8 @@ public class UserConverter {
         user.setId(entity.getId());
         user.setEmail(entity.getEmail());
         user.setName(entity.getName());
-        if (entity.getAvatar() != null){
-            user.setAvatar(entity.getAvatar());
-        }
-        if (entity.getPhone() != null) {
-            user.setPhone(entity.getPhone());
-        }
+        user.setAvatar(entity.getAvatar() != null ? entity.getAvatar() : null);
+        user.setPhone(entity.getPhone() != null ? entity.getPhone() : null);
         return user;
     }
 
@@ -39,9 +35,7 @@ public class UserConverter {
         user.setId(principle.getId());
         user.setEmail(principle.getEmail());
         user.setName(principle.getName());
-        if (principle.getPhone() != null) {
-            user.setPhone(principle.getPhone());
-        }
+        user.setPhone(principle.getPhone() == null ? null : principle.getPhone());
         return user;
     }
 }

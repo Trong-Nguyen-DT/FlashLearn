@@ -30,8 +30,6 @@ public class VocabularyEntity {
     @NotBlank
     private String meaning;
 
-    private String image;
-
     private String audio;
 
     @NotBlank
