@@ -1,4 +1,4 @@
-package com.dt.flashlearn.service;
+package com.dt.flashlearn.service.component;
 
 import org.springframework.web.multipart.MultipartFile;
 

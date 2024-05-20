@@ -1,63 +1,64 @@
 package com.dt.flashlearn.controller.User;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.exception.MessageException;
-import com.dt.flashlearn.model.request.LessonInput;
+import com.dt.flashlearn.model.request.AddVocabularyOfLessonInput;
+import com.dt.flashlearn.model.request.VocabularyOfLessonInput;
 import com.dt.flashlearn.model.response.ResponseError;
-import com.dt.flashlearn.service.LessonService;
+import com.dt.flashlearn.service.VocabularyOfLessonService;
 import com.dt.flashlearn.service.component.ResponseHandler;
 import com.dt.flashlearn.validate.ValidateData;
 
 import jakarta.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-
 
 @RestController
-@RequestMapping("api/user/lesson")
-public class LessonUserController {
+@RequestMapping("api/user/vocabulary")
+public class VocabularyUserController {
 
     @Autowired
-    private LessonService lessonService;
+    private VocabularyOfLessonService vocabularyOfLessonService;
 
     @Autowired
     private ResponseHandler responseHandler;
-    
+
     @PostMapping()
-    public ResponseEntity<?> addLesson(@Valid LessonInput input) {
+    public ResponseEntity<?> addVocabularyOfLesson(@Valid AddVocabularyOfLessonInput input) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseHandler.createCreatedResponse(lessonService.addLesson(input)));
+            return ResponseEntity
+                    .ok(responseHandler.createSuccessResponse(vocabularyOfLessonService.addVocabularyOfLesson(input)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }
     }
 
     @PutMapping()
-    public ResponseEntity<?> updateLesson(@Valid LessonInput input) {
+    public ResponseEntity<?> updateVocabularyOfLesson(@Valid VocabularyOfLessonInput input) {
         try {
             ValidateData.validateNotNull(input.getId());
-            return ResponseEntity.ok(responseHandler.createSuccessResponse(lessonService.updateLesson(input)));
+            return ResponseEntity
+                    .ok(responseHandler
+                            .createSuccessResponse(vocabularyOfLessonService.updateVocabularyOfLesson(input)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteLesson(@PathVariable Long id) {
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteVocabularyOfLesson(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(responseHandler.createSuccessResponse(lessonService.deleteLesson(id)));
+            return ResponseEntity
+                    .ok(responseHandler.createSuccessResponse(vocabularyOfLessonService.deleteVocabularyOfLesson(id)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }
@@ -67,5 +68,5 @@ public class LessonUserController {
     public ResponseError handleValidationExceptions(MethodArgumentNotValidException ex) {
         return responseHandler.handleValidationExceptions(ex);
     }
-    
+
 }

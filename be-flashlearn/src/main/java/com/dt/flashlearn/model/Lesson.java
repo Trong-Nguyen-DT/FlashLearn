@@ -12,7 +12,7 @@ public class Lesson {
     private String name;
     private String description;
     private String image;
-    private Course course;
+    private Long totalVocabOfLesson;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 }

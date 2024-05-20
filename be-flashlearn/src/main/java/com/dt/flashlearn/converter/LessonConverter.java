@@ -13,7 +13,8 @@ public class LessonConverter {
         model.setId(entity.getId());
         model.setName(entity.getName());
         model.setDescription(entity.getDescription());
-        model.setImage(entity.getImage());
+        model.setImage(entity.getImage() != null ? entity.getImage() : null);
+        model.setTotalVocabOfLesson(entity.getTotalVocabOfLesson());
         model.setCreateAt(entity.getCreateAt());
         model.setUpdateAt(entity.getUpdateAt());
         return model;

@@ -13,7 +13,7 @@ public class CourseConverter {
         model.setId(entity.getId());
         model.setName(entity.getName());
         model.setDescription(entity.getDescription());
-        model.setImage(entity.getImage());
+        model.setImage(entity.getImage() != null ? entity.getImage() : null);
         model.setAvgRating(entity.getAvgRating());
         model.setStatus(entity.getStatus());
         model.setTotalVocal(entity.getTotalVocal());

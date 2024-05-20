@@ -17,7 +17,6 @@ public class VocabularyConverter {
         model.setId(entity.getId());
         model.setWord(entity.getWord());
         model.setMeaning(entity.getMeaning());
-        model.setImage(entity.getImage());
         model.setAudio(entity.getAudio());
         model.setPartOfSpeech(entity.getPartOfSpeech());
         model.setCreateAt(entity.getCreateAt());
@@ -29,7 +28,9 @@ public class VocabularyConverter {
         VocabularyOfLesson model = new VocabularyOfLesson();
         model.setId(entity.getId());
         model.setVocabulary(toModel(entity.getVocabulary()));
-        model.setCreateAt(entity.getCreateAt());
+        model.setImage(entity.getImage());
+        model.setMeaning(entity.getMeaning());
+        model.setCreateAt(entity.getCreateAt() != null ? entity.getCreateAt() : null);
         model.setUpdateAt(entity.getUpdateAt());
         return model;
     }
@@ -48,6 +49,14 @@ public class VocabularyConverter {
     public static List<Object> convertToObjects(List<Vocabulary> vocabularies) {
         List<Object> objects = new ArrayList<>();
         for (Vocabulary vocabulary : vocabularies) {
+            objects.add(vocabulary);
+        }
+        return objects;
+    }
+
+    public static List<Object> convertToObjectsVocabularyOfLesson(List<VocabularyOfLesson> vocabularies) {
+        List<Object> objects = new ArrayList<>();
+        for (VocabularyOfLesson vocabulary : vocabularies) {
             objects.add(vocabulary);
         }
         return objects;

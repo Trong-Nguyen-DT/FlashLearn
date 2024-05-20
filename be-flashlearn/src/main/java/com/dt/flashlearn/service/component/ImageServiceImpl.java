@@ -1,4 +1,4 @@
-package com.dt.flashlearn.service.impl;
+package com.dt.flashlearn.service.component;
 
 import java.io.IOException;
 import java.util.Date;
@@ -14,8 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.constant.TypeImageConstants;
 import com.dt.flashlearn.exception.MessageException;
-import com.dt.flashlearn.service.AmazonS3Service;
-import com.dt.flashlearn.service.ImageService;
 
 @Service
 public class ImageServiceImpl implements ImageService {

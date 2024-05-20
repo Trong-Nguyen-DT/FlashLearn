@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +38,11 @@ public class VocabularyOfLessonEntity {
     @ManyToOne
     @JoinColumn(name = "vocabularyId")
     private VocabularyEntity vocabulary;
+
+    private String image;
+
+    @NotBlank
+    private String meaning;
 
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

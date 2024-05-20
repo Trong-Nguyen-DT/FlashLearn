@@ -10,6 +10,6 @@ import com.dt.flashlearn.entity.LessonEntity;
 @Repository
 public interface LessonRepository extends JpaRepository<LessonEntity, Long>{
 
-    Optional<LessonEntity> findByIdAndDeletedIsFalse(Long id);
+    Optional<LessonEntity> findByIdAndDeletedFalse(Long id);
     
 }

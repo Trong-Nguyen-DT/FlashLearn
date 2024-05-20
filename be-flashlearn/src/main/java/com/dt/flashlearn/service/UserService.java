@@ -9,7 +9,7 @@ import com.dt.flashlearn.model.response.ResponseData;
 
 public interface UserService {
 
-    User createUser(User input);
+    ResponseData createUser(User input);
 
     ResponseData getProfile();
 

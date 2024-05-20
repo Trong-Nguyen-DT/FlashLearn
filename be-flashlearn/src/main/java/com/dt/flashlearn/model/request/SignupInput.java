@@ -21,7 +21,7 @@ public class SignupInput {
     @Pattern(regexp = "(?=.*[a-z]).+", message = "Mật khẩu phải có ít nhất 1 chữ thường")
     @Pattern(regexp = "(?=.*[A-Z]).+", message = "Mật khẩu phải có ít nhất 1 chữ hoa")
     @Pattern(regexp = "(?=.*[@#$%^&+=]).+", message = "Mật khẩu phải có ít nhất 1 kí tự đặc biệt")
-    @Size(min = 6, max = 255, message = "Mật khẩu có ít nhất 6 kí tự và nhiều nhất 50 kí tự")
+    @Size(min = 6, max = 50, message = "Mật khẩu có ít nhất 6 kí tự và nhiều nhất 50 kí tự")
     private String password;
 
     // @NotNull
