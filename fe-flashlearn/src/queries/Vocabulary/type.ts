@@ -2,14 +2,21 @@ export enum PartOfSpeech {
   NOUN = 'NOUN',
 }
 
-export interface vocabularyResponse {
+export interface VocabularyResponse {
   id: number;
   word: string;
   meaning: string;
-  image: string;
   audio: string;
   partOfSpeech: PartOfSpeech;
   createAt: string;
   updateAt: string;
-  similarWords: [];
+}
+
+export interface VocabularyOfLessonResponse {
+  id: number;
+  vocabulary: VocabularyResponse;
+  image: string;
+  meaning: string;
+  createAt: string;
+  updateAt: string;
 }

@@ -96,7 +96,6 @@ const UserMenu = () => {
 
   return (
     <CustomDropdown
-      flexPosition="flex-end"
       label={
         <Stack
           flexDirection="row"

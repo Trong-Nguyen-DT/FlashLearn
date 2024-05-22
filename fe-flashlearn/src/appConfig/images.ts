@@ -9,6 +9,7 @@ import teaching from 'src/assets/images/gifs/ZiT4BATmuZ5brqUxvb.webp';
 import noResultsFound from 'src/assets/images/no-results-found.png';
 import noImage from 'src/assets/images/no-image.png';
 import poseImage from 'src/assets/images/Yq7g7389CMNn5827J2.webp';
+import connectLine from 'src/assets/images/Line 2.png';
 
 export const IMAGES = {
   logo,
@@ -22,4 +23,5 @@ export const IMAGES = {
   noResultsFound,
   noImage,
   poseImage,
+  connectLine,
 };

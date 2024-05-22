@@ -3,12 +3,14 @@ import { PATHS } from '@appConfig/paths';
 import { CustomErrorBoundary } from '@components';
 import React, { PropsWithChildren } from 'react';
 import { Navigate } from 'react-router';
+import CourseDetail from './CourseDetail';
+import CourseList from './CourseList';
+import CreateCourse from './CreateCourse';
 import Dev from './Dev';
 import OnDevelop from './StartupContainers/OnDevelop';
 import SplashScreen from './StartupContainers/SplashScreen';
 import { SignIn, SignUp } from './UAMContainer';
 import Welcome from './Welcome';
-import { CourseList, CreateCourse } from './Course';
 
 type RouteWrapperProps = {
   isAuthenticated: boolean;
@@ -35,13 +37,19 @@ export const CustomRoute: React.FC<PropsWithChildren<RouteWrapperProps>> = ({
 export const routerGroup = [
   { path: PATHS.root, element: <OnDevelop />, isRequireAuth: true },
   { path: PATHS.welcome, element: <Welcome />, isRequireAuth: false },
-  { path: PATHS.courses, element: <CourseList />, isRequireAuth: false },
-  { path: PATHS.courseCreate, element: <CreateCourse />, isRequireAuth: true },
-  { path: PATHS.courseDetail, element: <OnDevelop />, isRequireAuth: false },
   { path: PATHS.signIn, element: <SignIn />, isRequireAuth: false },
   { path: PATHS.signUp, element: <SignUp />, isRequireAuth: false },
   { path: PATHS.forgotPassword, element: <OnDevelop />, isRequireAuth: false },
   { path: PATHS.resetPassword, element: <OnDevelop />, isRequireAuth: false },
+  { path: PATHS.courses, element: <CourseList />, isRequireAuth: false },
+  { path: PATHS.courseCreate, element: <CreateCourse />, isRequireAuth: true },
+  { path: PATHS.courseDetail, element: <CourseDetail />, isRequireAuth: false },
+  { path: PATHS.courseSetting, element: <CourseDetail />, isRequireAuth: true },
+  { path: PATHS.lessonsList, element: <CourseDetail />, isRequireAuth: false },
+  { path: PATHS.rankList, element: <CourseDetail />, isRequireAuth: true },
+  { path: PATHS.studentsList, element: <CourseDetail />, isRequireAuth: true },
+  { path: PATHS.practice, element: <CourseDetail />, isRequireAuth: true },
+  { path: PATHS.lessonsDetail, element: <CourseDetail />, isRequireAuth: true },
   { path: PATHS.dashboard, element: <OnDevelop />, isRequireAuth: true },
   { path: PATHS.profile, element: <OnDevelop />, isRequireAuth: true },
   { path: PATHS.dev, element: <Dev />, isRequireAuth: true },

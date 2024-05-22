@@ -70,6 +70,9 @@ const CourseItem = ({ course }: Props) => {
                 whiteSpace: 'break-spaces',
                 textOverflow: 'ellipsis',
                 mb: 1,
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
               }}
             >
               {course.description}

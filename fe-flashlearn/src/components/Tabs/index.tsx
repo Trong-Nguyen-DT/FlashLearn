@@ -32,19 +32,14 @@ const TabsComponent: React.FC<Props> = ({ items, ...props }) => {
   };
 
   return (
-    <Tabs
-      value={value}
-      onChange={handleChange}
-      role="navigation"
-      TabIndicatorProps={{ sx: { display: 'none' } }}
-      {...props}
-    >
+    <Tabs value={value} onChange={handleChange} role="navigation" {...props}>
       {items.map((item) => (
         <Tab
           key={item.path}
           onClick={() => {
             navigate(item.path);
           }}
+          icon={item.icon}
           label={
             <h3>
               <b>{item.label}</b>
@@ -57,6 +52,7 @@ const TabsComponent: React.FC<Props> = ({ items, ...props }) => {
 };
 
 type tabItem = {
+  icon?: React.ReactElement;
   label: string;
   path: string;
 };

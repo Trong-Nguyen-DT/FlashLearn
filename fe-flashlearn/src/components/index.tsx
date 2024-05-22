@@ -16,6 +16,7 @@ export { default as FilterContainer } from './CustomTableFilterContainer';
 export { default as LazyCheckPoint } from './LazyCheckPoint';
 export { default as FileUpload } from './FileUpload';
 export { default as ImagePreview } from './ImagePreview';
+export { default as BreadCrumbs } from './BreadCrumbs';
 
 export * from './CustomDropdown';
 export * from './Dialog';

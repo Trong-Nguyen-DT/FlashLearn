@@ -25,7 +25,11 @@ const Navbar: React.FC<Props> = ({ isAuthenticated }) => {
         variant="elevation"
         elevation={0}
         position="fixed"
-        style={{ background: 'transparent', border: 0 }}
+        style={{
+          background: 'white',
+          border: 0,
+          boxShadow: '0px 1px 10px 1px rgba(21, 96, 100, 0.1)',
+        }}
       >
         <Toolbar variant="regular">
           <Stack
@@ -34,7 +38,7 @@ const Navbar: React.FC<Props> = ({ isAuthenticated }) => {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Stack direction="row" justifyContent="center" gap={1} alignItems="center">
+            <Stack direction="row" justifyContent="center" gap={1} alignItems="center" ml={3}>
               <Link
                 onClick={() => navigate(PATHS.root)}
                 className="is-flex"
@@ -48,9 +52,13 @@ const Navbar: React.FC<Props> = ({ isAuthenticated }) => {
               </Link>
             </Stack>
             <Stack direction="row" justifyContent="center">
-              <Tabs items={displayTabs} />
+              <Tabs items={displayTabs} TabIndicatorProps={{ sx: { display: 'none' } }} />
             </Stack>
-            {isAuthenticated && <UserMenu />}
+            {isAuthenticated && (
+              <Stack>
+                <UserMenu />
+              </Stack>
+            )}
             {!isAuthenticated && (
               <Stack direction="row" gap={2} my={2}>
                 <Button variant="outlined" onClick={() => navigate(PATHS.signIn)}>

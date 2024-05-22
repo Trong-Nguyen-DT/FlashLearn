@@ -35,6 +35,10 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.get(`${ApiKey.COURSE}/${id}`);
   };
 
+  const getMyLearningCourses = () => {
+    return api.get(`${ApiKey.USERS}${ApiKey.COURSE}/study`);
+  };
+
   const createCourse = (body: CoursePayload) => {
     const { id: _, ...rest } = body;
     const payload = {
@@ -60,6 +64,7 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     getCourseList,
     getCourseDetail,
     createCourse,
+    getMyLearningCourses,
   };
 };
 

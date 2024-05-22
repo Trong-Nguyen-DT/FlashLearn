@@ -1,19 +1,18 @@
 import { QueryFunction, UseQueryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
+import { ApiResponseType, Callback, responseWrapper } from '@utils';
 import { useEffect } from 'react';
 import { ApiKey } from '../keys';
-import { CourseResponse } from './type';
-import { CourseApi } from '.';
-import { ApiResponseType, Callback, isEmpty, responseWrapper } from '@utils';
+import { LessonApi, LessonResponse } from '.';
 
-export function useGetCourseDetail(
-  options?: UseQueryOptions<ApiResponseType<CourseResponse>, Error, CourseResponse> & {
-    id: string;
+export function useGetLessonDetail(
+  options?: UseQueryOptions<ApiResponseType<LessonResponse>, Error, LessonResponse> & {
+    id?: string;
     onSuccessCallback?: Callback;
     onErrorCallback?: Callback;
   },
 ) {
-  const handleGetCourseDetail: QueryFunction<ApiResponseType<CourseResponse>> = () =>
-    responseWrapper<ApiResponseType<CourseResponse>>(CourseApi.getCourseDetail, [options.id]);
+  const handleGetLessonDetail: QueryFunction<ApiResponseType<LessonResponse>> = () =>
+    responseWrapper<ApiResponseType<LessonResponse>>(LessonApi.getLessonDetail, [options?.id]);
 
   const {
     data,
@@ -21,12 +20,13 @@ export function useGetCourseDetail(
     isError,
     isFetching: isLoading,
     isSuccess,
-  } = useQuery<ApiResponseType<CourseResponse>, Error, CourseResponse>(
-    [ApiKey.COURSE, options.id],
+  } = useQuery<ApiResponseType<LessonResponse>, Error, LessonResponse>(
+    [ApiKey.LESSON_DETAIL, options?.id],
     {
-      queryFn: handleGetCourseDetail,
+      queryFn: handleGetLessonDetail,
       notifyOnChangeProps: ['data', 'isFetching'],
-      enabled: !isEmpty(options.id),
+      enabled: !!options?.id,
+      select: (data) => data.data.objectData,
       ...options,
     },
   );
@@ -51,15 +51,15 @@ export function useGetCourseDetail(
 
   const queryClient = useQueryClient();
 
-  const handleInvalidateCourseDetail = () =>
-    queryClient.invalidateQueries([ApiKey.COURSE, options.id]);
+  const handleInvalidateLessonDetail = () =>
+    queryClient.invalidateQueries([ApiKey.LESSON_DETAIL, options?.id]);
 
   return {
-    courseDetail: data,
+    lessonDetail: data,
     isError,
     error,
     isLoading: isLoading,
     isSuccess,
-    handleInvalidateCourseDetail,
+    handleInvalidateLessonDetail,
   };
 }

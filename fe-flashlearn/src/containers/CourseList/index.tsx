@@ -3,7 +3,7 @@ import { Stack, useMediaQuery } from '@mui/material';
 import CourseGrid from './Components/CourseGrid';
 import CourseHeader from './Components/CourseHeader';
 
-const Course = () => {
+const CourseList = () => {
   const isMobileScreen = useMediaQuery('(max-width: 840px)');
 
   return (
@@ -19,4 +19,4 @@ const Course = () => {
   );
 };
 
-export default Course;
+export default CourseList;

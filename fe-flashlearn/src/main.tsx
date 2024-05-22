@@ -10,10 +10,28 @@ import { DialogProvider, LoadingContainer } from '@components';
 import { Provider } from 'react-redux';
 import createStore from '@redux/store';
 import Containers from './containers';
+import { ONE_HOUR } from '@appConfig';
 
 const { store } = createStore();
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: false,
+      staleTime: ONE_HOUR,
+      onError(err: unknown | Error) {
+        return err;
+      },
+    },
+    mutations: {
+      onError(err: unknown | Error) {
+        return err;
+      },
+    },
+  },
+});
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

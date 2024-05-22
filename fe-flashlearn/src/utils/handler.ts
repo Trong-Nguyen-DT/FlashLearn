@@ -13,6 +13,8 @@ export const isString = (value: any): value is string => typeof value === 'strin
 export const isYesValue = (value: any) => value === YesNoValue.YES;
 export const isNoValue = (value: any) => value === YesNoValue.NO;
 
+export const isOdd = (num: number) => num % 2 !== 0;
+
 export const getErrorMessage = (
   fieldName: string,
   { touched, errors }: { touched: any; errors: any },
