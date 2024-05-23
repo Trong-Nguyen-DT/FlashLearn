@@ -8,9 +8,9 @@ import { useParams } from 'react-router-dom';
 import VocabularyItem from './VocabularyItem';
 
 const LessonDetail = () => {
-  const { courseId, lessonId } = useParams<{ courseId: string; lessonId: string }>();
+  const { lessonId } = useParams<{ courseId: string; lessonId: string }>();
 
-  const { lessonDetail, isLoading } = useGetLessonDetail({ id: courseId });
+  const { lessonDetail, isLoading } = useGetLessonDetail({ id: lessonId });
 
   const { vocabulary, isFetching } = useGetVocabularyOfLesson({ lessonId });
 
@@ -44,7 +44,7 @@ const LessonDetail = () => {
       </Stack>
       <Divider orientation="horizontal" style={{ width: '100%' }} />
       <Stack direction="row" width="100%" gap={4} mx={12}>
-        <Image src={lessonDetail.image} height={100} />
+        <Image src={lessonDetail?.image || IMAGES.noImage} height={100} />
         <Stack>
           <Typography fontSize={32} fontWeight={800}>
             {lessonDetail?.name}
