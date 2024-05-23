@@ -5,6 +5,12 @@ public class ErrorConstants {
     public static final int INVALID_DATA_CODE = 400;
     public static final String INVALID_DATA_MESSAGE = "Dữ liệu gửi đi không chính xác";
 
+    public static final int INVALID_VOCABULARY_CODE = 400;
+    public static final String INVALID_VOCABULARY_MESSAGE = "Từ vựng không hợp lệ";
+
+    public static final int VOCABULARY_EXIST_CODE = 400;
+    public static final String VOCABULARY_EXIST_MESSAGE = "Từ vựng đã tồn tại trong hệ thống";
+
     public static final int OLD_PASSWORD_INCORRECT_CODE = 400;
     public static final String OLD_PASSWORD_INCORRECT_MESSAGE = "Mật khẩu cũ không chính xác";
 
@@ -27,5 +33,8 @@ public class ErrorConstants {
     public static final String EMAIL_ALREADY_EXISTS_MESSAGE = "Email đã tồn tại trong hệ thống";
 
     public static final String EMAIL_INVALID_MESSAGE = "Email không hợp lệ";
+
+    public static final int SERVER_ERROR_CODE = 500;
+    public static final String SERVER_ERROR_MESSAGE = "Lỗi hệ thống. Vui lòng thử lại sau";
 
 }

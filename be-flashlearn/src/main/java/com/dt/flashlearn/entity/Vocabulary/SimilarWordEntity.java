@@ -38,5 +38,5 @@ public class SimilarWordEntity {
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
-    private Boolean deleted;
+    private boolean deleted;
 }

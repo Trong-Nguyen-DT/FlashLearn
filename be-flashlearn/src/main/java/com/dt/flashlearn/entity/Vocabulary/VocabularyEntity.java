@@ -43,5 +43,5 @@ public class VocabularyEntity {
     
 
     @NotNull
-    private Boolean deleted;
+    private boolean deleted;
 }
