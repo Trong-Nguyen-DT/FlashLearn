@@ -14,5 +14,7 @@ public interface VocabularyRepository extends JpaRepository<VocabularyEntity, Lo
     List<VocabularyEntity> findByDeletedFalse();
 
     Optional<VocabularyEntity> findVocabularyByIdAndDeletedFalse(Long id);
+
+    VocabularyEntity findByWordAndPartOfSpeech(String word, String partOfSpeech);
     
 }

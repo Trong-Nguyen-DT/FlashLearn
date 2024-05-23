@@ -64,5 +64,5 @@ public class CourseEntity {
     private List<LessonEntity> lessons;
 
     @NotNull
-    private Boolean deleted;
+    private boolean deleted;
 }

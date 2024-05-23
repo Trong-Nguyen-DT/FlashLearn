@@ -60,7 +60,7 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
                     .filter(vocabulary -> vocabulary.getVocabulary().getId().equals(vocabularyInput.getVocabularyId()))
                     .findFirst().ifPresentOrElse(
                             vocabulary -> {
-                                if (vocabulary.getDeleted().equals(true)) {
+                                if (vocabulary.isDeleted()) {
                                     vocabulary.setDeleted(false);
                                     vocabularyOfLessonRepository.save(vocabulary);
                                 }
@@ -133,7 +133,7 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
 
     private Long calculatorVocabularyOfLesson(LessonEntity lessonEntity) {
         AtomicLong totalVocabulary = new AtomicLong();
-        lessonEntity.getVocabularies().stream().filter(vocabulary -> vocabulary.getDeleted().equals(false))
+        lessonEntity.getVocabularies().stream().filter(vocabulary -> !vocabulary.isDeleted())
                 .forEach(vocabulary -> totalVocabulary.getAndIncrement());
         return totalVocabulary.get();
     }

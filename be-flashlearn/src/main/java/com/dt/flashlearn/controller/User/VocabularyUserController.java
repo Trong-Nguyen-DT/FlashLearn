@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.model.request.AddVocabularyOfLessonInput;
+import com.dt.flashlearn.model.request.VocabularyInput;
 import com.dt.flashlearn.model.request.VocabularyOfLessonInput;
 import com.dt.flashlearn.model.response.ResponseError;
 import com.dt.flashlearn.service.VocabularyOfLessonService;
+import com.dt.flashlearn.service.VocabularyService;
 import com.dt.flashlearn.service.component.ResponseHandler;
 import com.dt.flashlearn.validate.ValidateData;
 
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("api/user/vocabulary")
@@ -30,7 +34,20 @@ public class VocabularyUserController {
     private VocabularyOfLessonService vocabularyOfLessonService;
 
     @Autowired
+    private VocabularyService vocabularyService;
+
+    @Autowired
     private ResponseHandler responseHandler;
+
+    @PostMapping("/create-vocabulary")
+    public ResponseEntity<?> createNewVocabulary(@Valid @RequestBody VocabularyInput input) {
+        try {
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(vocabularyService.createNewVocabulary(input)));
+        } catch (MessageException e) {
+            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
+        }
+    }
+    
 
     @PostMapping()
     public ResponseEntity<?> addVocabularyOfLesson(@Valid AddVocabularyOfLessonInput input) {

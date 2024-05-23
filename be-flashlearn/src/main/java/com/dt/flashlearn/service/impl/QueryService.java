@@ -39,18 +39,18 @@ public class QueryService {
         return getUserEntity()
                 .getCourses()
                 .stream()
-                .filter(course -> course.getId().equals(id) && !course.getDeleted())
+                .filter(course -> course.getId().equals(id) && !course.isDeleted())
                 .findFirst()
                 .orElseThrow(() -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
     }
 
     protected List<LessonEntity> getAllLessonEntityByCourseEntity(CourseEntity courseEntity) {
-        return courseEntity.getLessons().stream().filter(lesson -> !lesson.getDeleted()).toList();
+        return courseEntity.getLessons().stream().filter(lesson -> !lesson.isDeleted()).toList();
     }
 
     protected List<VocabularyOfLessonEntity> getAllVocabularyOfLessonEntityByLessonEntity(LessonEntity lessonEntity) {
         CourseValidate.validateCoursePrivate(lessonEntity.getCourse());
-        return lessonEntity.getVocabularies().stream().filter(vocabulary -> !vocabulary.getDeleted()).toList();
+        return lessonEntity.getVocabularies().stream().filter(vocabulary -> !vocabulary.isDeleted()).toList();
     }
 
     protected VocabularyEntity getVocabularyEntityById(Long id) {

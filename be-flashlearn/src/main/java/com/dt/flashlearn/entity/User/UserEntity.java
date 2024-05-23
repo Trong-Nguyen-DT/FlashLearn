@@ -41,11 +41,6 @@ public class UserEntity {
     private String email;
 
     @NotBlank
-    @Pattern(regexp = "(?=.*[0-9]).+", message = "Mật khẩu phải có ít nhất 1 chứ số")
-    @Pattern(regexp = "(?=.*[a-z]).+", message = "Mật khẩu phải có ít nhất 1 chữ thường")
-    @Pattern(regexp = "(?=.*[A-Z]).+", message = "Mật khẩu phải có ít nhất 1 chữ hoa")
-    @Pattern(regexp = "(?=.*[@#$%^&+=]).+", message = "Mật khẩu phải có ít nhất 1 kí tự đặc biệt")
-    @Size(min = 6, max = 50, message = "Mật khẩu có ít nhất 6 kí tự và nhiều nhất 50 kí tự")
     private String password;
 
     @NotBlank
@@ -53,7 +48,6 @@ public class UserEntity {
     private String name;
 
     @Size(min = 10, max = 10, message = "Số điện thoại phải có 10 chữ số")
-    @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$", message = "Số điện thoại không đúng định dạng")
     private String phone;
 
     private String avatar;
@@ -70,6 +64,6 @@ public class UserEntity {
     private List<StudentEntity> students;
 
     @NotNull
-    private Boolean deleted;
+    private boolean deleted;
     
 }

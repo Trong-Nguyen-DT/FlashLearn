@@ -25,7 +25,7 @@ public class LearningHistoryEntity {
 
     private LocalDateTime learnAt;
     private Integer experience;
-    private Boolean correct;
+    private boolean correct;
 
     @NotNull
     @ManyToOne
@@ -38,5 +38,5 @@ public class LearningHistoryEntity {
     private VocabularyOfLessonEntity vocabularyOfLesson;
 
 
-    private Boolean deleted;
+    private boolean deleted;
 }

@@ -52,6 +52,6 @@ public class LessonEntity {
     private List<VocabularyOfLessonEntity> vocabularies;    
     
     @NotNull
-    private Boolean deleted;
+    private boolean deleted;
 
 }

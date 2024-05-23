@@ -54,7 +54,7 @@ public class StudentServiceImpl implements StudentService {
             courseEntity.getStudents().stream().filter(student -> student.getUser().getEmail().equals(email))
                     .findFirst().ifPresentOrElse(
                             student -> {
-                                if (student.getDeleted().equals(true)) {
+                                if (student.isDeleted()) {
                                     student.setDeleted(false);
                                     studentRepository.save(student);
                                 }
@@ -82,7 +82,7 @@ public class StudentServiceImpl implements StudentService {
         courseEntity.getStudents().stream().filter(student -> student.getUser().getId().equals(userEntity.getId()))
                 .findFirst().ifPresentOrElse(
                         student -> {
-                            if (student.getDeleted().equals(true)) {
+                            if (student.isDeleted()) {
                                 student.setDeleted(false);
                                 studentRepository.save(student);
                             }
@@ -108,7 +108,7 @@ public class StudentServiceImpl implements StudentService {
     public ResponseData removeStudent(Long courseId, Long studentId) {
         CourseEntity courseEntity = queryService.getCourseEntityById(courseId);
         StudentEntity studentEntity = courseEntity.getStudents().stream()
-                .filter(student -> student.getId().equals(studentId) && student.getDeleted().equals(false)).findFirst()
+                .filter(student -> student.getId().equals(studentId) && !student.isDeleted()).findFirst()
                 .orElseThrow(
                         () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
         studentEntity.setDeleted(true);
@@ -135,14 +135,14 @@ public class StudentServiceImpl implements StudentService {
 
     private Long calculatorStudent(CourseEntity courseEntity) {
         AtomicLong totalStudent = new AtomicLong();
-        courseEntity.getStudents().stream().filter(student -> student.getDeleted().equals(false))
+        courseEntity.getStudents().stream().filter(student -> !student.isDeleted())
                 .forEach(student -> totalStudent.getAndIncrement());
         return totalStudent.get();
     }
 
     private ResponseData createResponseData(CourseEntity courseEntity) {
         return new ResponseData(StudentConverter
-        .convertToObjects(courseEntity.getStudents().stream().filter(student -> student.getDeleted().equals(false))
+        .convertToObjects(courseEntity.getStudents().stream().filter(student -> !student.isDeleted())
                 .map(StudentConverter::toModel).toList()));
     }
 
