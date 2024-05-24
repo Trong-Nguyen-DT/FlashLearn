@@ -46,6 +46,9 @@ public class StudentEntity {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LearningHistoryEntity> learningHistories;
 
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LearningVocabularyEntity> learningVocabularies;
+
     @NotNull
     private boolean deleted;
 }
