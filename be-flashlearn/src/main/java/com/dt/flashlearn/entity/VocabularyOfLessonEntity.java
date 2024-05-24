@@ -48,7 +48,7 @@ public class VocabularyOfLessonEntity {
     private LocalDateTime updateAt;
 
     @OneToMany(mappedBy = "vocabularyOfLesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LearningHistoryEntity> learningHistories;
+    private List<LearningVocabularyEntity> learningVocabularies;
 
     @NotNull
     private boolean deleted;

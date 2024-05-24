@@ -12,7 +12,7 @@ class GeminiPro():
         llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=GOOGLE_API_KEY)
         parser = JsonOutputParser(pydantic_object=Response)
         prompt = PromptTemplate(
-            template="You are an artificial intelligence. Your task is to give me the Vietnamese meaning of the word {input} and 10 English words with letters similar to the above word and the Vietnamese meaning of those words.\n{format_instructions}\n",
+            template="You are an artificial intelligence. Your task is to give me the Vietnamese meaning of the word {input} and 10 English words with letters similar to the above word and 5 sentence containing original word and the Vietnamese meaning of those words and sentences.If the word has no meaning in English, return 'Từ này không có nghĩa trong tiếng Anh'\n{format_instructions}\n",
             input_variables=["input"],
             partial_variables={"format_instructions": parser.get_format_instructions()},
         )

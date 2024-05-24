@@ -1,5 +1,6 @@
 package com.dt.flashlearn.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
@@ -23,9 +24,9 @@ public class LearningHistoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime learnAt;
-    private Integer experience;
-    private boolean correct;
+    private LocalDate learnAt;
+    private String learnType;
+    private Long experience;
 
     @NotNull
     @ManyToOne
@@ -37,6 +38,4 @@ public class LearningHistoryEntity {
     @JoinColumn(name = "vocabularyOfLessonId")
     private VocabularyOfLessonEntity vocabularyOfLesson;
 
-
-    private boolean deleted;
 }
