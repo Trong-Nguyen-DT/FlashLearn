@@ -45,7 +45,8 @@ const CourseGrid = () => {
   );
 
   const handleGetCourseList = (params: TableParams) => {
-    setParams({ ...params });
+    const { page, ...rest } = params;
+    setParams({ ...rest, page: Number(page) + 1 });
   };
 
   const handleTriggerAction = () => {

@@ -7,7 +7,11 @@ import { isOdd } from '@utils';
 import { useParams } from 'react-router-dom';
 import LessonItem from './LessonItem';
 
-const LessonList = () => {
+type Props = {
+  isOwner: boolean;
+};
+
+const LessonList: React.FC<Props> = ({ isOwner }) => {
   const { courseId } = useParams<{ courseId: string }>();
 
   const { lessons, isFetching } = useGetLesson({ courseId });
@@ -23,10 +27,8 @@ const LessonList = () => {
   return (
     <Stack
       sx={{
-        width: '100%',
         alignItems: 'center',
         pt: 6,
-        // backgroundImage: `url(${IMAGES.banner})`,
       }}
     >
       {lessons?.length > 0 ? (
@@ -48,13 +50,22 @@ const LessonList = () => {
             </>
           ))}
         </>
+      ) : isOwner ? (
+        <Stack alignItems={'center'} spacing={1}>
+          <Typography variant="body1" fontWeight={600}>
+            Không tìm thấy kết quả
+          </Typography>
+          <Typography variant="body2">
+            Chúng tôi không thể tìm thấy những gì là một cách dễ dùng và thú vị!
+          </Typography>
+        </Stack>
       ) : (
         <Stack alignItems={'center'} spacing={1}>
           <Typography variant="body1" fontWeight={600}>
             Không tìm thấy kết quả
           </Typography>
           <Typography variant="body2">
-            Chúng tôi không thể tìm thấy những gì bạn đang tìm kiếm...
+            Khóa học này chưa có bài học nào, bạn quay lại sau nhé...
           </Typography>
         </Stack>
       )}

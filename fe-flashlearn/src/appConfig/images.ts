@@ -1,5 +1,6 @@
 import banner from 'src/assets/images/7f2ebdfced5f1408db16a0d9b75639ce.jpg';
 import hello from 'src/assets/images/gifs/pLY8QHrlL9lKEpvdKQ.webp';
+import raiseHand from 'src/assets/images/gifs/Tr5lGBJnmBqUEZcpoP.webp';
 import logo from 'src/assets/images/icons/corgi (2).png';
 import fullLogo from 'src/assets/images/icons/download (5).png';
 import slogan from 'src/assets/images/download (8).png';
@@ -24,4 +25,5 @@ export const IMAGES = {
   noImage,
   poseImage,
   connectLine,
+  raiseHand,
 };

@@ -29,7 +29,6 @@ const LessonDetail = () => {
   return (
     <Stack
       sx={{
-        width: '100%',
         alignItems: 'center',
         pt: 6,
         px: 32,

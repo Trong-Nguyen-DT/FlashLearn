@@ -14,22 +14,28 @@ const DropdownContainer: React.FC<PropsWithChildren<Props>> = ({
   labelClassName,
   children,
 }) => {
-  const { buttonProps, itemProps, isOpen } = useDropdownMenu(items.length);
-
-  // const handleKeyPress = (item: DropdownItem) => (event: KeyboardEvent) => {
-  //   event.preventDefault();
-  //   if (event.code === 'Enter') {
-  //     item.onClick();
-  //   }
-  // };
+  const { buttonProps, itemProps, isOpen, setIsOpen } = useDropdownMenu(items.length);
+  const { onClick, ...rest } = buttonProps;
 
   return (
     <Stack className={cn('cmp-dropdown')} alignSelf={flexPosition}>
       <button
+        style={{ display: 'none' }}
+        id="close-popover-button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(false);
+        }}
+      />
+      <button
         className={cn('cmp-dropdown__button-wrap', labelClassName, {
           'cmp-dropdown__button-wrap--open': isOpen,
         })}
-        {...buttonProps}
+        {...rest}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick(e);
+        }}
       >
         {label}
       </button>
@@ -52,7 +58,6 @@ const DropdownContainer: React.FC<PropsWithChildren<Props>> = ({
                 { 'cmp-dropdown__item--disabled': item.isDisabled },
               ),
               onClick: item.onClick,
-              // onKeyPress: handleKeyPress(item),
             } as Attributes);
           }
           return child;

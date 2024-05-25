@@ -64,7 +64,7 @@
     &__menu {
       width: 100%;
       border-radius: 8px;
-      z-index: 101;
+      z-index: 1001;
       border: $color-grey-100;
     }
 
@@ -74,6 +74,7 @@
 
     &__option {
       height: 40px;
+      z-index: 1001;
       font-size: 14px;
       padding-left: 16px;
       padding-right: 16px;

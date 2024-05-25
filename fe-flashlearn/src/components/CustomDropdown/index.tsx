@@ -20,7 +20,7 @@ const CustomDropdown: React.FC<Props> = ({ items, color, ...props }) => (
       >
         {item.icon}
         <Typography
-          variant="h6"
+          fontSize={20}
           style={{ color: color && color === COLOR_CODE.PRIMARY ? COLOR_CODE.GREY_800 : '' }}
         >
           {item.label}

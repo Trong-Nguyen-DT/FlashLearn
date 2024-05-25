@@ -7,6 +7,8 @@ import { useLocation, useParams } from 'react-router-dom';
 import LessonDetail from '../LessonDetail';
 import LessonList from '../LessonList';
 import { courseDetailBreadCrumb, courseTabs, studentTabs, teacherTabs } from './helpers';
+import { useJoinCourse } from '@queries/Student/useJoinCourse';
+import toastify from '@services/toastify';
 
 const CourseDetail = () => {
   const isMobileScreen = useMediaQuery('(max-width: 840px)');
@@ -21,9 +23,20 @@ const CourseDetail = () => {
 
   const { courseDetail } = useGetCourseDetail({ id: courseId });
 
-  const { courses } = useGetMyLearningCourse();
+  const { courses, handleInvalidateMyLearningCourseList } = useGetMyLearningCourse();
 
   const { profile } = useGetProfile();
+
+  const { onJoinCourse } = useJoinCourse({
+    onSuccess() {
+      toastify.success('Đăng ký khoá học thành công');
+      handleInvalidateMyLearningCourseList();
+    },
+  });
+
+  const handleLearn = () => {
+    onJoinCourse({ id: courseDetail?.id });
+  };
 
   const isOwner = profile?.id === courseDetail?.owner.id;
 
@@ -32,11 +45,11 @@ const CourseDetail = () => {
   const renderBody = () => {
     switch (tab) {
       case 'lessons':
-        return <LessonList />;
+        return <LessonList isOwner={isOwner} />;
       case 'lesson':
         return <LessonDetail />;
       default:
-        return <LessonList />;
+        return <LessonList isOwner={isOwner} />;
     }
   };
 
@@ -73,7 +86,11 @@ const CourseDetail = () => {
           <Rating value={Number(courseDetail?.avgRating)} precision={0.1} readOnly />
           <Typography>{courseDetail?.description}</Typography>
           <Stack display="block" mt={2}>
-            <Button variant="contained">Bắt đầu học</Button>
+            {!isStudent && (
+              <Button variant="contained" onClick={handleLearn}>
+                Bắt đầu học
+              </Button>
+            )}
           </Stack>
         </Stack>
         <Stack width={'30%'}>
@@ -93,9 +110,9 @@ const CourseDetail = () => {
           ]}
           orientation="vertical"
           variant="scrollable"
-          sx={{ borderRight: 1, borderColor: 'divider', width: 200, height: '50vh', py: 2 }}
+          sx={{ borderRight: 1, borderColor: 'divider', width: 200, height: '56vh', py: 2 }}
         />
-        {renderBody()}
+        <Stack sx={{ height: '59vh', overflowY: 'auto', width: '100%' }}>{renderBody()}</Stack>
       </Stack>
     </Stack>
   );

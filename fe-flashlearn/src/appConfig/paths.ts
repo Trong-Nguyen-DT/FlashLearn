@@ -12,6 +12,8 @@ export const PATHS = {
   courseSetting: '/course/:courseId/settings',
   rankList: '/course/:courseId/rank',
   myCourse: '/myCourse',
+  myCourseLearning: '/myCourse/learning',
+  myCourseTeaching: '/myCourse/teaching',
   profile: '/profile',
   dashboard: '/dashboard',
   signIn: '/login',

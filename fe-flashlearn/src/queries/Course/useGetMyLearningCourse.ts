@@ -14,7 +14,9 @@ export function useGetMyLearningCourse(
     refetch: onGetAllCourses,
   } = useQuery<PaginationResponseType<CourseResponse>, Error>([ApiKey.MY_LEARNING_COURSE], {
     queryFn: () => {
-      return responseWrapper<PaginationResponseType<CourseResponse>>(CourseApi.getCourseList);
+      return responseWrapper<PaginationResponseType<CourseResponse>>(
+        CourseApi.getMyLearningCourses,
+      );
     },
     notifyOnChangeProps: ['data', 'isFetching'],
     keepPreviousData: true,

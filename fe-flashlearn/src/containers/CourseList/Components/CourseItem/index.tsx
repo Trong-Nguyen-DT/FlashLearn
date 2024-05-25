@@ -2,9 +2,11 @@ import { COLOR_CODE } from '@appConfig';
 import { IMAGES } from '@appConfig/images';
 import { PATHS } from '@appConfig/paths';
 import { DialogContext, DialogType, Image } from '@components';
-import { Button, Card, Stack, Typography } from '@mui/material';
-import { CourseResponse } from '@queries';
+import { Button, Card, Stack, Tooltip, Typography } from '@mui/material';
+import { CourseResponse, useGetMyLearningCourse } from '@queries';
+import { useJoinCourse } from '@queries/Student/useJoinCourse';
 import { IRootState } from '@redux/store';
+import toastify from '@services/toastify';
 import { useContext } from 'react';
 import { FaRocket, FaStar, FaUser } from 'react-icons/fa6';
 import { useSelector } from 'react-redux';
@@ -14,6 +16,18 @@ const CourseItem = ({ course }: Props) => {
   const isAuthenticated = useSelector((state: IRootState) => state.auth.isAuthenticated);
 
   const { setDialogContent, openModal, closeModal } = useContext(DialogContext);
+
+  const { courses, handleInvalidateMyLearningCourseList } = useGetMyLearningCourse();
+
+  const isStudent = courses?.some((myCourse) => myCourse.id === course?.id);
+
+  const { onJoinCourse } = useJoinCourse({
+    onSuccess() {
+      toastify.success('Đăng ký khoá học thành công');
+      handleInvalidateMyLearningCourseList();
+      navigate(`${PATHS.courses}/${course.id}`);
+    },
+  });
 
   const navigate = useNavigate();
 
@@ -34,7 +48,25 @@ const CourseItem = ({ course }: Props) => {
     openModal();
   };
 
-  const handleLearn = () => {};
+  const handleLearn = () => {
+    if (isStudent) {
+      return navigate(`${PATHS.courses}/${course.id}`);
+    }
+    setDialogContent({
+      type: DialogType.YESNO_DIALOG,
+      contentText: `Đăng Ký học khóa học ${course.name}?`,
+      hideTitle: true,
+      showIcon: true,
+      icon: <Image src={IMAGES.raiseHand} sx={{ width: 100, height: 100 }} />,
+      okText: 'Đăng Ký',
+      cancelText: 'Hủy',
+      onOk: () => {
+        onJoinCourse({ id: course.id });
+        closeModal();
+      },
+    });
+    openModal();
+  };
 
   return (
     <Card
@@ -91,17 +123,23 @@ const CourseItem = ({ course }: Props) => {
                 <Typography>{course.totalStudent} người</Typography>
               </Stack>
             </Stack>
-            <Button
-              fullWidth
-              color="primary"
-              variant="contained"
-              onClick={(e) => {
-                e.stopPropagation();
-                !isAuthenticated ? handleRequestLogin() : handleLearn();
-              }}
+            <Tooltip
+              title={isStudent ? 'Bạn đã đăng ký khóa học này rồi' : 'Đăng ký để tham gia ngay nhé'}
+              arrow
+              placement="top"
             >
-              Bắt đầu học
-            </Button>
+              <Button
+                fullWidth
+                color="primary"
+                variant="contained"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  !isAuthenticated ? handleRequestLogin() : handleLearn();
+                }}
+              >
+                {isStudent ? 'Xem chi tiết' : 'Đăng ký học'}
+              </Button>
+            </Tooltip>
           </Stack>
         </Stack>
       </Stack>
