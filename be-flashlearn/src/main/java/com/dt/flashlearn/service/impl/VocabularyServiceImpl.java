@@ -2,7 +2,6 @@ package com.dt.flashlearn.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import com.dt.flashlearn.converter.VocabularyConverter;
 import com.dt.flashlearn.entity.Vocabulary.SimilarWordEntity;
 import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
 import com.dt.flashlearn.exception.MessageException;
-import com.dt.flashlearn.model.Vocabulary;
 import com.dt.flashlearn.model.request.VocabularyInput;
 import com.dt.flashlearn.model.response.AIResponse;
 import com.dt.flashlearn.model.response.ResponseData;

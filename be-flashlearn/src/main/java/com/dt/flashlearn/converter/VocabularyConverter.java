@@ -61,5 +61,17 @@ public class VocabularyConverter {
         }
         return objects;
     }
+
+    public static Vocabulary vocabularyOfLessonToVocabulary(VocabularyOfLessonEntity entity) {
+        Vocabulary vocabulary = new Vocabulary();
+        vocabulary.setId(entity.getId());
+        vocabulary.setWord(entity.getVocabulary().getWord());
+        vocabulary.setMeaning(entity.getVocabulary().getMeaning());
+        vocabulary.setAudio(entity.getVocabulary().getAudio());
+        vocabulary.setPartOfSpeech(entity.getVocabulary().getPartOfSpeech());
+        vocabulary.setCreateAt(entity.getVocabulary().getCreateAt());
+        vocabulary.setUpdateAt(entity.getVocabulary().getUpdateAt());
+        return vocabulary;
+    }
     
 }

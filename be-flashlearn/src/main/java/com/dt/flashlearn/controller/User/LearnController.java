@@ -28,8 +28,11 @@ public class LearnController {
 
     @GetMapping("{lessonId}")
     public ResponseEntity<?> getVocabularyOfLessonLearn(@PathVariable Long lessonId,
-            @RequestParam int studyCount) {
+            @RequestParam(required = true, defaultValue = "1") int studyCount) {
         try {
+            if (studyCount < 1) {
+                studyCount = 1;
+            }
             return ResponseEntity.ok(responseHandler
                     .createSuccessResponse(learnService.getVocabularyOfLessonLearn(lessonId, studyCount)));
         } catch (MessageException e) {
