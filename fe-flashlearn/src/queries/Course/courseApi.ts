@@ -7,6 +7,7 @@ import { AuthService } from '@services';
 import { stringify } from '@utils';
 import { TableParams } from '@components';
 import { CoursePayload } from './type';
+import { entries } from 'lodash';
 
 axios.defaults.withCredentials = true;
 const create = (baseURL = `${appConfig.API_URL}`) => {
@@ -39,6 +40,10 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.get(`${ApiKey.USERS}${ApiKey.COURSE}/study`);
   };
 
+  const getMyTeachingCourses = () => {
+    return api.get(`${ApiKey.USERS}${ApiKey.COURSE}`);
+  };
+
   const createCourse = (body: CoursePayload) => {
     const { id: _, ...rest } = body;
     const payload = {
@@ -48,10 +53,9 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     // eslint-disable-next-line prefer-const
     let formData = new FormData();
 
-    formData.append('name', payload.name);
-    formData.append('description', payload.description);
-    formData.append('status', payload.status);
-    formData.append('image', payload.image);
+    entries(payload).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
 
     return api.post(`${ApiKey.USERS}${ApiKey.COURSE}`, formData, {
       headers: {
@@ -60,11 +64,18 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     });
   };
 
+  const deleteCourse = (body: { id: string }) => {
+    const { id } = body;
+    return api.delete(`${ApiKey.USERS}${ApiKey.COURSE}/${id}`, {});
+  };
+
   return {
     getCourseList,
     getCourseDetail,
     createCourse,
     getMyLearningCourses,
+    getMyTeachingCourses,
+    deleteCourse,
   };
 };
 

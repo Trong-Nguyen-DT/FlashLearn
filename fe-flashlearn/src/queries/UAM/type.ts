@@ -19,11 +19,10 @@ export type SignInResponse = {
 export type SignUpResponse = SignInResponse;
 
 export type SignUpPayload = {
-  username: string;
+  id: number;
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  name: string;
+  avatar: string;
   phone: string;
-  gender: 1 | 0 | number;
-};
+}

@@ -6,6 +6,7 @@ import { useGetLesson } from '@queries';
 import { isOdd } from '@utils';
 import { useParams } from 'react-router-dom';
 import LessonItem from './LessonItem';
+import StartScreen from './StartScreen';
 
 type Props = {
   isOwner: boolean;
@@ -51,14 +52,7 @@ const LessonList: React.FC<Props> = ({ isOwner }) => {
           ))}
         </>
       ) : isOwner ? (
-        <Stack alignItems={'center'} spacing={1}>
-          <Typography variant="body1" fontWeight={600}>
-            Không tìm thấy kết quả
-          </Typography>
-          <Typography variant="body2">
-            Chúng tôi không thể tìm thấy những gì là một cách dễ dùng và thú vị!
-          </Typography>
-        </Stack>
+        <StartScreen courseId={courseId} />
       ) : (
         <Stack alignItems={'center'} spacing={1}>
           <Typography variant="body1" fontWeight={600}>

@@ -1,19 +1,50 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NAVBAR_HEIGHT } from '@appConfig';
+import { IMAGES, NAVBAR_HEIGHT } from '@appConfig';
+import { Image, Loading } from '@components';
 import { Stack, Typography, useMediaQuery } from '@mui/material';
+import { useGetMyTeachingCourse } from '@queries';
+import TeachingItem from './TeachingItem';
 
 const TeachingList = () => {
   const isMobileScreen = useMediaQuery('(max-width: 840px)');
 
+  const { courses, isFetching } = useGetMyTeachingCourse();
+
+  if (isFetching) {
+    return (
+      <Stack width={'100%'} alignItems={'center'} pt={3}>
+        <Loading variant="primary" />
+      </Stack>
+    );
+  }
+
   return (
     <Stack
       sx={{
-        width: '100%',
         overflowX: isMobileScreen && 'hidden',
         pt: `${NAVBAR_HEIGHT}px`,
+        alignItems: 'center',
+        gap: 3,
       }}
     >
-      <Typography>My Course Teaching</Typography>
+      {courses?.length > 0 ? (
+        <>
+          {courses.map((course) => (
+            <TeachingItem course={course} />
+          ))}
+        </>
+      ) : (
+        <Stack alignItems={'center'} spacing={1}>
+          <Image
+            src={IMAGES.noResultsFound}
+            style={{ width: '200px', height: '200px', alignSelf: 'center' }}
+          />
+          <Typography variant="body1" fontWeight={600}>
+            Không tìm thấy kết quả
+          </Typography>
+          <Typography variant="body2">Bạn chưa tạo học khóa học nào...</Typography>
+        </Stack>
+      )}{' '}
     </Stack>
   );
 };

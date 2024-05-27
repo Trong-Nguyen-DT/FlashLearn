@@ -8,7 +8,8 @@ export enum ApiKey {
   AUTH = '/auth',
   COURSE = '/course',
   VOCABULARY = '/vocabulary',
-  MY_LEARNING_COURSE = '/my-learningcourse',
+  MY_LEARNING_COURSE = '/my-learning-course',
+  MY_TEACHING_COURSE = '/my-teaching-course',
 }
 
 export type QueryOptions<T> = Omit<UseQueryOptions, 'QueryKey'> & { QueryKey: T };

@@ -85,7 +85,7 @@ const TableBasic: React.FC<Props> = ({
         main: COLOR_CODE.SECONDARY,
       },
       typography: {
-        fontFamily: ['Roboto', 'sans-serif'].join(','),
+        fontFamily: ['Nunito', 'sans-serif'].join(','),
       },
       shape: {
         borderRadius: 8,
@@ -148,7 +148,7 @@ const TableBasic: React.FC<Props> = ({
             body: {
               color: COLOR_CODE.GREY_700,
               cursor: hasRowClickAction ? 'pointer' : 'default',
-              fontSize: 14,
+              fontSize: 20,
               borderTop: `1px solid ${COLOR_CODE.GREY_200}`,
               padding: '16px 24px',
             },
@@ -173,13 +173,13 @@ const TableBasic: React.FC<Props> = ({
               '&.MuiTableCell-root span button div, &.MuiTableCell-root span button div span svg': {
                 color: `${COLOR_CODE.GREY_900} !important`,
                 fontWeight: 'bold',
-                fontSize: '14px',
+                fontSize: '20px',
               },
               button: {
-                fontSize: 16,
+                fontSize: 20,
               },
               div: {
-                fontSize: 14,
+                fontSize: 20,
               },
             },
             footer: {
@@ -318,7 +318,7 @@ const TableBasic: React.FC<Props> = ({
         MuiChip: {
           styleOverrides: {
             root: {
-              fontSize: 13,
+              fontSize: 20,
               fontWeight: 600,
               lineHeight: 18,
               color: COLOR_CODE.GREY_600,

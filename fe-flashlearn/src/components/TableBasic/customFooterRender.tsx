@@ -44,7 +44,7 @@ const CustomFooterRender: React.FC<Props> = ({
             <Stack alignItems="center" justifyContent="space-between" direction="row" height="100%">
               <Stack width="100%">
                 {count ? (
-                  <Typography fontSize={14} className="fw-medium text-color-grey-600">
+                  <Typography fontSize={16} className="fw-medium text-color-grey-600">
                     Showing {range} of {count} {recordName}
                   </Typography>
                 ) : (

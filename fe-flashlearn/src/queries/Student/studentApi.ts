@@ -31,7 +31,11 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.put(`${ApiKey.USERS}${ApiKey.STUDENT}/${payload.id}`);
   };
 
-  return { leaveCourse, joinCourse };
+  const getStudentList = (id: string) => {
+    return api.get(`${ApiKey.USERS}${ApiKey.STUDENT}?courseId=${id}`);
+  };
+
+  return { leaveCourse, joinCourse, getStudentList };
 };
 
 export default {

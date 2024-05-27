@@ -1,64 +1,51 @@
 import { COLOR_CODE, PATHS } from '@appConfig';
 import { IMAGES } from '@appConfig/images';
 import { CustomDropdown, DialogContext, DialogType, DropdownItem, Image } from '@components';
-import { Card, IconButton, LinearProgress, Stack, Typography } from '@mui/material';
-import { CourseResponse, useGetMyLearningCourse, useLeaveCourse } from '@queries';
+import { Card, IconButton, Stack, Typography } from '@mui/material';
+import { CourseResponse, useDeleteCourse, useGetMyTeachingCourse } from '@queries';
 import toastify from '@services/toastify';
 import { useContext } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
-import { FaStar } from 'react-icons/fa6';
+import { FaRocket, FaStar, FaUser } from 'react-icons/fa6';
 import { IoMdMore } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 
-const LearningItem = ({ course }: Props) => {
+const TeachingItem = ({ course }: Props) => {
   const { setDialogContent, openModal, closeModal } = useContext(DialogContext);
 
-  const { handleInvalidateMyLearningCourseList } = useGetMyLearningCourse();
+  const { handleInvalidateMyTeachingCourseList } = useGetMyTeachingCourse();
 
-  const { onLeaveCourse } = useLeaveCourse({
+  const { onDeleteCourse } = useDeleteCourse({
     onSuccess() {
-      handleInvalidateMyLearningCourseList();
-      toastify.success('Rời khỏi khóa học thành công');
-      closeModal();
+      handleInvalidateMyTeachingCourseList();
+      toastify.success('Xóa khóa học thành công');
     },
   });
 
   const menuOptions: DropdownItem[] = [
     {
-      label: 'Đánh giá khóa học',
+      label: 'Xóa khóa học',
       onClick: (e) => {
         e.stopPropagation();
         document.getElementById('close-popover-button')?.click();
-        handleRateCourse();
-      },
-      icon: <FaStar size={18} />,
-    },
-    {
-      label: 'Rời khỏi khóa học',
-      onClick: (e) => {
-        e.stopPropagation();
-        document.getElementById('close-popover-button')?.click();
-        handleLeaveCourse();
+        handleDeleteCourse();
       },
       icon: <FaSignOutAlt size={18} />,
     },
   ];
 
-  const handleRateCourse = () => {
-    // TODO: Rate course
-  };
-
-  const handleLeaveCourse = () => {
+  const handleDeleteCourse = () => {
     setDialogContent({
       type: DialogType.YESNO_DIALOG,
-      contentText: 'Bạn có chắc muốn rời khỏi khóa học này?',
-      hideTitle: true,
+      contentText:
+        'Bạn sẽ mất toàn bộ dữ liệu liên quan đến khóa học này và hành động này không thể hoàn tác.',
+      title: 'Bạn có chắc muốn xóa khóa học này?',
       showIcon: true,
       isWarning: true,
       okText: 'Xác nhận',
       cancelText: 'Hủy',
       onOk: () => {
-        onLeaveCourse({ id: course.id });
+        onDeleteCourse({ id: course.id.toString() });
         closeModal();
       },
     });
@@ -113,27 +100,19 @@ const LearningItem = ({ course }: Props) => {
             >
               {course.description}
             </Typography>
-            <Typography fontSize={20}>
-              <b>0/{course.totalVocal}</b> từ đã học
-            </Typography>
-            <Stack direction="row" gap={4} alignItems={'center'}>
-              <LinearProgress
-                variant="determinate"
-                value={40}
-                sx={{
-                  width: '80%',
-                  background: COLOR_CODE.GREY_200,
-                  height: '10px',
-                  borderRadius: 5,
-                  '.MuiLinearProgress-bar': {
-                    height: '10px',
-                    borderRadius: 5,
-                  },
-                }}
-              />
-              <Typography fontSize={20} mr={4}>
-                0%
-              </Typography>
+            <Stack direction="row" alignItems="center" mb={2} gap={4}>
+              <Stack direction="row" alignItems="center" gap={0.5}>
+                <FaStar color={COLOR_CODE.PRIMARY} size={20} />
+                <Typography>{course.avgRating === 0 ? 'N/A' : `${course.avgRating}/5`}</Typography>
+              </Stack>
+              <Stack direction="row" alignItems="center" gap={0.5}>
+                <FaRocket color={COLOR_CODE.PRIMARY} size={20} />
+                <Typography>{course.totalVocal} từ</Typography>
+              </Stack>
+              <Stack direction="row" alignItems="center" gap={0.5}>
+                <FaUser color={COLOR_CODE.PRIMARY} size={20} />
+                <Typography>{course.totalStudent} học viên</Typography>
+              </Stack>
             </Stack>
           </Stack>
         </Stack>
@@ -146,4 +125,4 @@ type Props = {
   course: CourseResponse;
 };
 
-export default LearningItem;
+export default TeachingItem;

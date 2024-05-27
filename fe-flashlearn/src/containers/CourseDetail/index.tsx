@@ -9,6 +9,7 @@ import LessonList from '../LessonList';
 import { courseDetailBreadCrumb, courseTabs, studentTabs, teacherTabs } from './helpers';
 import { useJoinCourse } from '@queries/Student/useJoinCourse';
 import toastify from '@services/toastify';
+import StudentList from '../Student/StudentList';
 
 const CourseDetail = () => {
   const isMobileScreen = useMediaQuery('(max-width: 840px)');
@@ -48,6 +49,8 @@ const CourseDetail = () => {
         return <LessonList isOwner={isOwner} />;
       case 'lesson':
         return <LessonDetail />;
+      case 'students':
+        return <StudentList isOwner={isOwner} />;
       default:
         return <LessonList isOwner={isOwner} />;
     }

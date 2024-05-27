@@ -10,8 +10,6 @@ const LearningList = () => {
 
   const { courses, isFetching } = useGetMyLearningCourse();
 
-  console.log('🚀 ~ LearningList ~ courses:', courses);
-
   if (isFetching) {
     return (
       <Stack width={'100%'} alignItems={'center'} pt={3}>

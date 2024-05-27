@@ -6,6 +6,7 @@ export const PATHS = {
   courseCreate: '/course/create',
   courseDetail: '/course/:courseId',
   lessonsList: '/course/:courseId/lessons',
+  lessonsCreate: '/course/:courseId/lesson/create',
   lessonsDetail: '/course/:courseId/lesson/:lessonId',
   practice: '/course/:courseId/practice',
   studentsList: '/course/:courseId/students',
