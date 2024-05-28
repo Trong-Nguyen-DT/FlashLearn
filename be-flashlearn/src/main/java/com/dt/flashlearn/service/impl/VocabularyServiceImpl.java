@@ -8,13 +8,16 @@ import org.springframework.stereotype.Service;
 
 import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.converter.VocabularyConverter;
+import com.dt.flashlearn.entity.Vocabulary.SentenceEntity;
 import com.dt.flashlearn.entity.Vocabulary.SimilarWordEntity;
 import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
 import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.model.request.VocabularyInput;
 import com.dt.flashlearn.model.response.AIResponse;
 import com.dt.flashlearn.model.response.ResponseData;
+import com.dt.flashlearn.model.response.Sentence;
 import com.dt.flashlearn.model.response.Word;
+import com.dt.flashlearn.repository.SentenceRepository;
 import com.dt.flashlearn.repository.SimilarWordRepository;
 import com.dt.flashlearn.repository.VocabularyRepository;
 import com.dt.flashlearn.service.VocabularyService;
@@ -29,6 +32,9 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     @Autowired
     private SimilarWordRepository similarWordRepository;
+
+    @Autowired
+    private SentenceRepository sentenceRepository;
 
     @Autowired
     private AIService aiService;
@@ -64,6 +70,7 @@ public class VocabularyServiceImpl implements VocabularyService {
             }
             VocabularyEntity vocabularyEntity = saveVocabulary(aiResponse.getOriginalWord(), input);
             saveSimilarWords(aiResponse.getSimilarWord(), vocabularyEntity);
+            saveSentence(aiResponse.getSentences(), vocabularyEntity);
 
             return new ResponseData(VocabularyConverter.toModel(vocabularyEntity));
         }
@@ -96,6 +103,20 @@ public class VocabularyServiceImpl implements VocabularyService {
             similarWordEntity.setUpdateAt(now);
             similarWordEntity.setDeleted(false);
             similarWordRepository.save(similarWordEntity);
+        });
+    }
+
+    private void saveSentence(List<Sentence> sentences, VocabularyEntity entity) {
+        LocalDateTime now = LocalDateTime.now();
+        sentences.forEach(sentence -> {
+            SentenceEntity sentenceEntity = new SentenceEntity();
+            sentenceEntity.setSentence(sentence.getSentence());
+            sentenceEntity.setMeaning(sentence.getMeaning());
+            sentenceEntity.setVocabulary(entity);
+            sentenceEntity.setCreateAt(now);
+            sentenceEntity.setUpdateAt(now);
+            sentenceEntity.setDeleted(false);
+            sentenceRepository.save(sentenceEntity);
         });
     }
 

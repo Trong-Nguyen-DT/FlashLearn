@@ -12,4 +12,5 @@ public class AIResponse {
     private String error;
     private Word originalWord;
     private List<Word> similarWord;
+    private List<Sentence> sentences;
 }
