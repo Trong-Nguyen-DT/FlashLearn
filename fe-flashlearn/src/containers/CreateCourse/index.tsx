@@ -19,7 +19,7 @@ const CreateCourse = () => {
 
   const handleBack = () => {
     if (step === 1) {
-      return;
+      return history.back();
     }
     setStep(step - 1);
   };
@@ -36,7 +36,7 @@ const CreateCourse = () => {
       <Stack direction="row" p={3} px={12} gap={3} width="80%" justifyContent="center">
         <Tooltip title="Trở về" arrow placement="top">
           <IconButton>
-            <IoArrowBack onClick={handleBack} />
+            <IoArrowBack onClick={handleBack} size={40} />
           </IconButton>
         </Tooltip>
         <Stack width="80%" justifyContent="center">

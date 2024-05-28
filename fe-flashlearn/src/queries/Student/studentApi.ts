@@ -4,6 +4,7 @@ import { AuthService } from '@services';
 import apisauce from 'apisauce';
 import axios from 'axios';
 import appConfig from 'src/appConfig';
+import { AddStudentPayload, RemoveStudentPayload } from './type';
 
 axios.defaults.withCredentials = true;
 const create = (baseURL = `${appConfig.API_URL}`) => {
@@ -35,7 +36,16 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.get(`${ApiKey.USERS}${ApiKey.STUDENT}?courseId=${id}`);
   };
 
-  return { leaveCourse, joinCourse, getStudentList };
+  const addStudent = (body: AddStudentPayload) => {
+    return api.post(`${ApiKey.USERS}${ApiKey.STUDENT}`, body);
+  };
+
+  const deleteStudent = (body: RemoveStudentPayload) => {
+    const { courseId, studentId } = body;
+    return api.delete(`${ApiKey.USERS}${ApiKey.STUDENT}/${courseId}/${studentId}`, {});
+  };
+
+  return { leaveCourse, joinCourse, getStudentList, addStudent, deleteStudent };
 };
 
 export default {

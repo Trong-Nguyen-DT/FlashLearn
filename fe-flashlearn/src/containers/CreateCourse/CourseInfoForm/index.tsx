@@ -163,11 +163,29 @@ const CourseInfoForm: React.FC<Props> = ({ step, setStep }) => {
             }}
           >
             {step === 1 && !!setStep ? (
-              <Button variant="contained" color="primary" onClick={() => setStep(2)}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setStep(2)}
+                sx={{
+                  fontWeight: 800,
+                  boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
+                  '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}` },
+                }}
+              >
                 Tiếp Tục
               </Button>
             ) : (
-              <Button type="submit" variant="contained" color="primary">
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{
+                  fontWeight: 800,
+                  boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
+                  '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}` },
+                }}
+              >
                 Tiếp Tục
               </Button>
             )}

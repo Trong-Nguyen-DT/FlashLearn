@@ -52,6 +52,7 @@ const LessonItem: React.FC<Props> = ({ lesson, index, learnProgress, courseId })
         onClick={handleClick}
         sx={{
           width: '600px',
+          height: '130px',
           background: 'transparent',
           justifyContent: 'center',
           boxShadow: 'none',
@@ -82,8 +83,9 @@ const LessonItem: React.FC<Props> = ({ lesson, index, learnProgress, courseId })
               borderRadius: 1000,
               p: 1,
               mx: 2,
-              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
               border: '1px solid #f1f1f1',
+              boxShadow: `0px 4px 0px ${COLOR_CODE.GREY_100}`,
+              '&:hover': { boxShadow: `0px 3px 0px ${COLOR_CODE.GREY_100}` },
             }}
           >
             <Image

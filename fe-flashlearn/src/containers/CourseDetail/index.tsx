@@ -2,14 +2,19 @@
 import { COLOR_CODE, IMAGES, NAVBAR_HEIGHT } from '@appConfig';
 import { BreadCrumbs, Image, Tabs } from '@components';
 import { Button, Rating, Stack, Typography, useMediaQuery } from '@mui/material';
-import { useGetCourseDetail, useGetMyLearningCourse, useGetProfile } from '@queries';
+import {
+  useGetCourseDetail,
+  useGetMyLearningCourse,
+  useGetProfile,
+  useGetStudents,
+} from '@queries';
+import { useJoinCourse } from '@queries/Student/useJoinCourse';
+import { Toastify } from '@services';
 import { useLocation, useParams } from 'react-router-dom';
 import LessonDetail from '../LessonDetail';
 import LessonList from '../LessonList';
-import { courseDetailBreadCrumb, courseTabs, studentTabs, teacherTabs } from './helpers';
-import { useJoinCourse } from '@queries/Student/useJoinCourse';
-import toastify from '@services/toastify';
 import StudentList from '../Student/StudentList';
+import { courseDetailBreadCrumb, courseTabs, studentTabs, teacherTabs } from './helpers';
 
 const CourseDetail = () => {
   const isMobileScreen = useMediaQuery('(max-width: 840px)');
@@ -28,10 +33,17 @@ const CourseDetail = () => {
 
   const { profile } = useGetProfile();
 
+  const { handleInvalidateStudentList } = useGetStudents();
+
   const { onJoinCourse } = useJoinCourse({
     onSuccess() {
-      toastify.success('Đăng ký khoá học thành công');
+      Toastify.success('Đăng ký khoá học thành công');
       handleInvalidateMyLearningCourseList();
+      handleInvalidateStudentList();
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError(error: any) {
+      Toastify.error(error.message?.[0]?.errorMessage);
     },
   });
 
@@ -50,7 +62,7 @@ const CourseDetail = () => {
       case 'lesson':
         return <LessonDetail />;
       case 'students':
-        return <StudentList isOwner={isOwner} />;
+        return <StudentList />;
       default:
         return <LessonList isOwner={isOwner} />;
     }
@@ -90,7 +102,16 @@ const CourseDetail = () => {
           <Typography>{courseDetail?.description}</Typography>
           <Stack display="block" mt={2}>
             {!isStudent && (
-              <Button variant="contained" onClick={handleLearn}>
+              <Button
+                variant="contained"
+                onClick={handleLearn}
+                sx={{
+                  width: 200,
+                  fontWeight: 800,
+                  boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
+                  '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}` },
+                }}
+              >
                 Bắt đầu học
               </Button>
             )}

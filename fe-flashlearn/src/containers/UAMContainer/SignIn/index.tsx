@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { COLOR_CODE, IMAGES } from '@appConfig';
 import { PATHS } from '@appConfig/paths';
 import { Input, Link, LoadingContainer } from '@components';
@@ -31,7 +32,9 @@ const SignIn = () => {
       navigate(PATHS.root);
       window.location.reload();
     },
-    onError: (error) => Toastify.error(error?.message),
+    onError(error: any) {
+      Toastify.error(error.message?.[0]?.errorMessage);
+    },
   });
 
   if (isLoading || !!AuthService.getTokenFromStorage()) {

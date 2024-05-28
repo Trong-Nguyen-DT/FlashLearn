@@ -1,25 +1,44 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Loading, Table } from '@components';
+import { DialogContext, DialogType, Loading, Table } from '@components';
 import EmptyTable from '@components/Table/EmptyTable';
 import { Button, Container, Stack, Typography } from '@mui/material';
-import { useGetStudents } from '@queries';
+import { StudentResponse, useGetStudents, useRemoveStudent } from '@queries';
 import { MUIDataTableOptions } from 'mui-datatables';
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { IoAdd } from 'react-icons/io5';
 import { useParams } from 'react-router-dom';
 import { allColumns } from './allColumns';
+import { COLOR_CODE } from '@appConfig';
+import AddStudentModal from '../AddStudentModal';
+import { Toastify } from '@services';
 
-type Props = {
-  isOwner: boolean;
-};
-
-const StudentList: React.FC<Props> = ({ isOwner }) => {
+const StudentList = () => {
   const { courseId } = useParams<{ courseId: string }>();
 
-  const { students, isFetching, page } = useGetStudents({ courseId });
+  const { students, isFetching, page, handleInvalidateStudentList } = useGetStudents({ courseId });
+
+  const { setDialogContent, openModal, closeModal } = useContext(DialogContext);
+
+  const { onDeleteStudent } = useRemoveStudent({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError(error: any) {
+      Toastify.error(error.message?.[0]?.errorMessage);
+    },
+    onSuccess() {
+      Toastify.success('Xóa học viên thành công');
+      handleInvalidateStudentList();
+      closeModal();
+    },
+  });
 
   const handleAdd = () => {
-    console.log('handleAdd');
+    setDialogContent({
+      type: DialogType.CONTENT_DIALOG,
+      data: <AddStudentModal courseId={courseId} />,
+      hideTitle: true,
+      maxWidth: 'md',
+    });
+    openModal();
   };
 
   const handleGetProductList = () => {};
@@ -36,17 +55,24 @@ const StudentList: React.FC<Props> = ({ isOwner }) => {
     [page],
   );
 
-  const columns = useMemo(() => allColumns({}), []);
+  const handleDelete = (row: StudentResponse) => {
+    setDialogContent({
+      type: DialogType.YESNO_DIALOG,
+      contentText: 'Bạn có chắc muốn xóa học viên này ra khỏi lóp học?',
+      hideTitle: true,
+      showIcon: true,
+      isWarning: true,
+      okText: 'Xác nhận',
+      cancelText: 'Hủy',
+      onOk: () => {
+        onDeleteStudent({ courseId, studentId: row.id });
+        closeModal();
+      },
+    });
+    openModal();
+  };
 
-  if (!isOwner) {
-    return (
-      <Stack width={'100%'} alignItems={'center'} pt={3}>
-        <Typography variant="body1" fontWeight={600}>
-          Bạn không có quyền xem trang này
-        </Typography>
-      </Stack>
-    );
-  }
+  const columns = useMemo(() => allColumns({ handleDelete }), []);
 
   if (isFetching) {
     return (
@@ -59,13 +85,24 @@ const StudentList: React.FC<Props> = ({ isOwner }) => {
   return (
     <Container maxWidth="lg">
       <Stack sx={{ mb: 2, mt: 6 }}>
-        <Typography variant="h3" fontWeight={800}>
+        <Typography variant="h3" fontWeight={800} fontSize={24}>
           Danh sách học viên
         </Typography>
       </Stack>
       <Stack alignItems="center" justifyContent="end" flexDirection="row">
         <Stack justifyContent="flex-end" direction="row" flexGrow={1} alignItems="center" gap={2}>
-          <Button variant="contained" color="primary" startIcon={<IoAdd />} onClick={handleAdd}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<IoAdd />}
+            onClick={handleAdd}
+            sx={{
+              width: 200,
+              fontWeight: 800,
+              boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
+              '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}` },
+            }}
+          >
             Thêm học viên
           </Button>
         </Stack>
@@ -77,7 +114,7 @@ const StudentList: React.FC<Props> = ({ isOwner }) => {
         data={students}
         tableOptions={tableOptions}
         columns={columns}
-        emptyComponent={<EmptyTable />}
+        emptyComponent={<EmptyTable title="Chưa có học sinh nào trong khóa học này." />}
       />
     </Container>
   );

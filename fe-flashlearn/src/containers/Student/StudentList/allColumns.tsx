@@ -1,12 +1,15 @@
-import { UserResponse } from '@queries';
-import { tableBodyRender } from '@utils';
-import { MUIDataTableColumn } from 'mui-datatables';
+import { COLOR_CODE } from '@appConfig';
+import { IconButton, Stack, Tooltip } from '@mui/material';
+import { StudentResponse, UserResponse } from '@queries';
+import { Callback, tableBodyRender } from '@utils';
+import { MUIDataTableColumn, MUIDataTableMeta } from 'mui-datatables';
+import { FaRegTrashAlt } from 'react-icons/fa';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type ColumnProps = {};
+type ColumnProps = {
+  handleDelete: Callback;
+};
 
-// eslint-disable-next-line no-empty-pattern
-export const allColumns = ({}: ColumnProps): MUIDataTableColumn[] => {
+export const allColumns = ({ handleDelete }: ColumnProps): MUIDataTableColumn[] => {
   const columns: MUIDataTableColumn[] = [
     {
       name: 'user',
@@ -35,63 +38,56 @@ export const allColumns = ({}: ColumnProps): MUIDataTableColumn[] => {
         customBodyRender: (value: UserResponse) => tableBodyRender(value.phone),
       },
     },
-
-    // {
-    //   name: '',
-    //   label: 'Actions',
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (
-    //       _value: string,
-    //       meta:
-    //         | MUIDataTableMeta
-    //         | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: ProductResponse[] }),
-    //     ) => {
-    //       const { tableData, rowIndex } = meta;
-    //       const rowData = tableData.at(rowIndex) as ProductResponse;
-    //       return (
-    //         <Stack flexDirection="row" justifyContent={'center'}>
-    //           <Tooltip title="View" arrow placement="top">
-    //             <IconButton
-    //               onClick={(event) => {
-    //                 event.stopPropagation();
-    //                 handleView(rowData);
-    //               }}
-    //             >
-    //               <IoEye color={COLOR_CODE.GREY_600} size={20} />
-    //             </IconButton>
-    //           </Tooltip>
-    //           {RoleService.isAdminRole() && (
-    //             <Tooltip title="Edit" arrow placement="top">
-    //               <IconButton
-    //                 onClick={(event) => {
-    //                   event.stopPropagation();
-    //                   handleEdit(rowData);
-    //                 }}
-    //               >
-    //                 <IoPencil color={COLOR_CODE.GREY_600} size={20} />
-    //               </IconButton>
-    //             </Tooltip>
-    //           )}
-    //           {RoleService.isAdminRole() && (
-    //             <Tooltip title="Delete" arrow placement="top">
-    //               <IconButton
-    //                 onClick={(event) => {
-    //                   event.stopPropagation();
-    //                   handleDelete(rowData);
-    //                 }}
-    //               >
-    //                 <IoTrashBin color={COLOR_CODE.GREY_600} size={20} />
-    //               </IconButton>
-    //             </Tooltip>
-    //           )}
-    //         </Stack>
-    //       );
-    //     },
-    //     setCellHeaderProps: () => ({ style: { textAlign: 'center' } }),
-    //   },
-    // },
+    {
+      name: 'xp',
+      label: 'Tổng XP',
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value: string) => tableBodyRender(value),
+      },
+    },
+    {
+      name: 'xp',
+      label: 'Quá trình học',
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value: string) => tableBodyRender(value),
+      },
+    },
+    {
+      name: '',
+      label: '',
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (
+          _value: string,
+          meta:
+            | MUIDataTableMeta
+            | (Omit<MUIDataTableMeta, 'tableData'> & { tableData: StudentResponse[] }),
+        ) => {
+          const { tableData, rowIndex } = meta;
+          const rowData = (tableData as StudentResponse[])?.[rowIndex];
+          return (
+            <Stack flexDirection="row" justifyContent={'center'}>
+              <Tooltip title="Delete" arrow placement="top">
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleDelete(rowData);
+                  }}
+                >
+                  <FaRegTrashAlt color={COLOR_CODE.DANGER} size={20} />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          );
+        },
+        setCellHeaderProps: () => ({ style: { textAlign: 'center' } }),
+      },
+    },
   ];
 
   return columns;

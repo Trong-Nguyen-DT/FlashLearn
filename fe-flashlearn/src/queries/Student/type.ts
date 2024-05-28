@@ -7,3 +7,13 @@ export interface StudentResponse {
   createAt: string;
   updateAt: string;
 }
+
+export interface AddStudentPayload {
+  emailStudents: string[];
+  courseId: string;
+}
+
+export interface RemoveStudentPayload {
+  studentId: number;
+  courseId: string;
+}

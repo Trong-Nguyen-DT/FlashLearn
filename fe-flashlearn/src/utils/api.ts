@@ -67,3 +67,10 @@ export interface PaginationResponseType<T> {
     };
   };
 }
+
+export interface ErrorResponseType {
+  cause: string;
+  errorCode: number;
+  errorMessage: string;
+  message: string;
+}

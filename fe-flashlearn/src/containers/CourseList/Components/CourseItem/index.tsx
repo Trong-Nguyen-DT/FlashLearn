@@ -3,10 +3,10 @@ import { IMAGES } from '@appConfig/images';
 import { PATHS } from '@appConfig/paths';
 import { DialogContext, DialogType, Image } from '@components';
 import { Button, Card, Stack, Tooltip, Typography } from '@mui/material';
-import { CourseResponse, useGetMyLearningCourse } from '@queries';
+import { CourseResponse, useGetMyLearningCourse, useGetStudents } from '@queries';
 import { useJoinCourse } from '@queries/Student/useJoinCourse';
 import { IRootState } from '@redux/store';
-import toastify from '@services/toastify';
+import { Toastify } from '@services';
 import { useContext } from 'react';
 import { FaRocket, FaStar, FaUser } from 'react-icons/fa6';
 import { useSelector } from 'react-redux';
@@ -21,11 +21,18 @@ const CourseItem = ({ course }: Props) => {
 
   const isStudent = courses?.some((myCourse) => myCourse.id === course?.id);
 
+  const { handleInvalidateStudentList } = useGetStudents();
+
   const { onJoinCourse } = useJoinCourse({
     onSuccess() {
-      toastify.success('Đăng ký khoá học thành công');
+      Toastify.success('Đăng ký khoá học thành công');
       handleInvalidateMyLearningCourseList();
+      handleInvalidateStudentList();
       navigate(`${PATHS.courses}/${course.id}`);
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError(error: any) {
+      Toastify.error(error.message?.[0]?.errorMessage);
     },
   });
 
@@ -135,6 +142,11 @@ const CourseItem = ({ course }: Props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   !isAuthenticated ? handleRequestLogin() : handleLearn();
+                }}
+                sx={{
+                  fontWeight: 800,
+                  boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
+                  '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}` },
                 }}
               >
                 {isStudent ? 'Xem chi tiết' : 'Đăng ký học'}

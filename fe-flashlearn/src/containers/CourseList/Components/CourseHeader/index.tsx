@@ -106,6 +106,12 @@ const CourseHeader = () => {
               e.stopPropagation();
               !isAuthenticated ? handleRequestLogin() : handleAddCourse();
             }}
+            sx={{
+              width: 200,
+              fontWeight: 800,
+              boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
+              '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}` },
+            }}
           >
             Tạo khóa học
           </Button>
