@@ -67,7 +67,7 @@ public class LearnServiceImpl implements LearnService {
 
     private List<QuestionLearn> createQuestionLearnNew(VocabularyOfLessonEntity entity, String typeLearn) {
         List<QuestionLearn> questionLearns = new ArrayList<>();
-        questionLearns.add(createMultipleChoiceQuestion(
+        questionLearns.add(createQuestion(
                 entity.getId(),
                 "MULTIPLE_CHOICE",
                 typeLearn,
@@ -76,7 +76,7 @@ public class LearnServiceImpl implements LearnService {
                 getRandomSimilarWords(entity.getVocabulary().getSimilarWords()),
                 true));
 
-        questionLearns.add(createMultipleChoiceQuestion(
+        questionLearns.add(createQuestion(
                 entity.getId(),
                 "MULTIPLE_CHOICE",
                 typeLearn,
@@ -85,7 +85,7 @@ public class LearnServiceImpl implements LearnService {
                 getRandomSimilarWords(entity.getVocabulary().getSimilarWords()),
                 false));
 
-        questionLearns.add(createMultipleChoiceQuestion(
+        questionLearns.add(createQuestion(
                 entity.getId(),
                 "LISTENING_TO_WORD",
                 typeLearn,
@@ -94,7 +94,7 @@ public class LearnServiceImpl implements LearnService {
                 getRandomSimilarWords(entity.getVocabulary().getSimilarWords()),
                 false));
 
-        questionLearns.add(createMultipleChoiceQuestion(
+        questionLearns.add(createQuestion(
                 entity.getId(),
                 "LISTENING_TO_WORD",
                 typeLearn,
@@ -103,7 +103,7 @@ public class LearnServiceImpl implements LearnService {
                 getRandomSimilarWords(entity.getVocabulary().getSimilarWords()),
                 true));
 
-        questionLearns.add(createMultipleChoiceQuestion(
+        questionLearns.add(createQuestion(
                 entity.getId(),
                 "WORD_TO_LISTENING",
                 typeLearn,
@@ -112,7 +112,7 @@ public class LearnServiceImpl implements LearnService {
                 getRandomSimilarWords(entity.getVocabulary().getSimilarWords()),
                 false));
 
-        questionLearns.add(createMultipleChoiceQuestion(
+        questionLearns.add(createQuestion(
                 entity.getId(),
                 "MULTIPLE_CHOICE",
                 typeLearn,
@@ -126,7 +126,7 @@ public class LearnServiceImpl implements LearnService {
 
     private List<QuestionLearn> createQuestionPractice(LearningVocabularyEntity entity, String typeLearn) {
         List<QuestionLearn> questionLearns = new ArrayList<>();
-        questionLearns.add(createMultipleChoiceQuestion(
+        questionLearns.add(createQuestion(
                 entity.getId(),
                 "MULTIPLE_CHOICE",
                 typeLearn,
@@ -135,7 +135,7 @@ public class LearnServiceImpl implements LearnService {
                 getRandomSimilarWords(entity.getVocabularyOfLesson().getVocabulary().getSimilarWords()),
                 true));
 
-        questionLearns.add(createMultipleChoiceQuestion(
+        questionLearns.add(createQuestion(
                 entity.getId(),
                 "MULTIPLE_CHOICE",
                 typeLearn,
@@ -144,7 +144,7 @@ public class LearnServiceImpl implements LearnService {
                 getRandomSimilarWords(entity.getVocabularyOfLesson().getVocabulary().getSimilarWords()),
                 false));
 
-        questionLearns.add(createMultipleChoiceQuestion(
+        questionLearns.add(createQuestion(
                 entity.getId(),
                 "LISTENING_TO_WORD",
                 typeLearn,
@@ -153,7 +153,7 @@ public class LearnServiceImpl implements LearnService {
                 getRandomSimilarWords(entity.getVocabularyOfLesson().getVocabulary().getSimilarWords()),
                 false));
 
-        questionLearns.add(createMultipleChoiceQuestion(
+        questionLearns.add(createQuestion(
                 entity.getId(),
                 "LISTENING_TO_WORD",
                 typeLearn,
@@ -162,7 +162,7 @@ public class LearnServiceImpl implements LearnService {
                 getRandomSimilarWords(entity.getVocabularyOfLesson().getVocabulary().getSimilarWords()),
                 true));
 
-        questionLearns.add(createMultipleChoiceQuestion(
+        questionLearns.add(createQuestion(
                 entity.getId(),
                 "WORD_TO_LISTENING",
                 typeLearn,
@@ -171,7 +171,7 @@ public class LearnServiceImpl implements LearnService {
                 getRandomSimilarWords(entity.getVocabularyOfLesson().getVocabulary().getSimilarWords()),
                 false));
 
-        questionLearns.add(createMultipleChoiceQuestion(
+        questionLearns.add(createQuestion(
                 entity.getId(),
                 "MULTIPLE_CHOICE",
                 typeLearn,
@@ -183,7 +183,7 @@ public class LearnServiceImpl implements LearnService {
         return questionLearns;
     }
 
-    private QuestionLearn createMultipleChoiceQuestion(
+    private QuestionLearn createQuestion(
             Long id,
             String typeQuestion,
             String typeLearn,
@@ -221,7 +221,7 @@ public class LearnServiceImpl implements LearnService {
     private String getRandomSentence(VocabularyOfLessonEntity vocabulary) {
         List<SentenceEntity> sentences = vocabulary.getVocabulary().getSentences();
         int randomIndex = random.nextInt(sentences.size());
-        return sentences.get(randomIndex).getSentence();
+        return sentences.get(randomIndex).getSentence() + " - " + sentences.get(randomIndex).getMeaning();
     }
 
 }
