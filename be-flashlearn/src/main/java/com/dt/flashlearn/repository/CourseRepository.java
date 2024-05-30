@@ -80,4 +80,8 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
         Optional<CourseEntity> findByIdAndDeletedFalse(Long id);
 
         Optional<CourseEntity> findByIdAndStatusAndDeletedFalse(Long id, String status);
+
+        Boolean existsByCodeAndDeletedFalse(String code);
+
+        Optional<CourseEntity> findByCodeAndDeletedFalse(String code);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 }

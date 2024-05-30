@@ -10,7 +10,6 @@ import lombok.Setter;
 public class QuestionLearn {
     private Long id;
     private String typeQuestion;
-    private String typeLearn;
     private String question;
     private List<VocabularyLearn> answers;
 }

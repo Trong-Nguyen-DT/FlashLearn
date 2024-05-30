@@ -39,4 +39,11 @@ public class ValidateData {
         throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
     }
 
+    public static String validateCode(String code){
+        if (code.length() == 6) {
+            return code.toUpperCase();
+        }
+        throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
+    }
+
 }

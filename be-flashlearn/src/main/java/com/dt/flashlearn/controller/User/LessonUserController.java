@@ -3,7 +3,6 @@ package com.dt.flashlearn.controller.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.model.request.LessonInput;
 import com.dt.flashlearn.model.response.ResponseError;

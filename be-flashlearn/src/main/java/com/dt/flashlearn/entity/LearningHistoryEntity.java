@@ -1,7 +1,6 @@
 package com.dt.flashlearn.entity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,10 +31,5 @@ public class LearningHistoryEntity {
     @ManyToOne
     @JoinColumn(name = "studentId")
     private StudentEntity student;
-    
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "vocabularyOfLessonId")
-    private VocabularyOfLessonEntity vocabularyOfLesson;
 
 }

@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class Course {
     private Long id;
+    private String code;
     private String name;
     private String description;
     private String image;

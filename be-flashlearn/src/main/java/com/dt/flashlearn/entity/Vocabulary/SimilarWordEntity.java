@@ -28,8 +28,6 @@ public class SimilarWordEntity {
     @NotBlank
     private String meaning;
 
-    private String audio;
-
     @NotNull
     @ManyToOne
     @JoinColumn(name = "vocabularyId")

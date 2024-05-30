@@ -8,7 +8,20 @@ import com.dt.flashlearn.model.Lesson;
 
 public class LessonConverter {
     
-    public static Lesson toModel(LessonEntity entity) {
+    public static Lesson toModel(LessonEntity entity, int totalVocabLearned) {
+        Lesson model = new Lesson();
+        model.setId(entity.getId());
+        model.setName(entity.getName());
+        model.setDescription(entity.getDescription());
+        model.setImage(entity.getImage() != null ? entity.getImage() : null);
+        model.setTotalVocabOfLesson(entity.getTotalVocabOfLesson());
+        model.setTotalVocabLearned(totalVocabLearned);
+        model.setCreateAt(entity.getCreateAt());
+        model.setUpdateAt(entity.getUpdateAt());
+        return model;
+    }
+
+    public static Lesson toModelLesson(LessonEntity entity) {
         Lesson model = new Lesson();
         model.setId(entity.getId());
         model.setName(entity.getName());

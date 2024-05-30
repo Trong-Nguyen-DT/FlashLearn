@@ -92,6 +92,26 @@ public class StudentServiceImpl implements StudentService {
         return new ResponseData(CourseConverter.toModel(courseRepository.save(courseEntity)));
     }
 
+    @Override
+    public ResponseData joinCourseByCode(String code) {
+        UserEntity userEntity = queryService.getUserEntity();
+        CourseEntity courseEntity = courseRepository.findByCodeAndDeletedFalse(code)
+                .orElseThrow(
+                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+
+        courseEntity.getStudents().stream().filter(student -> student.getUser().getId().equals(userEntity.getId()))
+                .findFirst().ifPresentOrElse(
+                        student -> {
+                            if (student.isDeleted()) {
+                                student.setDeleted(false);
+                                studentRepository.save(student);
+                            }
+                        },
+                        () -> courseEntity.getStudents().add(createStudent(userEntity, courseEntity)));
+        courseEntity.setTotalStudent(calculatorStudent(courseEntity));
+        return new ResponseData(CourseConverter.toModel(courseRepository.save(courseEntity)));
+    }
+
     private StudentEntity createStudent(UserEntity userEntity, CourseEntity courseEntity) {
         LocalDateTime now = LocalDateTime.now();
         StudentEntity studentEntity = new StudentEntity();
@@ -100,6 +120,7 @@ public class StudentServiceImpl implements StudentService {
         studentEntity.setCreateAt(now);
         studentEntity.setUpdateAt(now);
         studentEntity.setRating(0);
+        studentEntity.setExperienceStudent(0L);
         studentEntity.setDeleted(false);
         return studentRepository.save(studentEntity);
     }

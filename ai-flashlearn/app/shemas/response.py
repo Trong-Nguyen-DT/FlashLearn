@@ -18,5 +18,5 @@ class Response(BaseModel):
     error: str = Field(description="If this word has no meaning in the English language, return 'Từ này không có nghĩa trong tiếng Anh'")
     originalWord: OriginalWord = Field(description="The original word and its meaning")
     similarWord: list[SimilarWord] = Field(description="A list of similar words and their meanings")
-    sentence: list[Sentence] = Field(description="A list of sentences containing the original word and their meanings")
+    sentences: list[Sentence] = Field(description="A list of sentences containing the original word and their meanings")
     

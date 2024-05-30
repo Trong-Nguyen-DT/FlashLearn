@@ -7,12 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Student {
+public class LearningVocabulary {
     private Long id;
-    private User user;
-    private Course course;
-    private int rating;
-    private Long experience;
+    private Vocabulary vocabulary;
+    private String image;
+    private String meaning;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 }
