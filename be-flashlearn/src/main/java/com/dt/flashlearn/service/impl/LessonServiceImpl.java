@@ -37,19 +37,26 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public ResponseData getAllLessonByCourse(Long courseId) {
         CourseEntity courseEntity = courseRepository.findByIdAndDeletedFalse(courseId)
-                .orElseThrow(() -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+                .orElseThrow(
+                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
 
         CourseValidate.validateCoursePrivate(courseEntity);
         return new ResponseData(LessonConverter
-                    .convertToObjects(queryService.getAllLessonEntityByCourseEntity(courseEntity).stream().map(LessonConverter::toModel).toList()));
-        
+                .convertToObjects(queryService.getAllLessonEntityByCourseEntity(courseEntity).stream()
+                .map(lessonEntity -> LessonConverter.toModel(lessonEntity, calculatorVocabLearned(lessonEntity)))
+                .toList()));
+
+    }
+
+    private int calculatorVocabLearned(LessonEntity lessonEntity) {
+        return queryService.getVocabLearnedByLessonEntity(lessonEntity);
     }
 
     @Override
     public ResponseData getLessonById(Long lessonId) {
         LessonEntity lessonEntity = queryService.getLessonEntityById(lessonId);
         CourseValidate.validateCoursePrivate(lessonEntity.getCourse());
-        return createResponseData(lessonEntity);
+        return new ResponseData(LessonConverter.toModel(lessonEntity, calculatorVocabLearned(lessonEntity)));
     }
 
     @Override
@@ -59,7 +66,9 @@ public class LessonServiceImpl implements LessonService {
         LessonEntity lessonEntity = new LessonEntity();
         lessonEntity.setName(input.getName());
         lessonEntity.setDescription(input.getDescription());
-        lessonEntity.setImage(input.getImage() != null ? imageService.upload(input.getImage(), TypeImageConstants.LESSON_IMAGE) : null);
+        lessonEntity.setImage(
+                input.getImage() != null ? imageService.upload(input.getImage(), TypeImageConstants.LESSON_IMAGE)
+                        : null);
         lessonEntity.setTotalVocabOfLesson(0L);
         lessonEntity.setCourse(courseEntity);
         lessonEntity.setCreateAt(now);
@@ -91,6 +100,6 @@ public class LessonServiceImpl implements LessonService {
     }
 
     private ResponseData createResponseData(LessonEntity lessonEntity) {
-        return new ResponseData(LessonConverter.toModel(lessonEntity));
+        return new ResponseData(LessonConverter.toModelLesson(lessonEntity));
     }
 }

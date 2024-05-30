@@ -22,11 +22,12 @@ public class AIServiceImpl implements AIService {
     private RestTemplate restTemplate;
 
     @Override
-    public AIResponse generateSimilarWord(String word) {
+    public AIResponse generateSimilarWord(String word, String partOfSpeech) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         VocabularyRequest input = new VocabularyRequest();
         input.setInput(word);
+        input.setPart_of_speech(partOfSpeech);
         HttpEntity<VocabularyRequest> requestEntity = new HttpEntity<>(input, headers);
 
         ResponseEntity<AIResponse> responseEntity = restTemplate.exchange(

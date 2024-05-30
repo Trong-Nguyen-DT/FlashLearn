@@ -11,8 +11,12 @@ public interface StudentService {
 
     ResponseData joinCourse(Long courseId);
 
+    ResponseData joinCourseByCode(String validateCode);
+
     ResponseData removeStudent(Long courseId, Long studentId);
 
     ResponseData leaveCourse(Long courseId);
+
+    
     
 }

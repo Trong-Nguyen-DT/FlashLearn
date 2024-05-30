@@ -12,6 +12,7 @@ public class StudentConverter {
         model.setId(entity.getId());
         model.setUser(UserConverter.toModel(entity.getUser()));
         model.setRating(entity.getRating());
+        model.setExperience(entity.getExperienceStudent());
         model.setCreateAt(entity.getCreateAt());
         model.setUpdateAt(entity.getUpdateAt());
         return model;

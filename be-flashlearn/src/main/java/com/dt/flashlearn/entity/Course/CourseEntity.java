@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -25,12 +26,18 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "courses")
+@Table(name = "courses", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {
+            "code"
+    })
+})
 public class CourseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String code;
 
     @NotBlank
     private String name;

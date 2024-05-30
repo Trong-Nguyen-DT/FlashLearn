@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dt.flashlearn.exception.MessageException;
+import com.dt.flashlearn.model.request.LearnInput;
 import com.dt.flashlearn.model.response.ResponseError;
 import com.dt.flashlearn.service.LearnService;
 import com.dt.flashlearn.service.component.ResponseHandler;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
@@ -35,6 +38,15 @@ public class LearnController {
             }
             return ResponseEntity.ok(responseHandler
                     .createSuccessResponse(learnService.getVocabularyOfLessonLearn(lessonId, studyCount)));
+        } catch (MessageException e) {
+            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
+        }
+    }
+
+    @PostMapping("{lessonId}")
+    public ResponseEntity<?> learnVocabulary(@PathVariable Long lessonId, @RequestBody LearnInput input) {
+        try {
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(learnService.learnVocabulary(lessonId, input)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }

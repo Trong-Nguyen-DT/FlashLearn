@@ -9,6 +9,7 @@ import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
 import com.dt.flashlearn.model.SimilarWord;
 import com.dt.flashlearn.model.Vocabulary;
 import com.dt.flashlearn.model.VocabularyOfLesson;
+import com.dt.flashlearn.model.response.learn.VocabularyReponse;
 
 public class VocabularyConverter {
 
@@ -17,7 +18,6 @@ public class VocabularyConverter {
         model.setId(entity.getId());
         model.setWord(entity.getWord());
         model.setMeaning(entity.getMeaning());
-        model.setAudio(entity.getAudio());
         model.setPartOfSpeech(entity.getPartOfSpeech());
         model.setCreateAt(entity.getCreateAt());
         model.setUpdateAt(entity.getUpdateAt());
@@ -35,12 +35,21 @@ public class VocabularyConverter {
         return model;
     }
 
+    public static VocabularyReponse vocabularyOfLessonToVocabularyReponse(VocabularyOfLessonEntity entity) {
+        VocabularyReponse response = new VocabularyReponse();
+        response.setId(entity.getId());
+        response.setWord(entity.getVocabulary().getWord());
+        response.setMeaning(entity.getMeaning());
+        response.setImage(entity.getImage() != null ? entity.getImage() : null);
+        response.setPartOfSpeech(entity.getVocabulary().getPartOfSpeech());
+        return response;
+    }
+
     public static SimilarWord similarVocabularyToModel(SimilarWordEntity entity) {
         SimilarWord model = new SimilarWord();
         model.setId(entity.getId());
         model.setWord(entity.getWord());
         model.setMeaning(entity.getMeaning());
-        model.setAudio(entity.getAudio());
         model.setCreateAt(entity.getCreateAt());
         model.setUpdateAt(entity.getUpdateAt());
         return model;
@@ -60,18 +69,6 @@ public class VocabularyConverter {
             objects.add(vocabulary);
         }
         return objects;
-    }
-
-    public static Vocabulary vocabularyOfLessonToVocabulary(VocabularyOfLessonEntity entity) {
-        Vocabulary vocabulary = new Vocabulary();
-        vocabulary.setId(entity.getId());
-        vocabulary.setWord(entity.getVocabulary().getWord());
-        vocabulary.setMeaning(entity.getVocabulary().getMeaning());
-        vocabulary.setAudio(entity.getVocabulary().getAudio());
-        vocabulary.setPartOfSpeech(entity.getVocabulary().getPartOfSpeech());
-        vocabulary.setCreateAt(entity.getVocabulary().getCreateAt());
-        vocabulary.setUpdateAt(entity.getVocabulary().getUpdateAt());
-        return vocabulary;
     }
     
 }

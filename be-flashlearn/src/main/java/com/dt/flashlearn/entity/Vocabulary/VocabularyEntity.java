@@ -30,8 +30,6 @@ public class VocabularyEntity {
     @NotBlank
     private String meaning;
 
-    private String audio;
-
     @NotBlank
     private String partOfSpeech;
 

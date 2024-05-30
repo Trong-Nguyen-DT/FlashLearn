@@ -1,6 +1,6 @@
 package com.dt.flashlearn.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +9,7 @@ import lombok.Setter;
 @Setter
 public class LearningHistory {
     private Long id;
-    private LocalDateTime learnAt;
-    private Integer experience;
-    private boolean correct;
-    private Student student;
-    private VocabularyOfLesson vocabularyOfLesson;
+    private LocalDate learnAt;
+    private Long experience;
+    private String learnType;
 }

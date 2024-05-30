@@ -8,6 +8,7 @@ import com.dt.flashlearn.model.request.AddStudentInput;
 import com.dt.flashlearn.model.response.ResponseError;
 import com.dt.flashlearn.service.StudentService;
 import com.dt.flashlearn.service.component.ResponseHandler;
+import com.dt.flashlearn.validate.ValidateData;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,6 +58,15 @@ public class StudentController {
     public ResponseEntity<?> joinCourse(@PathVariable Long courseId) {
         try {
             return ResponseEntity.ok(responseHandler.createSuccessResponse(studentService.joinCourse(courseId)));
+        } catch (MessageException e) {
+            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
+        }
+    }
+
+    @PutMapping()
+    public ResponseEntity<?> joinCourseByCode(@RequestParam(required = true) String code) {
+        try {
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(studentService.joinCourseByCode(ValidateData.validateCode(code))));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }

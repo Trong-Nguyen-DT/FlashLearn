@@ -29,6 +29,15 @@ public class CourseValidate {
         }
     }
 
+    public static void validateExistStudent(CourseEntity entity) {
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        boolean isStudent = entity.getStudents().stream()
+                .anyMatch(student -> student.getUser().getEmail().equals(currentUserEmail));
+        if (!isStudent) {
+            throw new MessageException(ErrorConstants.UNAUTHORIZED_MESSAGE, ErrorConstants.UNAUTHORIZED_CODE);
+        }
+    }
+
     public static String parseStatus(String status) {
         if (status.equals("null")) {
             return null;

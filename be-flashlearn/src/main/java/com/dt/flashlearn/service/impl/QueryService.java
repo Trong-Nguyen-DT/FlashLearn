@@ -85,6 +85,13 @@ public class QueryService {
         return authentication;
     }
 
+    protected StudentEntity getStudentEntity(LessonEntity lessonEntity) {
+        return lessonEntity.getCourse().getStudents().stream()
+                .filter(student -> student.getUser().getEmail().equals(getAuthentication().getName())).findFirst()
+                .orElseThrow(
+                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+    }
+
     protected void throwUnauthorizedException() {
         throw new MessageException(ErrorConstants.UNAUTHORIZED_MESSAGE, ErrorConstants.UNAUTHORIZED_CODE);
     }
@@ -129,5 +136,26 @@ public class QueryService {
         }
         return filteredVocabularies;
 
+    }
+
+    public LearningVocabularyEntity getLearningVocabularyEntityByStudentAndVocabularyOfLesson(
+            StudentEntity studentEntity,
+            VocabularyOfLessonEntity vocabularyOfLessonEntity) {
+        return studentEntity.getLearningVocabularies().stream()
+                .filter(vocabulary -> vocabulary.getVocabularyOfLesson().getId()
+                        .equals(vocabularyOfLessonEntity.getId()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public int getVocabLearnedByLessonEntity(LessonEntity lessonEntity) {
+        StudentEntity studentEntity = getStudentEntityByLesson(lessonEntity);
+        if (studentEntity.getLearningVocabularies() == null || studentEntity.getLearningVocabularies().isEmpty()) {
+            return 0;
+        }
+        return (int) studentEntity.getLearningVocabularies().stream()
+                .filter(vocabulary -> vocabulary.getVocabularyOfLesson().getLesson().getId()
+                        .equals(lessonEntity.getId()))
+                .count();
     }
 }

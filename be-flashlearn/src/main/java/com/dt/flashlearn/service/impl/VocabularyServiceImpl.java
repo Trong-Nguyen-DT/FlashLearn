@@ -60,7 +60,7 @@ public class VocabularyServiceImpl implements VocabularyService {
             throw new MessageException(ErrorConstants.VOCABULARY_EXIST_MESSAGE,
                         ErrorConstants.VOCABULARY_EXIST_CODE);
         } else {
-            AIResponse aiResponse = aiService.generateSimilarWord(input.getWord());
+            AIResponse aiResponse = aiService.generateSimilarWord(input.getWord(), input.getPartOfSpeech());
             if (aiResponse == null) {
                 throw new MessageException(ErrorConstants.SERVER_ERROR_MESSAGE, ErrorConstants.SERVER_ERROR_CODE);
             }

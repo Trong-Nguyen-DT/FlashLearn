@@ -11,7 +11,6 @@ public class SimilarWord {
     private Long id;
     private String word;
     private String meaning;
-    private String audio;
     private Vocabulary vocabulary;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

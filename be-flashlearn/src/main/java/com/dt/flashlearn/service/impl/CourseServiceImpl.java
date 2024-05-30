@@ -1,6 +1,7 @@
 package com.dt.flashlearn.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,14 +38,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ResponseData getAllCoursePublic(int page, int perPage,
-                                            String searchText,
-                                            int rating,
-                                            int startCount, int endCount,
-                                            String orderBy, String sortBy) {
+            String searchText,
+            int rating,
+            int startCount, int endCount,
+            String orderBy, String sortBy) {
         Page<CourseEntity> courses;
         String status = CourseStatus.PUBLIC.name();
         if (OrderByConstants.SORT_BY_DESC.equalsIgnoreCase(sortBy.toUpperCase())) {
-            courses = courseRepository.findAllCourseDesc(searchText, rating, startCount, endCount, null, status, orderBy,
+            courses = courseRepository.findAllCourseDesc(searchText, rating, startCount, endCount, null, status,
+                    orderBy,
                     PageRequest.of(page - 1, perPage));
         } else {
             courses = courseRepository.findAllCourseAsc(searchText, rating, startCount, endCount, null, status, orderBy,
@@ -59,18 +61,20 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ResponseData getAllMyCourse(int page, int perPage,
-                                        String searchText,
-                                        int rating,
-                                        int startCount, int endCount,
-                                        String status,
-                                        String orderBy, String sortBy) {
+            String searchText,
+            int rating,
+            int startCount, int endCount,
+            String status,
+            String orderBy, String sortBy) {
         Page<CourseEntity> courses;
         UserEntity userEntity = queryService.getUserEntity();
         if (OrderByConstants.SORT_BY_DESC.equalsIgnoreCase(sortBy.toUpperCase())) {
-            courses = courseRepository.findAllCourseDesc(searchText, rating, startCount, endCount, userEntity, status, orderBy,
+            courses = courseRepository.findAllCourseDesc(searchText, rating, startCount, endCount, userEntity, status,
+                    orderBy,
                     PageRequest.of(page - 1, perPage));
         } else {
-            courses = courseRepository.findAllCourseAsc(searchText, rating, startCount, endCount, userEntity, status, orderBy,
+            courses = courseRepository.findAllCourseAsc(searchText, rating, startCount, endCount, userEntity, status,
+                    orderBy,
                     PageRequest.of(page - 1, perPage));
         }
         return new ResponseData(
@@ -83,7 +87,8 @@ public class CourseServiceImpl implements CourseService {
     public ResponseData getAllMyCourseStudy() {
         UserEntity userEntity = queryService.getUserEntity();
         return new ResponseData(
-                CourseConverter.convertToObjects(courseRepository.findAllCourseByStudents(userEntity).stream().map(CourseConverter::toModel).toList()));
+                CourseConverter.convertToObjects(courseRepository.findAllCourseByStudents(userEntity).stream()
+                        .map(CourseConverter::toModel).toList()));
     }
 
     @Override
@@ -92,7 +97,9 @@ public class CourseServiceImpl implements CourseService {
         CourseEntity courseEntity = new CourseEntity();
         courseEntity.setName(input.getName());
         courseEntity.setDescription(input.getDescription());
-        courseEntity.setImage(input.getImage() != null ? imageService.upload(input.getImage(), TypeImageConstants.COURSE_IMAGE) : null);
+        courseEntity.setImage(
+                input.getImage() != null ? imageService.upload(input.getImage(), TypeImageConstants.COURSE_IMAGE)
+                        : null);
         courseEntity.setStatus(input.getStatus());
         courseEntity.setAvgRating(0);
         courseEntity.setTotalVocal(0L);
@@ -100,11 +107,29 @@ public class CourseServiceImpl implements CourseService {
         courseEntity.setCreateAt(now);
         courseEntity.setUpdateAt(now);
         courseEntity.setOwner(queryService.getUserEntity());
+        courseEntity.setCode(generateUniqueCourseCode());
         courseEntity.setDeleted(false);
         return createResponseData(courseRepository.save(courseEntity));
     }
 
-    
+    private String generateUniqueCourseCode() {
+        String courseCode;
+        do {
+            courseCode = generateRandomUpperCaseString(6);
+        } while (courseRepository.existsByCodeAndDeletedFalse(courseCode));
+        return courseCode;
+    }
+
+    private String generateRandomUpperCaseString(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        StringBuilder result = new StringBuilder(length);
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
+            result.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return result.toString();
+    }
+
     @Override
     public ResponseData updateCourse(CourseInput input) {
         CourseEntity courseEntity = queryService.getCourseEntityById(input.getId());
@@ -130,8 +155,9 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ResponseData getCourseById(Long id) {
         CourseEntity courseEntity = courseRepository.findByIdAndDeletedFalse(id)
-                .orElseThrow(() -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
-        
+                .orElseThrow(
+                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+
         CourseValidate.validateCoursePrivate(courseEntity);
         return createResponseData(courseRepository.save(courseEntity));
     }

@@ -39,6 +39,7 @@ public class StudentEntity {
     private CourseEntity course;
 
     private int rating;
+    private Long experienceStudent;
 
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

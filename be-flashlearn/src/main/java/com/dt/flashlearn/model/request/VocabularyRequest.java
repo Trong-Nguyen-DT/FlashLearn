@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class VocabularyRequest {
     private String input;
+    private String part_of_speech;
 }
