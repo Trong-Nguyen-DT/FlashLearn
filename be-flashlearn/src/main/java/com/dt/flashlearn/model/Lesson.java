@@ -12,6 +12,7 @@ public class Lesson {
     private String name;
     private String description;
     private String image;
+    private boolean learned;
     private Long totalVocabOfLesson;
     private int totalVocabLearned;
     private LocalDateTime createAt;

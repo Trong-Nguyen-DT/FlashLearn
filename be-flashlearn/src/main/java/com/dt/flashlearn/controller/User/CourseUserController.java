@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.model.request.CourseInput;
+import com.dt.flashlearn.model.request.RatingCourseInput;
 import com.dt.flashlearn.model.response.ResponseError;
 import com.dt.flashlearn.service.CourseService;
 import com.dt.flashlearn.service.component.ResponseHandler;
@@ -20,9 +21,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -89,6 +93,15 @@ public class CourseUserController {
             ValidateData.validateNotNull(input.getId());
             input.setStatus(CourseValidate.parseStatus(input.getStatus()));
             return ResponseEntity.ok(responseHandler.createSuccessResponse(courseService.updateCourse(input)));
+        } catch (MessageException e) {
+            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
+        }
+    }
+
+    @PatchMapping()
+    public ResponseEntity<?> ratingCourse(@Valid @RequestBody RatingCourseInput input) {
+        try {
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(courseService.ratingCourse(input)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }

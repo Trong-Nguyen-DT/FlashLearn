@@ -20,6 +20,7 @@ import com.dt.flashlearn.entity.Course.CourseEntity;
 import com.dt.flashlearn.entity.User.UserEntity;
 import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
 import com.dt.flashlearn.exception.MessageException;
+import com.dt.flashlearn.repository.CourseRepository;
 import com.dt.flashlearn.repository.LessonRepository;
 import com.dt.flashlearn.repository.UserRepository;
 import com.dt.flashlearn.repository.VocabularyOfLessonRepository;
@@ -28,6 +29,9 @@ import com.dt.flashlearn.validate.CourseValidate;
 
 @Service
 public class QueryService {
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -42,6 +46,12 @@ public class QueryService {
     private VocabularyOfLessonRepository vocabularyOfLessonRepository;
 
     protected CourseEntity getCourseEntityById(Long id) {
+        return courseRepository.findByIdAndDeletedFalse(id)
+                .orElseThrow(
+                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+    }
+
+    protected CourseEntity getCourseEntityOnwerById(Long id) {
         return getUserEntity()
                 .getCourses()
                 .stream()
@@ -85,8 +95,8 @@ public class QueryService {
         return authentication;
     }
 
-    protected StudentEntity getStudentEntity(LessonEntity lessonEntity) {
-        return lessonEntity.getCourse().getStudents().stream()
+    protected StudentEntity getStudentEntity(CourseEntity courseEntity) {
+        return courseEntity.getStudents().stream()
                 .filter(student -> student.getUser().getEmail().equals(getAuthentication().getName())).findFirst()
                 .orElseThrow(
                         () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
@@ -102,16 +112,9 @@ public class QueryService {
                         () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
     }
 
-    public StudentEntity getStudentEntityByLesson(LessonEntity lessonEntity) {
-        return lessonEntity.getCourse().getStudents().stream()
-                .filter(student -> student.getUser().getEmail().equals(getAuthentication().getName())).findFirst()
-                .orElseThrow(
-                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
-    }
-
     public List<LearningVocabularyEntity> getLearningVocabularyEntityByStudent(LessonEntity lessonEntity, int count) {
         LocalDate today = LocalDate.now();
-        StudentEntity studentEntity = getStudentEntityByLesson(lessonEntity);
+        StudentEntity studentEntity = getStudentEntity(lessonEntity.getCourse());
         List<LearningVocabularyEntity> learningVocabularies = studentEntity.getLearningVocabularies();
         if (learningVocabularies == null || learningVocabularies.isEmpty()) {
             return new ArrayList<>();
@@ -149,7 +152,7 @@ public class QueryService {
     }
 
     public int getVocabLearnedByLessonEntity(LessonEntity lessonEntity) {
-        StudentEntity studentEntity = getStudentEntityByLesson(lessonEntity);
+        StudentEntity studentEntity = getStudentEntity(lessonEntity.getCourse());
         if (studentEntity.getLearningVocabularies() == null || studentEntity.getLearningVocabularies().isEmpty()) {
             return 0;
         }

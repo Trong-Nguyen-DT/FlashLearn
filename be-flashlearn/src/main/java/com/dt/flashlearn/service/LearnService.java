@@ -7,6 +7,10 @@ public interface LearnService {
 
     ResponseData getVocabularyOfLessonLearn(Long lessonId, int studyCount);
 
+    ResponseData getVocabularyOfLessonPractice(Long lessonId);
+
     ResponseData learnVocabulary(Long lessonId, LearnInput input);
-    
+
+    ResponseData practiceVocabulary(Long lessonId, LearnInput input);
+
 }

@@ -12,14 +12,17 @@ import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.constant.OrderByConstants;
 import com.dt.flashlearn.constant.TypeImageConstants;
 import com.dt.flashlearn.converter.CourseConverter;
+import com.dt.flashlearn.entity.StudentEntity;
 import com.dt.flashlearn.entity.Course.CourseEntity;
 import com.dt.flashlearn.entity.Course.CourseStatus;
 import com.dt.flashlearn.entity.User.UserEntity;
 import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.model.request.CourseInput;
+import com.dt.flashlearn.model.request.RatingCourseInput;
 import com.dt.flashlearn.model.response.ResponseData;
 import com.dt.flashlearn.model.response.ResponsePage;
 import com.dt.flashlearn.repository.CourseRepository;
+import com.dt.flashlearn.repository.StudentRepository;
 import com.dt.flashlearn.service.CourseService;
 import com.dt.flashlearn.service.component.ImageService;
 import com.dt.flashlearn.validate.CourseValidate;
@@ -29,6 +32,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     @Autowired
     private ImageService imageService;
@@ -132,7 +138,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ResponseData updateCourse(CourseInput input) {
-        CourseEntity courseEntity = queryService.getCourseEntityById(input.getId());
+        CourseEntity courseEntity = queryService.getCourseEntityOnwerById(input.getId());
         courseEntity.setName(input.getName());
         courseEntity.setDescription(input.getDescription());
         courseEntity.setStatus(input.getStatus());
@@ -146,7 +152,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ResponseData deleteCourse(Long id) {
-        CourseEntity courseEntity = queryService.getCourseEntityById(id);
+        CourseEntity courseEntity = queryService.getCourseEntityOnwerById(id);
         courseEntity.setDeleted(true);
         courseRepository.save(courseEntity);
         return createResponseData(courseRepository.save(courseEntity));
@@ -160,6 +166,33 @@ public class CourseServiceImpl implements CourseService {
 
         CourseValidate.validateCoursePrivate(courseEntity);
         return createResponseData(courseRepository.save(courseEntity));
+    }
+
+    @Override
+    public ResponseData ratingCourse(RatingCourseInput input) {
+        CourseEntity courseEntity = queryService.getCourseEntityById(input.getId());
+        StudentEntity studentEntity = queryService.getStudentEntity(courseEntity);
+        double avgRatingNew = calculatorRatingCourse(courseEntity, input.getRating(), studentEntity);
+        courseEntity.setAvgRating(avgRatingNew);
+        return createResponseData(courseRepository.save(courseEntity));
+
+    }
+
+    private double calculatorRatingCourse(CourseEntity courseEntity, int rating, StudentEntity studentEntity) {
+        double avgRating = courseEntity.getAvgRating();
+        long totalStudentRated = courseEntity.getStudents().stream()
+                .filter(student -> student.getRating() > 0)
+                .count();
+        if (studentEntity.getRating() > 0) {
+            avgRating = (avgRating * totalStudentRated - studentEntity.getRating() + rating) / totalStudentRated;
+        } else {
+            avgRating = (avgRating * totalStudentRated + rating) / (totalStudentRated + 1);
+        }
+        studentEntity.setRating(rating);
+        studentRepository.save(studentEntity);
+        return avgRating;
+
+
     }
 
     private ResponseData createResponseData(CourseEntity courseEntity) {

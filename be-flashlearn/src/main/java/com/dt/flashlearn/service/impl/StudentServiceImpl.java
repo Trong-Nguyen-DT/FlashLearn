@@ -49,7 +49,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseData addStudent(AddStudentInput input) {
-        CourseEntity courseEntity = queryService.getCourseEntityById(input.getCourseId());
+        CourseEntity courseEntity = queryService.getCourseEntityOnwerById(input.getCourseId());
         for (String email : input.getEmailStudents()) {
             courseEntity.getStudents().stream().filter(student -> student.getUser().getEmail().equals(email))
                     .findFirst().ifPresentOrElse(
@@ -127,7 +127,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseData removeStudent(Long courseId, Long studentId) {
-        CourseEntity courseEntity = queryService.getCourseEntityById(courseId);
+        CourseEntity courseEntity = queryService.getCourseEntityOnwerById(courseId);
         StudentEntity studentEntity = courseEntity.getStudents().stream()
                 .filter(student -> student.getId().equals(studentId) && !student.isDeleted()).findFirst()
                 .orElseThrow(

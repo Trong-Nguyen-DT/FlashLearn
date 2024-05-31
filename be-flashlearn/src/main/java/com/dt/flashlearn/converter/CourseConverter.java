@@ -11,6 +11,7 @@ public class CourseConverter {
     public static Course toModel(CourseEntity entity){
         Course model = new Course();
         model.setId(entity.getId());
+        model.setCode(entity.getCode());
         model.setName(entity.getName());
         model.setDescription(entity.getDescription());
         model.setImage(entity.getImage() != null ? entity.getImage() : null);
