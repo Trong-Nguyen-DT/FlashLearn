@@ -1,7 +1,9 @@
 package com.dt.flashlearn.service.impl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.entity.LearningVocabularyEntity;
 import com.dt.flashlearn.entity.LessonEntity;
+import com.dt.flashlearn.entity.OtpEntity;
 import com.dt.flashlearn.entity.StudentEntity;
 import com.dt.flashlearn.entity.VocabularyOfLessonEntity;
 import com.dt.flashlearn.entity.Course.CourseEntity;
@@ -22,6 +25,7 @@ import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
 import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.repository.CourseRepository;
 import com.dt.flashlearn.repository.LessonRepository;
+import com.dt.flashlearn.repository.OtpRepository;
 import com.dt.flashlearn.repository.UserRepository;
 import com.dt.flashlearn.repository.VocabularyOfLessonRepository;
 import com.dt.flashlearn.repository.VocabularyRepository;
@@ -44,6 +48,30 @@ public class QueryService {
 
     @Autowired
     private VocabularyOfLessonRepository vocabularyOfLessonRepository;
+
+    @Autowired
+    private OtpRepository otpRepository;
+
+    protected boolean checkEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    protected void validateOtp(String email, String otp, String encodeOtp) {
+        OtpEntity otpEntity = otpRepository.findByOtp(decodeOtp(encodeOtp));
+        if (otpEntity == null) {
+            throw new MessageException(ErrorConstants.OTP_NOT_FOUND_MESSAGE, ErrorConstants.OTP_NOT_FOUND_CODE);
+        }
+        if (!otpEntity.getOtpExpiration().isAfter(LocalDateTime.now())) {
+            throw new MessageException(ErrorConstants.OTP_EXPIRED_MESSAGE, ErrorConstants.OTP_EXPIRED_CODE);
+        }
+        if (!otpEntity.getEmail().equals(email)) {
+            throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
+        }
+        if (!otpEntity.getOtp().equals(otp)) {
+            throw new MessageException(ErrorConstants.OTP_INCORRECT_MESSAGE, ErrorConstants.OTP_INCORRECT_CODE);
+        }
+        otpRepository.delete(otpEntity);
+    }
 
     protected CourseEntity getCourseEntityById(Long id) {
         return courseRepository.findByIdAndDeletedFalse(id)
@@ -160,5 +188,15 @@ public class QueryService {
                 .filter(vocabulary -> vocabulary.getVocabularyOfLesson().getLesson().getId()
                         .equals(lessonEntity.getId()))
                 .count();
+    }
+
+    protected String decodeOtp(String str) {
+        // base64 to uf8
+        return new String(Base64.getDecoder().decode(str));
+    }
+
+    protected String encodeOtp(String str) {
+        // utf8 to base64
+        return new String(Base64.getEncoder().encode(str.getBytes()));
     }
 }

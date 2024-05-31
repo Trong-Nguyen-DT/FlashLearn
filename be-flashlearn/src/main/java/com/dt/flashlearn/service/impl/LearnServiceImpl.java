@@ -23,7 +23,6 @@ import com.dt.flashlearn.entity.Vocabulary.TypeLearn;
 import com.dt.flashlearn.entity.Vocabulary.TypeQuestion;
 import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.model.request.LearnInput;
-import com.dt.flashlearn.model.request.LearningVocabularyInput;
 import com.dt.flashlearn.model.response.ResponseData;
 import com.dt.flashlearn.model.response.learn.LearnResponse;
 import com.dt.flashlearn.model.response.learn.QuestionLearn;

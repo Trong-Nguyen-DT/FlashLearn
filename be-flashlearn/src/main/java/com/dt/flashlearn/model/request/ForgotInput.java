@@ -9,8 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SignupInput {
-
+public class ForgotInput {
     @NotBlank
     @Size(max = 50)
     @Email(message = "Email không đúng định dạng")
@@ -24,19 +23,7 @@ public class SignupInput {
     @Size(min = 6, max = 50, message = "Mật khẩu có ít nhất 6 kí tự và nhiều nhất 50 kí tự")
     private String password;
 
-    @NotBlank
-    @Size(min = 3, max = 30)
-    private String name;
-
-    private String avatar;
-
-    @Size(min = 10, max = 10, message = "Số điện thoại phải có 10 chữ số")
-    @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$", message = "Số điện thoại không đúng định dạng")
-    private String phone;
-
     @NotBlank(message = "Mã OTP không được để trống")
     private String otp;
-
-    @NotBlank
     private String encodeOTP;
 }
