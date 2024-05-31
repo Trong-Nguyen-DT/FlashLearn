@@ -1,6 +1,7 @@
 package com.dt.flashlearn.service;
 
 import com.dt.flashlearn.model.request.CourseInput;
+import com.dt.flashlearn.model.request.RatingCourseInput;
 import com.dt.flashlearn.model.response.ResponseData;
 
 public interface CourseService {
@@ -27,5 +28,7 @@ public interface CourseService {
     ResponseData deleteCourse(Long id);
 
     ResponseData getCourseById(Long id);
+
+    ResponseData ratingCourse(RatingCourseInput input);
 
 }

@@ -29,6 +29,16 @@ public class LearnController {
     @Autowired
     private ResponseHandler responseHandler;
 
+    @GetMapping("{lessonId}/practice")
+    public ResponseEntity<?> getVocabularyOfLessonPractice(@PathVariable Long lessonId) {
+        try {
+            return ResponseEntity.ok(responseHandler
+                    .createSuccessResponse(learnService.getVocabularyOfLessonPractice(lessonId)));
+        } catch (MessageException e) {
+            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
+        }
+    }
+
     @GetMapping("{lessonId}")
     public ResponseEntity<?> getVocabularyOfLessonLearn(@PathVariable Long lessonId,
             @RequestParam(required = true, defaultValue = "1") int studyCount) {
@@ -38,6 +48,15 @@ public class LearnController {
             }
             return ResponseEntity.ok(responseHandler
                     .createSuccessResponse(learnService.getVocabularyOfLessonLearn(lessonId, studyCount)));
+        } catch (MessageException e) {
+            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
+        }
+    }
+
+    @PostMapping("{lessonId}/practice")
+    public ResponseEntity<?> practiceVocabulary(@PathVariable Long lessonId, @RequestBody LearnInput input) {
+        try {
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(learnService.practiceVocabulary(lessonId, input)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }
