@@ -10,10 +10,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EmailInput {
+public class OtpInput {
     
     @NotBlank
     @Size(max = 50)
     @Email(message = ErrorConstants.EMAIL_INVALID_MESSAGE)
     private String email;
+    
+    private Boolean isSignUp = true;
 }

@@ -14,6 +14,15 @@ public class ErrorConstants {
     public static final int OLD_PASSWORD_INCORRECT_CODE = 400;
     public static final String OLD_PASSWORD_INCORRECT_MESSAGE = "Mật khẩu cũ không chính xác";
 
+    public static final int OTP_EXPIRED_CODE = 400;
+    public static final String OTP_EXPIRED_MESSAGE = "Mã OTP đã hết hạn";
+
+    public static final int OTP_INCORRECT_CODE = 400;
+    public static final String OTP_INCORRECT_MESSAGE = "Mã OTP không chính xác";
+
+    public static final int OTP_NOT_FOUND_CODE = 400;
+    public static final String OTP_NOT_FOUND_MESSAGE = "Mã OTP không tồn tại";
+
     public static final int INVALID_CREDENTIALS_CODE = 401;
     public static final String INVALID_CREDENTIALS_MESSAGE = "Email hoặc mật khẩu không chính xác";
 

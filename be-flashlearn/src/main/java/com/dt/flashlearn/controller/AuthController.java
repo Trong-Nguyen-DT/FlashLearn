@@ -5,8 +5,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dt.flashlearn.constant.SuccessConstants;
 import com.dt.flashlearn.exception.MessageException;
-import com.dt.flashlearn.model.User;
+import com.dt.flashlearn.model.request.ForgotInput;
 import com.dt.flashlearn.model.request.LoginInput;
+import com.dt.flashlearn.model.request.SignupInput;
 import com.dt.flashlearn.model.response.ResponseError;
 import com.dt.flashlearn.model.response.ResponseLogin;
 import com.dt.flashlearn.security.jwt.JwtProvider;
@@ -71,13 +72,22 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody User input) {
+    public ResponseEntity<?> signup(@Valid @RequestBody SignupInput input) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(responseHandler.createCreatedResponse(userService.createUser(input)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }
         
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotInput input) {
+        try {
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(userService.forgotPassword(input)));
+        } catch (MessageException e) {
+            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
+        }
     }
     
     @ExceptionHandler(MethodArgumentNotValidException.class)

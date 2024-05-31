@@ -5,5 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.dt.flashlearn.entity.OtpEntity;
 
 public interface OtpRepository extends JpaRepository<OtpEntity, Long>{
+
+    OtpEntity findByOtp(String otp);
     
 }

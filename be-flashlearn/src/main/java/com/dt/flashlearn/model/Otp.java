@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 public class Otp {
     private String email;
-    private Long encodeOTP;
+    private String encodeOTP;
     private LocalDateTime otpExpiration;
 }

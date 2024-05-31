@@ -13,8 +13,9 @@ import com.dt.flashlearn.converter.UserConverter;
 import com.dt.flashlearn.entity.User.UserEntity;
 import com.dt.flashlearn.entity.User.UserRole;
 import com.dt.flashlearn.exception.MessageException;
-import com.dt.flashlearn.model.User;
 import com.dt.flashlearn.model.request.ChangPasswordInput;
+import com.dt.flashlearn.model.request.ForgotInput;
+import com.dt.flashlearn.model.request.SignupInput;
 import com.dt.flashlearn.model.request.UserInput;
 import com.dt.flashlearn.model.response.ResponseData;
 import com.dt.flashlearn.repository.UserRepository;
@@ -22,7 +23,7 @@ import com.dt.flashlearn.service.UserService;
 import com.dt.flashlearn.service.component.ImageService;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -37,10 +38,12 @@ public class UserServiceImpl implements UserService{
     private QueryService queryService;
 
     @Override
-    public ResponseData createUser(User input) {
+    public ResponseData createUser(SignupInput input) {
+        queryService.validateOtp(input.getEmail(), input.getOtp(), input.getEncodeOTP());
         LocalDateTime now = LocalDateTime.now();
-        if (checkEmail(input.getEmail())) {
-            throw new MessageException(ErrorConstants.EMAIL_ALREADY_EXISTS_MESSAGE, ErrorConstants.EMAIL_ALREADY_EXISTS_CODE);
+        if (queryService.checkEmail(input.getEmail())) {
+            throw new MessageException(ErrorConstants.EMAIL_ALREADY_EXISTS_MESSAGE,
+                    ErrorConstants.EMAIL_ALREADY_EXISTS_CODE);
         }
         UserEntity entity = new UserEntity();
         entity.setEmail(input.getEmail());
@@ -55,6 +58,16 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public ResponseData forgotPassword(ForgotInput input) {
+        queryService.validateOtp(input.getEmail(), input.getOtp(), input.getEncodeOTP());
+        UserEntity entity = userRepository.findUserByDeletedFalseAndEmail(input.getEmail())
+                .orElseThrow(() -> new MessageException(ErrorConstants.EMAIL_ALREADY_EXISTS_MESSAGE,
+                        ErrorConstants.EMAIL_ALREADY_EXISTS_CODE));
+        entity.setPassword(passwordEncoder.encode(input.getPassword()));
+        return new ResponseData(UserConverter.toModel(userRepository.save(entity)));
+    }
+
+    @Override
     public ResponseData getProfile() {
         UserEntity entity = queryService.getUserEntity();
         return new ResponseData(UserConverter.toModel(entity));
@@ -63,8 +76,9 @@ public class UserServiceImpl implements UserService{
     @Override
     public ResponseData updateProfile(UserInput input) {
         UserEntity entity = queryService.getUserEntity();
-        if (checkEmail(input.getEmail())){
-            throw new MessageException(ErrorConstants.EMAIL_ALREADY_EXISTS_MESSAGE, ErrorConstants.EMAIL_ALREADY_EXISTS_CODE);
+        if (queryService.checkEmail(input.getEmail())) {
+            throw new MessageException(ErrorConstants.EMAIL_ALREADY_EXISTS_MESSAGE,
+                    ErrorConstants.EMAIL_ALREADY_EXISTS_CODE);
         }
         entity.setEmail(input.getEmail());
         entity.setName(input.getName());
@@ -84,16 +98,13 @@ public class UserServiceImpl implements UserService{
     @Override
     public ResponseData changePassword(ChangPasswordInput input) {
         UserEntity entity = queryService.getUserEntity();
-        if (!passwordEncoder.matches(input.getOldPassword(), entity.getPassword())){
-            throw new MessageException(ErrorConstants.OLD_PASSWORD_INCORRECT_MESSAGE, ErrorConstants.OLD_PASSWORD_INCORRECT_CODE);
+        if (!passwordEncoder.matches(input.getOldPassword(), entity.getPassword())) {
+            throw new MessageException(ErrorConstants.OLD_PASSWORD_INCORRECT_MESSAGE,
+                    ErrorConstants.OLD_PASSWORD_INCORRECT_CODE);
         }
         entity.setPassword(passwordEncoder.encode(input.getNewPassword()));
         entity.setUpdateAt(LocalDateTime.now());
         return new ResponseData(UserConverter.toModel(userRepository.save(entity)));
-    }
-
-    private boolean checkEmail(String email) {
-        return userRepository.existsByEmail(email);
     }
 
 }
