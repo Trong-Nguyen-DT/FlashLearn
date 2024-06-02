@@ -4,6 +4,7 @@ export interface StudentResponse {
   id: number;
   user: UserResponse;
   rating: number;
+  experience: number;
   createAt: string;
   updateAt: string;
 }

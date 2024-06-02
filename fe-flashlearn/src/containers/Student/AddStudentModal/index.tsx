@@ -72,13 +72,15 @@ const AddStudentModal: React.FC<Props> = ({ courseId }) => {
       </Typography>
       <Stack direction="row" gap={1} justifyContent={'space-between'}>
         <Typography fontSize={20} width={'57%'}>
-          Yêu cầu học viên truy cập <b>flash-learning/courses</b> và nhập mã lớp{' '}
-          <b>{courseDetail?.name}</b>
+          Yêu cầu học viên truy cập <i>flash-learning/courses</i> và nhập mã lớp{' '}
+          <Typography component="span" fontWeight={800} fontSize={24} sx={{ letterSpacing: '4px' }}>
+            {courseDetail?.code}
+          </Typography>
         </Typography>
         <Button
           variant="outlined"
           onClick={() => {
-            navigator.clipboard.writeText(courseDetail?.name);
+            navigator.clipboard.writeText(courseDetail?.code);
           }}
           sx={{
             fontWeight: 800,

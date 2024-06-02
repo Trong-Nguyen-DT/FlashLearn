@@ -15,24 +15,27 @@ export function useGetStudents(
     isError,
     isFetching,
     refetch: onGetAllStudents,
-  } = useQuery<PaginationResponseType<StudentResponse>, Error>([ApiKey.STUDENT, options?.courseId], {
-    queryFn: () => {
-      return responseWrapper<PaginationResponseType<StudentResponse>>(StudentApi.getStudentList, [
-        options?.courseId,
-      ]);
+  } = useQuery<PaginationResponseType<StudentResponse>, Error>(
+    [ApiKey.STUDENT, options?.courseId],
+    {
+      queryFn: () => {
+        return responseWrapper<PaginationResponseType<StudentResponse>>(StudentApi.getStudentList, [
+          options?.courseId,
+        ]);
+      },
+      notifyOnChangeProps: ['data', 'isFetching'],
+      keepPreviousData: true,
+      enabled: !!options?.courseId,
+      ...options,
     },
-    notifyOnChangeProps: ['data', 'isFetching'],
-    keepPreviousData: true,
-    enabled: !!options?.courseId,
-    ...options,
-  });
+  );
 
   const queryClient = useQueryClient();
 
   const handleInvalidateStudentList = () =>
     queryClient.invalidateQueries([ApiKey.STUDENT, options?.courseId]);
 
-  const { arrayData: students = [], page } = data?.data || {};
+  const { data: students = [], page } = data?.data || {};
 
   return {
     students,

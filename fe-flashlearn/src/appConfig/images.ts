@@ -10,7 +10,10 @@ import teaching from 'src/assets/images/gifs/ZiT4BATmuZ5brqUxvb.webp';
 import noResultsFound from 'src/assets/images/no-results-found.png';
 import noImage from 'src/assets/images/no-image.png';
 import poseImage from 'src/assets/images/Yq7g7389CMNn5827J2.webp';
+import dontImage from 'src/assets/images/gifs/giphy.gif';
+import confuseImage from 'src/assets/images/gifs/giphy (1).gif';
 import connectLine from 'src/assets/images/Line 2.png';
+import niceImage from 'src/assets/images/gifs/giphy (2).gif';
 
 export const IMAGES = {
   logo,
@@ -26,4 +29,7 @@ export const IMAGES = {
   poseImage,
   connectLine,
   raiseHand,
+  dontImage,
+  confuseImage,
+  niceImage,
 };

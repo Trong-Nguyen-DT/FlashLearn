@@ -6,7 +6,6 @@ export interface VocabularyResponse {
   id: number;
   word: string;
   meaning: string;
-  audio: string;
   partOfSpeech: PartOfSpeech;
   createAt: string;
   updateAt: string;

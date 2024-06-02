@@ -81,3 +81,36 @@ export const handleKeyDownNumberInput = (event: React.KeyboardEvent<HTMLInputEle
       break;
   }
 };
+
+export const scrollToElement = (elementNameOrId: string, preventFocusOnScroll: boolean = false) => {
+  if (elementNameOrId) {
+    const elementById = document.querySelector(`[id='${elementNameOrId}']`);
+    const elementByName = document.querySelector(`[name='${elementNameOrId}']`);
+    const element = elementById || elementByName;
+    if (element) {
+      element?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+
+      if (!preventFocusOnScroll) {
+        const firstInput = element.querySelector('input') as HTMLElement;
+        if (firstInput) firstInput?.focus({ preventScroll: true });
+      }
+    }
+  }
+};
+
+export const handleScrollToElement = (
+  elementNameOrId: string,
+  preventFocusOnScroll: boolean = false,
+) =>
+  setTimeout(() => {
+    scrollToElement(elementNameOrId, preventFocusOnScroll);
+  }, 100);
+
+export const getFieldNameByPrefix = (prefix: string, name: string) => {
+  if (!prefix) return name;
+
+  return `${prefix}.${name}`;
+};

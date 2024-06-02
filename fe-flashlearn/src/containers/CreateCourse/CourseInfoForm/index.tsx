@@ -34,7 +34,7 @@ const CourseInfoForm: React.FC<Props> = ({ step, setStep }) => {
   const { onAddNewCourse } = useAddCourse({
     onSuccess(data) {
       toastify.success('Tạo khoá học thành công');
-      navigate(`${PATHS.courses}/${data.data.objectData.id}`);
+      navigate(`${PATHS.courses}/${data.data.data.id}`);
       handleInvalidateMyTeachingCourseList();
     },
     onError(error) {

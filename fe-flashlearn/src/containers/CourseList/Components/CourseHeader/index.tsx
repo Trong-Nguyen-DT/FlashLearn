@@ -23,6 +23,7 @@ import {
   CourseFilterFormValue,
   filterParamsKey,
 } from '../CourseFilter/helpers';
+import JoinCourseModal from '../JoinCourseModal';
 
 const CourseHeader = () => {
   const isAuthenticated = useSelector((state: IRootState) => state.auth.isAuthenticated);
@@ -77,6 +78,16 @@ const CourseHeader = () => {
     navigate(PATHS.courseCreate);
   };
 
+  const handleJoinCourse = () => {
+    setDialogContent({
+      type: DialogType.CONTENT_DIALOG,
+      data: <JoinCourseModal />,
+      hideTitle: true,
+      maxWidth: 'md',
+    });
+    openModal();
+  };
+
   return (
     <Stack
       sx={{
@@ -107,13 +118,23 @@ const CourseHeader = () => {
               !isAuthenticated ? handleRequestLogin() : handleAddCourse();
             }}
             sx={{
-              width: 200,
               fontWeight: 800,
               boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
               '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}` },
             }}
           >
             Tạo khóa học
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={handleJoinCourse}
+            sx={{
+              fontWeight: 800,
+              boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_400}`,
+              '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_400}` },
+            }}
+          >
+            Tham Gia khóa học
           </Button>
         </Stack>
         <Stack direction={'row'} gap={2} px={3}>

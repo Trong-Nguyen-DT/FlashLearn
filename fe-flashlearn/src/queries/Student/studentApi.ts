@@ -32,6 +32,10 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.put(`${ApiKey.USERS}${ApiKey.STUDENT}/${payload.id}`);
   };
 
+  const joinCourseByCode = (payload: { code: string }) => {
+    return api.put(`${ApiKey.USERS}${ApiKey.STUDENT}?code=${payload.code}`);
+  };
+
   const getStudentList = (id: string) => {
     return api.get(`${ApiKey.USERS}${ApiKey.STUDENT}?courseId=${id}`);
   };
@@ -45,7 +49,7 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.delete(`${ApiKey.USERS}${ApiKey.STUDENT}/${courseId}/${studentId}`, {});
   };
 
-  return { leaveCourse, joinCourse, getStudentList, addStudent, deleteStudent };
+  return { leaveCourse, joinCourse, getStudentList, addStudent, deleteStudent, joinCourseByCode };
 };
 
 export default {

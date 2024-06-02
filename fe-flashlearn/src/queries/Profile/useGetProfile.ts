@@ -23,7 +23,7 @@ export function useGetProfile(
   } = useQuery<ApiResponseType<UserResponse>, Error, UserResponse>([ApiKey.USERS], {
     queryFn: handleGetProfile,
     notifyOnChangeProps: ['data', 'isFetching'],
-    select: (data) => data.data.objectData,
+    select: (data) => data.data.data,
     ...options,
   });
 

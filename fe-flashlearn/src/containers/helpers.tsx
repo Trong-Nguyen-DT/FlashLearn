@@ -12,6 +12,7 @@ import SplashScreen from './StartupContainers/SplashScreen';
 import { SignIn, SignUp } from './UAMContainer';
 import Welcome from './Welcome';
 import MyCourse from './MyCourse';
+import Learn from './Learn';
 
 type RouteWrapperProps = {
   isAuthenticated: boolean;
@@ -47,9 +48,11 @@ export const routerGroup = [
   { path: PATHS.courseDetail, element: <CourseDetail />, isRequireAuth: false },
   { path: PATHS.courseSetting, element: <CourseDetail />, isRequireAuth: true },
   { path: PATHS.lessonsList, element: <CourseDetail />, isRequireAuth: false },
+  { path: PATHS.learning, element: <Learn />, isRequireAuth: true },
+  { path: PATHS.practiceLesson, element: <Learn />, isRequireAuth: true },
+  { path: PATHS.practice, element: <CourseDetail />, isRequireAuth: true },
   { path: PATHS.rankList, element: <CourseDetail />, isRequireAuth: true },
   { path: PATHS.studentsList, element: <CourseDetail />, isRequireAuth: true },
-  { path: PATHS.practice, element: <CourseDetail />, isRequireAuth: true },
   { path: PATHS.lessonsDetail, element: <CourseDetail />, isRequireAuth: false },
   { path: PATHS.myCourse, element: <MyCourse />, isRequireAuth: true },
   { path: PATHS.myCourseLearning, element: <MyCourse />, isRequireAuth: true },

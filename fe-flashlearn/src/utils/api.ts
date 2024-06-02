@@ -49,7 +49,7 @@ export async function responseWrapper<T>(func: ApiCall, [...args]: any[] = []): 
 
 export interface ApiResponseType<T> {
   data: {
-    objectData: T;
+    data: T;
   };
   code: number;
   success: boolean;
@@ -58,7 +58,7 @@ export interface ApiResponseType<T> {
 
 export interface PaginationResponseType<T> {
   data: {
-    arrayData: T[];
+    data: T[];
     page: {
       currentPage: number;
       perPage: number;

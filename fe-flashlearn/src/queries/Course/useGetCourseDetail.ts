@@ -27,7 +27,7 @@ export function useGetCourseDetail(
       queryFn: handleGetCourseDetail,
       notifyOnChangeProps: ['data', 'isFetching'],
       enabled: !!options?.id,
-      select: (data) => data.data.objectData,
+      select: (data) => data.data.data,
       ...options,
     },
   );

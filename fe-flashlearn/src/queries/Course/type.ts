@@ -18,6 +18,7 @@ export interface CourseResponse {
   totalStudent: number;
   createAt: string;
   updateAt: string;
+  code: string;
 }
 
 export interface CoursePayload {

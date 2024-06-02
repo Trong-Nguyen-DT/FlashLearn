@@ -35,7 +35,7 @@ export function useGetVocabularyOfLesson(
   const handleInvalidateVocabularyList = () =>
     queryClient.invalidateQueries([ApiKey.VOCABULARY, options?.lessonId]);
 
-  const { arrayData: vocabulary = [], page } = data?.data || {};
+  const { data: vocabulary = [], page } = data?.data || {};
 
   return {
     vocabulary,

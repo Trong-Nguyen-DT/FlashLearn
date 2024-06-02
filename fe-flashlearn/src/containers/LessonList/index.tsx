@@ -36,7 +36,12 @@ const LessonList: React.FC<Props> = ({ isOwner }) => {
         <>
           {lessons.map((lesson, index) => (
             <>
-              <LessonItem lesson={lesson} courseId={courseId} index={index} />
+              <LessonItem
+                lesson={lesson}
+                courseId={courseId}
+                index={index}
+                isNext={(lessons[index - 1]?.learned ?? true) && !lesson?.learned}
+              />
               {index !== lessons.length - 1 && (
                 <Image
                   src={IMAGES.connectLine}

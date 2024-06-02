@@ -32,7 +32,7 @@ export function useGetLesson(
   const handleInvalidateLessonList = () =>
     queryClient.invalidateQueries([ApiKey.LESSON, options?.courseId]);
 
-  const { arrayData: lessons = [], page } = data?.data || {};
+  const { data: lessons = [], page } = data?.data || {};
 
   return {
     lessons,

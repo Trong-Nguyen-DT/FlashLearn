@@ -1,7 +1,7 @@
 import { COLOR_CODE } from '@appConfig';
 import { IMAGES } from '@appConfig/images';
 import { PATHS } from '@appConfig/paths';
-import { DialogContext, DialogType, Image } from '@components';
+import { DialogContext, DialogType, Image, YesNoImageModal } from '@components';
 import { Button, Card, Stack, Tooltip, Typography } from '@mui/material';
 import { CourseResponse, useGetMyLearningCourse, useGetStudents } from '@queries';
 import { useJoinCourse } from '@queries/Student/useJoinCourse';
@@ -60,17 +60,21 @@ const CourseItem = ({ course }: Props) => {
       return navigate(`${PATHS.courses}/${course.id}`);
     }
     setDialogContent({
-      type: DialogType.YESNO_DIALOG,
-      contentText: `Đăng Ký học khóa học ${course.name}?`,
+      type: DialogType.CONTENT_DIALOG,
+      data: (
+        <YesNoImageModal
+          onYes={() => {
+            onJoinCourse({ id: course.id });
+            closeModal();
+          }}
+          onNo={() => closeModal()}
+          title={`Đăng Ký học khóa học ${course.name}?`}
+          image={IMAGES.raiseHand}
+          yesText="Đăng Ký"
+        />
+      ),
+      maxWidth: 'sm',
       hideTitle: true,
-      showIcon: true,
-      icon: <Image src={IMAGES.raiseHand} sx={{ width: 100, height: 100 }} />,
-      okText: 'Đăng Ký',
-      cancelText: 'Hủy',
-      onOk: () => {
-        onJoinCourse({ id: course.id });
-        closeModal();
-      },
     });
     openModal();
   };

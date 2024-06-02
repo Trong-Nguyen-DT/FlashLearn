@@ -35,7 +35,7 @@ export function useGetAllCourse(
 
   const handleInvalidateCourseList = () => queryClient.invalidateQueries([ApiKey.COURSE]);
 
-  const { arrayData: courses = [], page } = data?.data || {};
+  const { data: courses = [], page } = data?.data || {};
 
   return {
     params,

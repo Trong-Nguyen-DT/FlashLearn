@@ -8,3 +8,4 @@ export * from './useJoinCourse';
 export * from './useGetStudents';
 export * from './useAddStudents';
 export * from './useRemoveStudent';
+export * from './useJoinCourseByCode';

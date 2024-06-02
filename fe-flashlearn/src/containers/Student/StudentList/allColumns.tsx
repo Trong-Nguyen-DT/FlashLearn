@@ -39,7 +39,7 @@ export const allColumns = ({ handleDelete }: ColumnProps): MUIDataTableColumn[] 
       },
     },
     {
-      name: 'xp',
+      name: 'experience',
       label: 'Tổng XP',
       options: {
         filter: false,
