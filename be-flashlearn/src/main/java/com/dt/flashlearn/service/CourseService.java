@@ -1,5 +1,6 @@
 package com.dt.flashlearn.service;
 
+import com.dt.flashlearn.entity.Course.CourseStatus;
 import com.dt.flashlearn.model.request.CourseInput;
 import com.dt.flashlearn.model.request.RatingCourseInput;
 import com.dt.flashlearn.model.response.ResponseData;
@@ -16,7 +17,7 @@ public interface CourseService {
             String searchText,
             int rating,
             int startCount, int endCount,
-            String status,
+            CourseStatus status,
             String orderBy, String sortBy);
 
     ResponseData getAllMyCourseStudy();

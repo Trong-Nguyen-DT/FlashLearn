@@ -9,6 +9,8 @@ import com.dt.flashlearn.entity.User.UserEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -47,15 +49,14 @@ public class CourseEntity {
 
     private String image;
 
-    @NotBlank
-    private String status;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private CourseStatus status;
 
-    private double avgRating;
+    private double avgRating = 0.0;
 
-    private Long totalVocal;
+    private Long totalVocal = 0L;
 
-    private Long totalStudent;
-    
     @NotNull
     @ManyToOne
     @JoinColumn(name = "ownerId")
@@ -72,4 +73,55 @@ public class CourseEntity {
 
     @NotNull
     private boolean deleted;
+
+    public double calculateAverageRating() {
+        if (this.students == null || this.students.isEmpty()) {
+            return 0.0; 
+        }
+        double avgRating = this.students.stream()
+                                .filter(student -> student.getRating() > 0)
+                                .mapToDouble(StudentEntity::getRating)
+                                .average()
+                                .orElse(0.0);
+
+
+        return avgRating;
+    }
+
+    public long calculateTotalVocab() {
+        if (this.lessons == null || this.lessons.isEmpty()) {
+            return 0L; 
+        }
+        long totalVocab = this.lessons.stream()
+                                .filter(lesson -> !lesson.isDeleted() && lesson.getVocabularies() != null)
+                                .flatMap(lesson -> lesson.getVocabularies().stream())
+                                .filter(vocabulary -> !vocabulary.isDeleted())
+                                .count();
+
+        return totalVocab;
+    }
+
+    public long calculateTotalStudent() {
+        if (this.students == null || this.students.isEmpty()) {
+            return 0L;
+        }
+        long totalStudent = this.students.stream()
+                                .filter(student -> !student.isDeleted())
+                                .count();
+        return totalStudent;
+    }
+
+    public long calculateTotalVocabLearned(StudentEntity studentEntity) {
+        if (studentEntity == null) {
+            return 0L;
+        }
+        long totalVocabLearned = this.lessons.stream()
+                                .filter(lesson -> !lesson.isDeleted() && lesson.getVocabularies() != null)
+                                .flatMap(lesson -> lesson.getVocabularies().stream())
+                                .filter(vocabulary -> !vocabulary.isDeleted())
+                                .filter(vocabulary -> studentEntity.getLearningVocabularies().stream()
+                                                        .anyMatch(learningVocabulary -> learningVocabulary.getVocabularyOfLesson().getId().equals(vocabulary.getId())))
+                                .count();
+        return totalVocabLearned;
+    }
 }

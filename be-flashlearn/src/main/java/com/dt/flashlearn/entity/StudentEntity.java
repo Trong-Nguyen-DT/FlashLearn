@@ -39,7 +39,6 @@ public class StudentEntity {
     private CourseEntity course;
 
     private int rating;
-    private Long experienceStudent;
 
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
@@ -52,4 +51,15 @@ public class StudentEntity {
 
     @NotNull
     private boolean deleted;
+
+    public long calculateTotalVocabLearned() {
+        return this.learningVocabularies.stream()
+                .filter(vocabulary -> !vocabulary.getVocabularyOfLesson().isDeleted()
+                                    && !vocabulary.getVocabularyOfLesson().getLesson().isDeleted())
+                .count();
+    }
+
+    public long calculateTotalExperience() {
+        return this.learningHistories.stream().mapToLong(history -> history.getExperience()).sum();
+    }
 }

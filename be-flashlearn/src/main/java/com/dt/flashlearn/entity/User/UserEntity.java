@@ -8,6 +8,8 @@ import com.dt.flashlearn.entity.Course.CourseEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -51,7 +53,8 @@ public class UserEntity {
 
     private String avatar;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

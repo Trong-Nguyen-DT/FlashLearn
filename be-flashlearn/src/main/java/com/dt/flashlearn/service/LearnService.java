@@ -5,12 +5,12 @@ import com.dt.flashlearn.model.response.ResponseData;
 
 public interface LearnService {
 
-    ResponseData getVocabularyOfLessonLearn(Long lessonId, int studyCount);
+    ResponseData getVocabularyOfLessonLearn(Long lessonId);
 
-    ResponseData getVocabularyOfLessonPractice(Long lessonId);
+    ResponseData getVocabularyOfLessonPracticeByLesson(Long lessonId);
 
-    ResponseData learnVocabulary(Long lessonId, LearnInput input);
+    ResponseData getVocabularyOfCoursePractice(Long courseId);
 
-    ResponseData practiceVocabulary(Long lessonId, LearnInput input);
+    ResponseData learnVocabulary(Long courseId, LearnInput input);
 
 }

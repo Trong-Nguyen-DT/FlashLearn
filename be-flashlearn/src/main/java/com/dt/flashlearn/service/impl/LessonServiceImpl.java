@@ -5,15 +5,12 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.constant.TypeImageConstants;
 import com.dt.flashlearn.converter.LessonConverter;
 import com.dt.flashlearn.entity.LessonEntity;
 import com.dt.flashlearn.entity.Course.CourseEntity;
-import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.model.request.LessonInput;
 import com.dt.flashlearn.model.response.ResponseData;
-import com.dt.flashlearn.repository.CourseRepository;
 import com.dt.flashlearn.repository.LessonRepository;
 import com.dt.flashlearn.service.LessonService;
 import com.dt.flashlearn.service.component.ImageService;
@@ -21,9 +18,6 @@ import com.dt.flashlearn.validate.CourseValidate;
 
 @Service
 public class LessonServiceImpl implements LessonService {
-
-    @Autowired
-    private CourseRepository courseRepository;
 
     @Autowired
     private LessonRepository lessonRepository;
@@ -36,27 +30,18 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public ResponseData getAllLessonByCourse(Long courseId) {
-        CourseEntity courseEntity = courseRepository.findByIdAndDeletedFalse(courseId)
-                .orElseThrow(
-                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
-
-        CourseValidate.validateCoursePrivate(courseEntity);
-        return new ResponseData(LessonConverter
-                .convertToObjects(queryService.getAllLessonEntityByCourseEntity(courseEntity).stream()
-                .map(lessonEntity -> LessonConverter.toModel(lessonEntity, calculatorVocabLearned(lessonEntity)))
-                .toList()));
-
-    }
-
-    private int calculatorVocabLearned(LessonEntity lessonEntity) {
-        return queryService.getVocabLearnedByLessonEntity(lessonEntity);
+        return new ResponseData(queryService.getAllLessonByCourseId(courseId).stream()
+                .map(lessonEntity -> LessonConverter.toModel(lessonEntity,
+                        queryService.getStudentEntityByCourse(lessonEntity.getCourse())))
+                .toList());
     }
 
     @Override
     public ResponseData getLessonById(Long lessonId) {
         LessonEntity lessonEntity = queryService.getLessonEntityById(lessonId);
-        CourseValidate.validateCoursePrivate(lessonEntity.getCourse());
-        return new ResponseData(LessonConverter.toModel(lessonEntity, calculatorVocabLearned(lessonEntity)));
+        return new ResponseData(
+                LessonConverter.toModel(lessonEntity,
+                        queryService.getStudentEntityByCourse(lessonEntity.getCourse())));
     }
 
     @Override
@@ -69,7 +54,6 @@ public class LessonServiceImpl implements LessonService {
         lessonEntity.setImage(
                 input.getImage() != null ? imageService.upload(input.getImage(), TypeImageConstants.LESSON_IMAGE)
                         : null);
-        lessonEntity.setTotalVocabOfLesson(0L);
         lessonEntity.setCourse(courseEntity);
         lessonEntity.setCreateAt(now);
         lessonEntity.setUpdateAt(now);
@@ -96,10 +80,11 @@ public class LessonServiceImpl implements LessonService {
         CourseValidate.validateCourseOwner(lessonEntity.getCourse());
         lessonEntity.setDeleted(true);
         lessonEntity.setUpdateAt(LocalDateTime.now());
+        lessonEntity.getCourse().setTotalVocal(lessonEntity.getCourse().calculateTotalVocab());
         return createResponseData(lessonRepository.save(lessonEntity));
     }
 
     private ResponseData createResponseData(LessonEntity lessonEntity) {
-        return new ResponseData(LessonConverter.toModelLesson(lessonEntity));
+        return new ResponseData(LessonConverter.toModel(lessonEntity));
     }
 }

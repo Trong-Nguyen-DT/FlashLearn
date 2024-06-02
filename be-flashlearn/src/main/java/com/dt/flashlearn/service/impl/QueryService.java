@@ -26,6 +26,7 @@ import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.repository.CourseRepository;
 import com.dt.flashlearn.repository.LessonRepository;
 import com.dt.flashlearn.repository.OtpRepository;
+import com.dt.flashlearn.repository.StudentRepository;
 import com.dt.flashlearn.repository.UserRepository;
 import com.dt.flashlearn.repository.VocabularyOfLessonRepository;
 import com.dt.flashlearn.repository.VocabularyRepository;
@@ -48,6 +49,9 @@ public class QueryService {
 
     @Autowired
     private VocabularyOfLessonRepository vocabularyOfLessonRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     @Autowired
     private OtpRepository otpRepository;
@@ -73,46 +77,14 @@ public class QueryService {
         otpRepository.delete(otpEntity);
     }
 
-    protected CourseEntity getCourseEntityById(Long id) {
-        return courseRepository.findByIdAndDeletedFalse(id)
-                .orElseThrow(
-                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+    protected String decodeOtp(String str) {
+        // base64 to uf8
+        return new String(Base64.getDecoder().decode(str));
     }
 
-    protected CourseEntity getCourseEntityOnwerById(Long id) {
-        return getUserEntity()
-                .getCourses()
-                .stream()
-                .filter(course -> course.getId().equals(id) && !course.isDeleted())
-                .findFirst()
-                .orElseThrow(
-                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
-    }
-
-    protected List<LessonEntity> getAllLessonEntityByCourseEntity(CourseEntity courseEntity) {
-        return courseEntity.getLessons().stream().filter(lesson -> !lesson.isDeleted()).toList();
-    }
-
-    protected List<VocabularyOfLessonEntity> getAllVocabularyOfLessonEntityByLessonEntity(LessonEntity lessonEntity) {
-        CourseValidate.validateCoursePrivate(lessonEntity.getCourse());
-        return lessonEntity.getVocabularies().stream().filter(vocabulary -> !vocabulary.isDeleted()).toList();
-    }
-
-    protected VocabularyEntity getVocabularyEntityById(Long id) {
-        return vocabularyRepository.findVocabularyByIdAndDeletedFalse(id)
-                .orElseThrow(
-                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
-    }
-
-    protected LessonEntity getLessonEntityById(Long id) {
-        return lessonRepository.findByIdAndDeletedFalse(id)
-                .orElseThrow(
-                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
-    }
-
-    protected UserEntity getUserEntity() {
-        return userRepository.findUserByDeletedFalseAndEmail(getAuthentication().getName()).orElseThrow(
-                () -> new MessageException(ErrorConstants.USER_NOT_FOUND_MESSAGE, ErrorConstants.USER_NOT_FOUND_CODE));
+    protected String encodeOtp(String str) {
+        // utf8 to base64
+        return new String(Base64.getEncoder().encode(str.getBytes()));
     }
 
     protected Authentication getAuthentication() {
@@ -123,27 +95,99 @@ public class QueryService {
         return authentication;
     }
 
-    protected StudentEntity getStudentEntity(CourseEntity courseEntity) {
-        return courseEntity.getStudents().stream()
-                .filter(student -> student.getUser().getEmail().equals(getAuthentication().getName())).findFirst()
-                .orElseThrow(
-                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+    protected UserEntity getUserEntity() {
+        return userRepository.findUserByDeletedFalseAndEmail(getAuthentication().getName()).orElseThrow(
+                () -> new MessageException(ErrorConstants.USER_NOT_FOUND_MESSAGE, ErrorConstants.USER_NOT_FOUND_CODE));
     }
 
     protected void throwUnauthorizedException() {
         throw new MessageException(ErrorConstants.UNAUTHORIZED_MESSAGE, ErrorConstants.UNAUTHORIZED_CODE);
     }
 
-    public VocabularyOfLessonEntity getVocabularyOfLessonEntityById(Long id) {
-        return vocabularyOfLessonRepository.findByIdAndDeletedFalse(id)
+    protected List<CourseEntity> getCourseStudy() {
+        UserEntity userEntity = getUserEntity();
+        return courseRepository.findAllCourseByStudentAndDeletedFlase(userEntity);
+    }
+
+    protected CourseEntity getCourseEntityOnwerById(Long id) {
+        return courseRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(
                         () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
     }
 
-    public List<LearningVocabularyEntity> getLearningVocabularyEntityByStudent(LessonEntity lessonEntity, int count) {
+    protected CourseEntity getCourseEntityById(Long id) {
+        CourseEntity courseEntity = courseRepository.findByIdAndDeletedFalse(id)
+                .orElseThrow(
+                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+        CourseValidate.validateCoursePrivate(courseEntity);
+        return courseEntity;
+    }
+
+    protected StudentEntity getStudentEntityByCourse(CourseEntity courseEntity) {
+        return studentRepository.findByUserAndCourseAndDeletedFalse(getUserEntity(), courseEntity);
+    }
+
+    protected List<StudentEntity> getAllStudentByCourse(CourseEntity courseEntity) {
+        return studentRepository.findByCourseAndDeletedFalse(courseEntity);
+    }
+
+    protected LessonEntity getLessonEntityById(Long id) {
+        LessonEntity lessonEntity = lessonRepository.findByIdAndDeletedFalse(id)
+                .orElseThrow(
+                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+        CourseValidate.validateCoursePrivate(lessonEntity.getCourse());
+        return lessonEntity;
+    }
+
+    protected List<LessonEntity> getAllLessonByCourseId(Long courseId) {
+        CourseEntity courseEntity = getCourseEntityById(courseId);
+        CourseValidate.validateCoursePrivate(courseEntity);
+        return lessonRepository.findByCourseAndDeletedFalse(courseEntity);
+    }
+
+    protected List<VocabularyOfLessonEntity> getAllVocabularyOfLessonEntityByLessonEntity(LessonEntity lessonEntity) {
+        return vocabularyOfLessonRepository.findByLessonAndDeletedFalse(lessonEntity);
+    }
+
+    protected VocabularyEntity getVocabularyEntityById(Long id) {
+        return vocabularyRepository.findVocabularyByIdAndDeletedFalse(id)
+                .orElseThrow(
+                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+    }
+
+    protected VocabularyOfLessonEntity getVocabularyOfLessonEntityById(Long id) {
+        VocabularyOfLessonEntity vocabularyOfLessonEntity = vocabularyOfLessonRepository.findByIdAndDeletedFalse(id)
+                .orElseThrow(
+                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+        if (vocabularyOfLessonEntity.getLesson().isDeleted()
+                || vocabularyOfLessonEntity.getLesson().getCourse().isDeleted()) {
+            throw new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE);
+        }
+        return vocabularyOfLessonEntity;
+    }
+
+    protected List<VocabularyOfLessonEntity> getVocabularyToLearnNew(LessonEntity lessonEntity) {
+        StudentEntity studentEntity = getStudentEntityByCourse(lessonEntity.getCourse());
+        List<VocabularyOfLessonEntity> vocabularyOfLessonEntities = vocabularyOfLessonRepository
+                .findByLessonAndDeletedFalse(lessonEntity);
+        int startIndex = (int) studentEntity.getLearningVocabularies().stream()
+                .filter(learningVocabularyEntity -> learningVocabularyEntity.getVocabularyOfLesson().getLesson().getId()
+                        .equals(lessonEntity.getId())
+                        && !learningVocabularyEntity.getVocabularyOfLesson().isDeleted())
+                .count();
+        if (startIndex >= vocabularyOfLessonEntities.size()) {
+            throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE,
+                    ErrorConstants.INVALID_DATA_CODE);
+        }
+        int endIndex = (startIndex + 2) > vocabularyOfLessonEntities.size() ? vocabularyOfLessonEntities.size()
+                : startIndex + 2;
+        return vocabularyOfLessonEntities.subList(startIndex, endIndex);
+    }
+
+    protected List<LearningVocabularyEntity> getLearningVocabularyEntityByStudent(CourseEntity courseEntity, int count) {
         LocalDate today = LocalDate.now();
-        StudentEntity studentEntity = getStudentEntity(lessonEntity.getCourse());
-        List<LearningVocabularyEntity> learningVocabularies = studentEntity.getLearningVocabularies();
+        StudentEntity studentEntity = getStudentEntityByCourse(courseEntity);
+        List<LearningVocabularyEntity> learningVocabularies = getVocabularyPractice(studentEntity, null);
         if (learningVocabularies == null || learningVocabularies.isEmpty()) {
             return new ArrayList<>();
         }
@@ -166,7 +210,47 @@ public class QueryService {
             }
         }
         return filteredVocabularies;
+    }
 
+    protected List<LearningVocabularyEntity> getLearningVocabularyEntityByLesson(LessonEntity lessonEntity, int count) {
+        LocalDate today = LocalDate.now();
+        StudentEntity studentEntity = getStudentEntityByCourse(lessonEntity.getCourse());
+        List<LearningVocabularyEntity> learningVocabularies = getVocabularyPractice(studentEntity, lessonEntity);
+        if (learningVocabularies == null || learningVocabularies.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<LearningVocabularyEntity> filteredVocabularies = learningVocabularies.stream()
+                .filter(vocabulary -> !vocabulary.getNextReview().isAfter(today))
+                .sorted(Comparator.comparing(LearningVocabularyEntity::getNextReview))
+                .collect(Collectors.toList());
+
+        if (filteredVocabularies.size() < count) {
+            List<LearningVocabularyEntity> newVocabularies = learningVocabularies.stream()
+                    .filter(vocabulary -> vocabulary.getNextReview().isAfter(today))
+                    .sorted(Comparator.comparing(LearningVocabularyEntity::getNextReview))
+                    .collect(Collectors.toList());
+
+            int remainingCount = count - filteredVocabularies.size();
+            if (newVocabularies.size() > remainingCount) {
+                filteredVocabularies.addAll(newVocabularies.subList(0, remainingCount));
+            } else {
+                filteredVocabularies.addAll(newVocabularies);
+            }
+        }
+        return filteredVocabularies;
+    }
+
+    private List<LearningVocabularyEntity> getVocabularyPractice(StudentEntity studentEntity,
+            LessonEntity lessonEntity) {
+        if (lessonEntity == null) {
+            return studentEntity.getLearningVocabularies().stream()
+                    .filter(vocabulary -> !vocabulary.getVocabularyOfLesson().isDeleted()).toList();
+        }
+
+        return studentEntity.getLearningVocabularies().stream()
+                .filter(vocabulary -> !vocabulary.getVocabularyOfLesson().isDeleted()
+                        && vocabulary.getVocabularyOfLesson().getLesson().getId().equals(lessonEntity.getId()))
+                .toList();
     }
 
     public LearningVocabularyEntity getLearningVocabularyEntityByStudentAndVocabularyOfLesson(
@@ -174,29 +258,9 @@ public class QueryService {
             VocabularyOfLessonEntity vocabularyOfLessonEntity) {
         return studentEntity.getLearningVocabularies().stream()
                 .filter(vocabulary -> vocabulary.getVocabularyOfLesson().getId()
-                        .equals(vocabularyOfLessonEntity.getId()))
+                        .equals(vocabularyOfLessonEntity.getId()) && !vocabularyOfLessonEntity.getLesson().isDeleted())
                 .findFirst()
                 .orElse(null);
     }
 
-    public int getVocabLearnedByLessonEntity(LessonEntity lessonEntity) {
-        StudentEntity studentEntity = getStudentEntity(lessonEntity.getCourse());
-        if (studentEntity.getLearningVocabularies() == null || studentEntity.getLearningVocabularies().isEmpty()) {
-            return 0;
-        }
-        return (int) studentEntity.getLearningVocabularies().stream()
-                .filter(vocabulary -> vocabulary.getVocabularyOfLesson().getLesson().getId()
-                        .equals(lessonEntity.getId()))
-                .count();
-    }
-
-    protected String decodeOtp(String str) {
-        // base64 to uf8
-        return new String(Base64.getDecoder().decode(str));
-    }
-
-    protected String encodeOtp(String str) {
-        // utf8 to base64
-        return new String(Base64.getEncoder().encode(str.getBytes()));
-    }
 }

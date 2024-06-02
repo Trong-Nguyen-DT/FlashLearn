@@ -13,6 +13,7 @@ public class Student {
     private Course course;
     private int rating;
     private Long experience;
+    private Long totalVocabLearned;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 }

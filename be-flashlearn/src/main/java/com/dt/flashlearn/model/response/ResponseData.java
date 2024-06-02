@@ -8,20 +8,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResponseData {
-    private Object objectData;
-    private List<Object> arrayData;
+    private Object data;
     private ResponsePage page;
 
-    public ResponseData(Object objectData) {
-        this.objectData = objectData;
+    public ResponseData(Object data) {
+        this.data = data;
     }
 
-    public ResponseData(List<Object> arrayData) {
-        this.arrayData = arrayData;
-    }
-
-    public ResponseData(List<Object> arrayData, ResponsePage page) {
-        this.arrayData = arrayData;
+    public ResponseData(Object data, ResponsePage page) {
+        this.data = data;
         this.page = page;
     }
 }

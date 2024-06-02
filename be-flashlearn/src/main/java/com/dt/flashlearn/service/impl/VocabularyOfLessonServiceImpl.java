@@ -1,7 +1,6 @@
 package com.dt.flashlearn.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,13 +41,9 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
     @Override
     public ResponseData getVocabularyByLesson(Long lessonId) {
         LessonEntity lessonEntity = queryService.getLessonEntityById(lessonId);
-        CourseValidate.validateCoursePrivate(lessonEntity.getCourse());
-        return new ResponseData(VocabularyConverter
-                .convertToObjectsVocabularyOfLesson(
-                        queryService.getAllVocabularyOfLessonEntityByLessonEntity(lessonEntity)
-                                .stream()
-                                .map(VocabularyConverter::vocabularyOfLessonToModel)
-                                .toList()));
+        return new ResponseData(queryService.getAllVocabularyOfLessonEntityByLessonEntity(lessonEntity).stream()
+                .map(VocabularyConverter::vocabularyOfLessonToModel)
+                .toList());
     }
 
     @Override
@@ -69,10 +64,9 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
                                     .add(createVocabularyOfLessonEntity(vocabularyInput, lessonEntity)));
 
         }
-        lessonEntity.setTotalVocabOfLesson(calculatorVocabularyOfLesson(lessonEntity));
         lessonRepository.save(lessonEntity);
         CourseEntity courseEntity = lessonEntity.getCourse();
-        courseEntity.setTotalVocal(calculatorVocabularyOfCourse(courseEntity));
+        courseEntity.setTotalVocal(courseEntity.calculateTotalVocab());
         courseRepository.save(courseEntity);
         return new ResponseData(queryService
                 .getAllVocabularyOfLessonEntityByLessonEntity(lessonEntity)
@@ -105,12 +99,8 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
         vocabularyOfLessonEntity.setUpdateAt(LocalDateTime.now());
         vocabularyOfLessonRepository.save(vocabularyOfLessonEntity);
 
-        LessonEntity lessonEntity = vocabularyOfLessonEntity.getLesson();
-        lessonEntity.setTotalVocabOfLesson(calculatorVocabularyOfLesson(lessonEntity));
-        lessonRepository.save(lessonEntity);
-
-        CourseEntity courseEntity = lessonEntity.getCourse();
-        courseEntity.setTotalVocal(calculatorVocabularyOfCourse(courseEntity));
+        CourseEntity courseEntity = vocabularyOfLessonEntity.getLesson().getCourse();
+        courseEntity.setTotalVocal(courseEntity.calculateTotalVocab());
         courseRepository.save(courseEntity);
         return new ResponseData(VocabularyConverter.vocabularyOfLessonToModel(vocabularyOfLessonEntity));
     }
@@ -129,19 +119,6 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
         vocabularyOfLessonEntity.setUpdateAt(now);
         vocabularyOfLessonEntity.setDeleted(false);
         return vocabularyOfLessonRepository.save(vocabularyOfLessonEntity);
-    }
-
-    private Long calculatorVocabularyOfLesson(LessonEntity lessonEntity) {
-        AtomicLong totalVocabulary = new AtomicLong();
-        lessonEntity.getVocabularies().stream().filter(vocabulary -> !vocabulary.isDeleted())
-                .forEach(vocabulary -> totalVocabulary.getAndIncrement());
-        return totalVocabulary.get();
-    }
-
-    private Long calculatorVocabularyOfCourse(CourseEntity courseEntity) {
-        AtomicLong totalVocabulary = new AtomicLong();
-        courseEntity.getLessons().stream().forEach(lesson -> totalVocabulary.addAndGet(lesson.getTotalVocabOfLesson()));
-        return totalVocabulary.get();
     }
 
 }

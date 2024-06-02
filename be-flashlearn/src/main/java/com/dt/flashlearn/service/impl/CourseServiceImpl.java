@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.constant.OrderByConstants;
 import com.dt.flashlearn.constant.TypeImageConstants;
 import com.dt.flashlearn.converter.CourseConverter;
@@ -16,7 +15,6 @@ import com.dt.flashlearn.entity.StudentEntity;
 import com.dt.flashlearn.entity.Course.CourseEntity;
 import com.dt.flashlearn.entity.Course.CourseStatus;
 import com.dt.flashlearn.entity.User.UserEntity;
-import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.model.request.CourseInput;
 import com.dt.flashlearn.model.request.RatingCourseInput;
 import com.dt.flashlearn.model.response.ResponseData;
@@ -49,17 +47,19 @@ public class CourseServiceImpl implements CourseService {
             int startCount, int endCount,
             String orderBy, String sortBy) {
         Page<CourseEntity> courses;
-        String status = CourseStatus.PUBLIC.name();
-        if (OrderByConstants.SORT_BY_DESC.equalsIgnoreCase(sortBy.toUpperCase())) {
-            courses = courseRepository.findAllCourseDesc(searchText, rating, startCount, endCount, null, status,
+        CourseStatus status = CourseStatus.PUBLIC;
+        if (OrderByConstants.SORT_BY_ASC.equalsIgnoreCase(sortBy.toUpperCase())) {
+            courses = courseRepository.findAllCourseAsc(searchText, rating, startCount, endCount, null, status,
                     orderBy,
                     PageRequest.of(page - 1, perPage));
         } else {
-            courses = courseRepository.findAllCourseAsc(searchText, rating, startCount, endCount, null, status, orderBy,
+            courses = courseRepository.findAllCourseDesc(searchText, rating, startCount, endCount, null, status,
+                    orderBy,
                     PageRequest.of(page - 1, perPage));
         }
         return new ResponseData(
-                CourseConverter.convertToObjects(courses.getContent().stream().map(CourseConverter::toModel).toList()),
+                CourseConverter.convertToObjects(
+                        courses.getContent().stream().map(course -> CourseConverter.toModel(course)).toList()),
                 new ResponsePage(courses.getNumber() + 1, courses.getSize(), courses.getTotalElements(),
                         courses.getTotalPages()));
 
@@ -70,31 +70,29 @@ public class CourseServiceImpl implements CourseService {
             String searchText,
             int rating,
             int startCount, int endCount,
-            String status,
+            CourseStatus status,
             String orderBy, String sortBy) {
         Page<CourseEntity> courses;
         UserEntity userEntity = queryService.getUserEntity();
-        if (OrderByConstants.SORT_BY_DESC.equalsIgnoreCase(sortBy.toUpperCase())) {
-            courses = courseRepository.findAllCourseDesc(searchText, rating, startCount, endCount, userEntity, status,
-                    orderBy,
-                    PageRequest.of(page - 1, perPage));
-        } else {
+        if (OrderByConstants.SORT_BY_ASC.equalsIgnoreCase(sortBy.toUpperCase())) {
             courses = courseRepository.findAllCourseAsc(searchText, rating, startCount, endCount, userEntity, status,
                     orderBy,
                     PageRequest.of(page - 1, perPage));
+        } else {
+            courses = courseRepository.findAllCourseDesc(searchText, rating, startCount, endCount, userEntity, status,
+                    orderBy,
+                    PageRequest.of(page - 1, perPage));
         }
-        return new ResponseData(
-                CourseConverter.convertToObjects(courses.getContent().stream().map(CourseConverter::toModel).toList()),
+        return new ResponseData(courses.getContent().stream().map(CourseConverter::toModel).toList(),
                 new ResponsePage(courses.getNumber() + 1, courses.getSize(), courses.getTotalElements(),
                         courses.getTotalPages()));
     }
 
     @Override
     public ResponseData getAllMyCourseStudy() {
-        UserEntity userEntity = queryService.getUserEntity();
-        return new ResponseData(
-                CourseConverter.convertToObjects(courseRepository.findAllCourseByStudents(userEntity).stream()
-                        .map(CourseConverter::toModel).toList()));
+        return new ResponseData(queryService.getCourseStudy().stream()
+                .map(course -> CourseConverter.toModel(course, queryService.getStudentEntityByCourse(course)))
+                .toList());
     }
 
     @Override
@@ -106,10 +104,7 @@ public class CourseServiceImpl implements CourseService {
         courseEntity.setImage(
                 input.getImage() != null ? imageService.upload(input.getImage(), TypeImageConstants.COURSE_IMAGE)
                         : null);
-        courseEntity.setStatus(input.getStatus());
-        courseEntity.setAvgRating(0);
-        courseEntity.setTotalVocal(0L);
-        courseEntity.setTotalStudent(0L);
+        courseEntity.setStatus(CourseValidate.parseStatus(input.getStatus()));
         courseEntity.setCreateAt(now);
         courseEntity.setUpdateAt(now);
         courseEntity.setOwner(queryService.getUserEntity());
@@ -141,7 +136,7 @@ public class CourseServiceImpl implements CourseService {
         CourseEntity courseEntity = queryService.getCourseEntityOnwerById(input.getId());
         courseEntity.setName(input.getName());
         courseEntity.setDescription(input.getDescription());
-        courseEntity.setStatus(input.getStatus());
+        courseEntity.setStatus(CourseValidate.parseStatus(input.getStatus()));
         if (input.getImage() != null) {
             courseEntity.setImage(imageService.upload(input.getImage(), TypeImageConstants.COURSE_IMAGE));
         }
@@ -160,10 +155,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ResponseData getCourseById(Long id) {
-        CourseEntity courseEntity = courseRepository.findByIdAndDeletedFalse(id)
-                .orElseThrow(
-                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
-
+        CourseEntity courseEntity = queryService.getCourseEntityById(id);
         CourseValidate.validateCoursePrivate(courseEntity);
         return createResponseData(courseRepository.save(courseEntity));
     }
@@ -171,27 +163,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ResponseData ratingCourse(RatingCourseInput input) {
         CourseEntity courseEntity = queryService.getCourseEntityById(input.getId());
-        StudentEntity studentEntity = queryService.getStudentEntity(courseEntity);
-        double avgRatingNew = calculatorRatingCourse(courseEntity, input.getRating(), studentEntity);
-        courseEntity.setAvgRating(avgRatingNew);
-        return createResponseData(courseRepository.save(courseEntity));
-
-    }
-
-    private double calculatorRatingCourse(CourseEntity courseEntity, int rating, StudentEntity studentEntity) {
-        double avgRating = courseEntity.getAvgRating();
-        long totalStudentRated = courseEntity.getStudents().stream()
-                .filter(student -> student.getRating() > 0)
-                .count();
-        if (studentEntity.getRating() > 0) {
-            avgRating = (avgRating * totalStudentRated - studentEntity.getRating() + rating) / totalStudentRated;
-        } else {
-            avgRating = (avgRating * totalStudentRated + rating) / (totalStudentRated + 1);
-        }
-        studentEntity.setRating(rating);
+        StudentEntity studentEntity = queryService.getStudentEntityByCourse(courseEntity);
+        studentEntity.setRating(input.getRating());
         studentRepository.save(studentEntity);
-        return avgRating;
-
+        courseEntity.setAvgRating(courseEntity.calculateAverageRating());
+        return createResponseData(courseRepository.save(courseEntity));
 
     }
 

@@ -18,7 +18,7 @@ public class VocabularyConverter {
         model.setId(entity.getId());
         model.setWord(entity.getWord());
         model.setMeaning(entity.getMeaning());
-        model.setPartOfSpeech(entity.getPartOfSpeech());
+        model.setPartOfSpeech(entity.getPartOfSpeech().name());
         model.setCreateAt(entity.getCreateAt());
         model.setUpdateAt(entity.getUpdateAt());
         return model;
@@ -41,7 +41,7 @@ public class VocabularyConverter {
         response.setWord(entity.getVocabulary().getWord());
         response.setMeaning(entity.getMeaning());
         response.setImage(entity.getImage() != null ? entity.getImage() : null);
-        response.setPartOfSpeech(entity.getVocabulary().getPartOfSpeech());
+        response.setPartOfSpeech(entity.getVocabulary().getPartOfSpeech().name());
         return response;
     }
 

@@ -11,30 +11,30 @@ public class ValidateData {
         }
     }
 
-    public static String validatePartOfSpeech(String partOfSpeech){
+    public static PartOfSpeech validatePartOfSpeech(String partOfSpeech){
         if (PartOfSpeech.NOUN.name().equals(partOfSpeech.toUpperCase())) {
-            return PartOfSpeech.NOUN.name();
+            return PartOfSpeech.NOUN;
         }
         if (PartOfSpeech.VERB.name().equals(partOfSpeech.toUpperCase())) {
-            return PartOfSpeech.VERB.name();
+            return PartOfSpeech.VERB;
         }
         if (PartOfSpeech.ADJECTIVE.name().equals(partOfSpeech.toUpperCase())) {
-            return PartOfSpeech.ADJECTIVE.name();
+            return PartOfSpeech.ADJECTIVE;
         }
         if (PartOfSpeech.ADVERB.name().equals(partOfSpeech.toUpperCase())) {
-            return PartOfSpeech.ADVERB.name();
+            return PartOfSpeech.ADVERB;
         }
         if (PartOfSpeech.PRONOUN.name().equals(partOfSpeech.toUpperCase())) {
-            return PartOfSpeech.PRONOUN.name();
+            return PartOfSpeech.PRONOUN;
         }
         if (PartOfSpeech.PREPOSITION.name().equals(partOfSpeech.toUpperCase())) {
-            return PartOfSpeech.PREPOSITION.name();
+            return PartOfSpeech.PREPOSITION;
         }
         if (PartOfSpeech.CONJUNCTION.name().equals(partOfSpeech.toUpperCase())) {
-            return PartOfSpeech.CONJUNCTION.name();
+            return PartOfSpeech.CONJUNCTION;
         }
         if (PartOfSpeech.INTERJECTION.name().equals(partOfSpeech.toUpperCase())) {
-            return PartOfSpeech.INTERJECTION.name();
+            return PartOfSpeech.INTERJECTION;
         }
         throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
     }

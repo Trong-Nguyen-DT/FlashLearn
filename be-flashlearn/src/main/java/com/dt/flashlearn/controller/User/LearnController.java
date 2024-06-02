@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("api/user/learn")
+@RequestMapping("api/user")
 public class LearnController {
 
     @Autowired
@@ -29,43 +28,39 @@ public class LearnController {
     @Autowired
     private ResponseHandler responseHandler;
 
-    @GetMapping("{lessonId}/practice")
-    public ResponseEntity<?> getVocabularyOfLessonPractice(@PathVariable Long lessonId) {
+    @GetMapping("practice/course/{courseId}")
+    public ResponseEntity<?> getVocabularyOfCoursePractice(@PathVariable Long courseId) {
+        try {
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(learnService.getVocabularyOfCoursePractice(courseId)));
+        } catch (MessageException e) {
+            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
+        }
+    }
+
+    @GetMapping("practice/lesson/{lessonId}")
+    public ResponseEntity<?> getVocabularyOfLessonPracticeByLesson(@PathVariable Long lessonId) {
         try {
             return ResponseEntity.ok(responseHandler
-                    .createSuccessResponse(learnService.getVocabularyOfLessonPractice(lessonId)));
+                    .createSuccessResponse(learnService.getVocabularyOfLessonPracticeByLesson(lessonId)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }
     }
 
-    @GetMapping("{lessonId}")
-    public ResponseEntity<?> getVocabularyOfLessonLearn(@PathVariable Long lessonId,
-            @RequestParam(required = true, defaultValue = "1") int studyCount) {
+    @GetMapping("learn/lesson/{lessonId}")
+    public ResponseEntity<?> getVocabularyOfLessonLearn(@PathVariable Long lessonId) {
         try {
-            if (studyCount < 1) {
-                studyCount = 1;
-            }
             return ResponseEntity.ok(responseHandler
-                    .createSuccessResponse(learnService.getVocabularyOfLessonLearn(lessonId, studyCount)));
+                    .createSuccessResponse(learnService.getVocabularyOfLessonLearn(lessonId)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }
     }
 
-    @PostMapping("{lessonId}/practice")
-    public ResponseEntity<?> practiceVocabulary(@PathVariable Long lessonId, @RequestBody LearnInput input) {
+    @PostMapping("learn/{courseId}")
+    public ResponseEntity<?> learnVocabulary(@PathVariable Long courseId, @RequestBody LearnInput input) {
         try {
-            return ResponseEntity.ok(responseHandler.createSuccessResponse(learnService.practiceVocabulary(lessonId, input)));
-        } catch (MessageException e) {
-            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
-        }
-    }
-
-    @PostMapping("{lessonId}")
-    public ResponseEntity<?> learnVocabulary(@PathVariable Long lessonId, @RequestBody LearnInput input) {
-        try {
-            return ResponseEntity.ok(responseHandler.createSuccessResponse(learnService.learnVocabulary(lessonId, input)));
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(learnService.learnVocabulary(courseId, input)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }

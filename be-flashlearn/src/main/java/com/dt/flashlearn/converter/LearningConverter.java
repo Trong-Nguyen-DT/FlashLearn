@@ -9,7 +9,7 @@ public class LearningConverter {
         learningHistory.setId(entity.getId());
         learningHistory.setLearnAt(entity.getLearnAt());
         learningHistory.setExperience(entity.getExperience());
-        learningHistory.setLearnType(entity.getLearnType());
+        learningHistory.setLearnType(entity.getLearnType().name());
         return learningHistory;
     }
 }
