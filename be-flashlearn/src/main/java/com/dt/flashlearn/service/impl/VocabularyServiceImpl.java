@@ -1,6 +1,7 @@
 package com.dt.flashlearn.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,8 +93,9 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     private void saveSimilarWords(List<Word> similarWords, VocabularyEntity entity) {
         LocalDateTime now = LocalDateTime.now();
+        List<String> duplicateWord = new ArrayList<>();
         similarWords.forEach(word -> {
-            boolean isDuplicate = similarWords.stream().anyMatch(w -> w.getWord().equals(word.getWord()));
+            boolean isDuplicate = duplicateWord.stream().anyMatch(w -> w.equals(word.getWord()));
             if (!word.getWord().equals(entity.getWord()) && !isDuplicate) {
                 SimilarWordEntity similarWordEntity = new SimilarWordEntity();
                 similarWordEntity.setWord(word.getWord());
@@ -103,6 +105,7 @@ public class VocabularyServiceImpl implements VocabularyService {
                 similarWordEntity.setUpdateAt(now);
                 similarWordEntity.setDeleted(false);
                 similarWordRepository.save(similarWordEntity);
+                duplicateWord.add(word.getWord());
             }
         });
     }
