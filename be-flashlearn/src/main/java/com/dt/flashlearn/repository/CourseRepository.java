@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.dt.flashlearn.entity.Course.CourseEntity;
+import com.dt.flashlearn.entity.Course.CourseStatus;
 import com.dt.flashlearn.entity.User.UserEntity;
 
 @Repository
@@ -39,7 +40,7 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
                         @Param("startCount") int startCount,
                         @Param("endCount") int endCount,
                         @Param("userEntity") UserEntity userEntity,
-                        @Param("status") String status,
+                        @Param("status") CourseStatus status,
                         @Param("orderBy") String orderBy,
                         Pageable pageable);
 
@@ -66,7 +67,7 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
                         @Param("startCount") int startCount,
                         @Param("endCount") int endCount,
                         @Param("userEntity") UserEntity userEntity,
-                        @Param("status") String status,
+                        @Param("status") CourseStatus status,
                         @Param("orderBy") String orderBy,
                         Pageable pageable);
 
@@ -75,11 +76,11 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
                         "WHERE s.user = :userEntity " +
                         "AND c.deleted = false " +
                         "AND s.deleted = false")
-        List<CourseEntity> findAllCourseByStudents(UserEntity userEntity);
+        List<CourseEntity> findAllCourseByStudentAndDeletedFlase(UserEntity userEntity);
 
         Optional<CourseEntity> findByIdAndDeletedFalse(Long id);
 
-        Optional<CourseEntity> findByIdAndStatusAndDeletedFalse(Long id, String status);
+        Optional<CourseEntity> findByIdAndStatusAndDeletedFalse(Long id, CourseStatus status);
 
         Boolean existsByCodeAndDeletedFalse(String code);
 

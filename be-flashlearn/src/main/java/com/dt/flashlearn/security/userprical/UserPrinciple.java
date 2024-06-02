@@ -32,7 +32,7 @@ public class UserPrinciple implements UserDetails{
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetails build(UserEntity user) {
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().name()));
         return new UserPrinciple(
                 user.getId(),
                 user.getEmail(),

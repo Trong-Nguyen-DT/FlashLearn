@@ -47,9 +47,8 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     @Override
     public ResponseData createNewVocabulary(VocabularyInput input) {
-        input.setPartOfSpeech(ValidateData.validatePartOfSpeech(input.getPartOfSpeech()));
         VocabularyEntity entity = vocabularyRepository
-                .findByWordAndPartOfSpeech(input.getWord(), input.getPartOfSpeech());
+                .findByWordAndPartOfSpeech(input.getWord(), ValidateData.validatePartOfSpeech(input.getPartOfSpeech()));
 
         if (entity != null) {
             if (entity.isDeleted()) {
@@ -71,7 +70,6 @@ public class VocabularyServiceImpl implements VocabularyService {
             VocabularyEntity vocabularyEntity = saveVocabulary(aiResponse.getOriginalWord(), input);
             saveSimilarWords(aiResponse.getSimilarWord(), vocabularyEntity);
             saveSentence(aiResponse.getSentences(), vocabularyEntity);
-
             return new ResponseData(VocabularyConverter.toModel(vocabularyEntity));
         }
     }
@@ -85,7 +83,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         VocabularyEntity entity = new VocabularyEntity();
         entity.setWord(word.getWord());
         entity.setMeaning(word.getMeaning());
-        entity.setPartOfSpeech(vocabulary.getPartOfSpeech());
+        entity.setPartOfSpeech(ValidateData.validatePartOfSpeech(vocabulary.getPartOfSpeech()));
         entity.setCreateAt(now);
         entity.setUpdateAt(now);
         entity.setDeleted(false);
@@ -95,14 +93,17 @@ public class VocabularyServiceImpl implements VocabularyService {
     private void saveSimilarWords(List<Word> similarWords, VocabularyEntity entity) {
         LocalDateTime now = LocalDateTime.now();
         similarWords.forEach(word -> {
-            SimilarWordEntity similarWordEntity = new SimilarWordEntity();
-            similarWordEntity.setWord(word.getWord());
-            similarWordEntity.setMeaning(word.getMeaning());
-            similarWordEntity.setVocabulary(entity);
-            similarWordEntity.setCreateAt(now);
-            similarWordEntity.setUpdateAt(now);
-            similarWordEntity.setDeleted(false);
-            similarWordRepository.save(similarWordEntity);
+            boolean isDuplicate = similarWords.stream().anyMatch(w -> w.getWord().equals(word.getWord()));
+            if (!word.getWord().equals(entity.getWord()) && !isDuplicate) {
+                SimilarWordEntity similarWordEntity = new SimilarWordEntity();
+                similarWordEntity.setWord(word.getWord());
+                similarWordEntity.setMeaning(word.getMeaning());
+                similarWordEntity.setVocabulary(entity);
+                similarWordEntity.setCreateAt(now);
+                similarWordEntity.setUpdateAt(now);
+                similarWordEntity.setDeleted(false);
+                similarWordRepository.save(similarWordEntity);
+            }
         });
     }
 

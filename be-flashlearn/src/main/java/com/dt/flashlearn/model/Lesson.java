@@ -14,7 +14,7 @@ public class Lesson {
     private String image;
     private boolean learned;
     private Long totalVocabOfLesson;
-    private int totalVocabLearned;
+    private Long totalVocabLearned;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 }

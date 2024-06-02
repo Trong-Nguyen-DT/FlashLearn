@@ -3,6 +3,7 @@ package com.dt.flashlearn.controller.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dt.flashlearn.entity.Course.CourseStatus;
 import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.model.request.CourseInput;
 import com.dt.flashlearn.model.request.RatingCourseInput;
@@ -59,9 +60,9 @@ public class CourseUserController {
             String orderBy = sortParts[0];
             String sortBy = sortParts[1];
 
-            status = CourseValidate.parseStatus(status);
+            CourseStatus statusCourse = CourseValidate.parseStatus(status);
 
-            return ResponseEntity.ok(responseHandler.createSuccessResponse(courseService.getAllMyCourse(page, perPage, searchText, rating, startCount, endCount, status, orderBy, sortBy)));
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(courseService.getAllMyCourse(page, perPage, searchText, rating, startCount, endCount, statusCourse, orderBy, sortBy)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }
@@ -79,7 +80,6 @@ public class CourseUserController {
     @PostMapping()
     public ResponseEntity<?> createCourse(@Valid CourseInput input) {
         try {
-            input.setStatus(CourseValidate.parseStatus(input.getStatus()));
             return ResponseEntity.status(HttpStatus.CREATED).body(responseHandler.createCreatedResponse(courseService.createCourse(input)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
@@ -90,7 +90,6 @@ public class CourseUserController {
     public ResponseEntity<?> updateCourse(@Valid CourseInput input) {
         try {
             ValidateData.validateNotNull(input.getId());
-            input.setStatus(CourseValidate.parseStatus(input.getStatus()));
             return ResponseEntity.ok(responseHandler.createSuccessResponse(courseService.updateCourse(input)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));

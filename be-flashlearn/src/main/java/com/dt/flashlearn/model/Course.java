@@ -17,6 +17,7 @@ public class Course {
     private double avgRating;
     private User owner;
     private Long totalVocal;
+    private Long totalVocabLearned;
     private Long totalStudent;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

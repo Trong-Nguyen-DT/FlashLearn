@@ -36,8 +36,6 @@ public class LessonEntity {
     @Size(max = 1024, message = "Mô tả không quá 1024 kí tự")
     private String description;
 
-    private Long totalVocabOfLesson;
-
     private String image;
 
     @NotNull
@@ -53,5 +51,14 @@ public class LessonEntity {
     
     @NotNull
     private boolean deleted;
+
+    public long calculateTotalVocabOfLesson() {
+        return this.vocabularies != null ? this.vocabularies.stream().filter(vocabulary -> !vocabulary.isDeleted()).count() : 0;
+    }
+
+    public long calculateTotalVocabLearned(StudentEntity studentEntity) {
+        return this.vocabularies.stream().filter(vocabulary -> !vocabulary.isDeleted() && studentEntity.getLearningVocabularies().stream()
+                .anyMatch(learningVocabulary -> learningVocabulary.getVocabularyOfLesson().getId().equals(vocabulary.getId()))).count();
+    }
 
 }

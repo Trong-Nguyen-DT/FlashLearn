@@ -11,7 +11,10 @@ import com.dt.flashlearn.exception.MessageException;
 public class CourseValidate {
 
     public static void validateCoursePrivate(CourseEntity entity) {
-        if (entity.getStatus().equals(CourseStatus.PRIVATE.name())) {
+        if (entity.isDeleted()) {
+            throw new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE);
+        }
+        if (entity.getStatus().equals(CourseStatus.PRIVATE)) {
             String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
             boolean isOwner = entity.getOwner().getEmail().equals(currentUserEmail);
             boolean isStudent = entity.getStudents().stream()
@@ -38,14 +41,17 @@ public class CourseValidate {
         }
     }
 
-    public static String parseStatus(String status) {
+    public static CourseStatus parseStatus(String status) {
         if (status.equals("null")) {
             return null;
         }
-        if (!status.equals(CourseStatus.PUBLIC.name()) && !status.equals(CourseStatus.PRIVATE.name())) {
-            throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
+        if (status.equals(CourseStatus.PUBLIC.name())) {
+            return CourseStatus.PUBLIC;
         }
-        return status.toUpperCase();
+        if (status.equals(CourseStatus.PRIVATE.name())) {
+            return CourseStatus.PRIVATE;
+        }
+        throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
     }
 
     public static int[] parseWordCount(String wordCount) {

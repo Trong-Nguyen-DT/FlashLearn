@@ -1,7 +1,6 @@
 package com.dt.flashlearn.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import com.dt.flashlearn.repository.CourseRepository;
 import com.dt.flashlearn.repository.StudentRepository;
 import com.dt.flashlearn.repository.UserRepository;
 import com.dt.flashlearn.service.StudentService;
-import com.dt.flashlearn.validate.CourseValidate;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -39,11 +37,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseData getAllStudentByCourse(Long courseId) {
-        CourseEntity courseEntity = courseRepository.findByIdAndDeletedFalse(courseId)
-                .orElseThrow(
-                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
-
-        CourseValidate.validateCoursePrivate(courseEntity);
+        CourseEntity courseEntity = queryService.getCourseEntityById(courseId);
         return createResponseData(courseEntity);
     }
 
@@ -66,7 +60,6 @@ public class StudentServiceImpl implements StudentService {
                                 courseEntity.getStudents().add(createStudent(userEntity, courseEntity));
                             });
         }
-        courseEntity.setTotalStudent(calculatorStudent(courseEntity));
         courseRepository.save(courseEntity);
         return createResponseData(courseEntity);
     }
@@ -75,7 +68,7 @@ public class StudentServiceImpl implements StudentService {
     public ResponseData joinCourse(Long courseId) {
         UserEntity userEntity = queryService.getUserEntity();
         CourseEntity courseEntity = courseRepository
-                .findByIdAndStatusAndDeletedFalse(courseId, CourseStatus.PUBLIC.name())
+                .findByIdAndStatusAndDeletedFalse(courseId, CourseStatus.PUBLIC)
                 .orElseThrow(
                         () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
 
@@ -88,7 +81,6 @@ public class StudentServiceImpl implements StudentService {
                             }
                         },
                         () -> courseEntity.getStudents().add(createStudent(userEntity, courseEntity)));
-        courseEntity.setTotalStudent(calculatorStudent(courseEntity));
         return new ResponseData(CourseConverter.toModel(courseRepository.save(courseEntity)));
     }
 
@@ -108,7 +100,6 @@ public class StudentServiceImpl implements StudentService {
                             }
                         },
                         () -> courseEntity.getStudents().add(createStudent(userEntity, courseEntity)));
-        courseEntity.setTotalStudent(calculatorStudent(courseEntity));
         return new ResponseData(CourseConverter.toModel(courseRepository.save(courseEntity)));
     }
 
@@ -120,7 +111,6 @@ public class StudentServiceImpl implements StudentService {
         studentEntity.setCreateAt(now);
         studentEntity.setUpdateAt(now);
         studentEntity.setRating(0);
-        studentEntity.setExperienceStudent(0L);
         studentEntity.setDeleted(false);
         return studentRepository.save(studentEntity);
     }
@@ -128,12 +118,8 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public ResponseData removeStudent(Long courseId, Long studentId) {
         CourseEntity courseEntity = queryService.getCourseEntityOnwerById(courseId);
-        StudentEntity studentEntity = courseEntity.getStudents().stream()
-                .filter(student -> student.getId().equals(studentId) && !student.isDeleted()).findFirst()
-                .orElseThrow(
-                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+        StudentEntity studentEntity = queryService.getStudentEntityByCourse(courseEntity);
         studentEntity.setDeleted(true);
-        courseEntity.setTotalStudent(calculatorStudent(courseEntity));
         courseRepository.save(courseEntity);
         return createResponseData(courseEntity);
     }
@@ -147,24 +133,15 @@ public class StudentServiceImpl implements StudentService {
         courseEntity.getStudents().stream().filter(student -> student.getUser().getId().equals(userEntity.getId()))
                 .findFirst().ifPresent(student -> {
                     student.setDeleted(true);
-                    courseEntity.setTotalStudent(calculatorStudent(courseEntity));
                     courseRepository.save(courseEntity);
                 });
         return createResponseData(courseEntity);
 
     }
 
-    private Long calculatorStudent(CourseEntity courseEntity) {
-        AtomicLong totalStudent = new AtomicLong();
-        courseEntity.getStudents().stream().filter(student -> !student.isDeleted())
-                .forEach(student -> totalStudent.getAndIncrement());
-        return totalStudent.get();
-    }
-
     private ResponseData createResponseData(CourseEntity courseEntity) {
-        return new ResponseData(StudentConverter
-        .convertToObjects(courseEntity.getStudents().stream().filter(student -> !student.isDeleted())
-                .map(StudentConverter::toModel).toList()));
+        return new ResponseData(queryService.getAllStudentByCourse(courseEntity).stream().map(StudentConverter::toModel)
+                .toList());
     }
 
 }

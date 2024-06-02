@@ -2,7 +2,11 @@ package com.dt.flashlearn.entity;
 
 import java.time.LocalDate;
 
+import com.dt.flashlearn.entity.Vocabulary.TypeLearn;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,7 +28,9 @@ public class LearningHistoryEntity {
     private Long id;
 
     private LocalDate learnAt;
-    private String learnType;
+    
+    @Enumerated(EnumType.STRING)
+    private TypeLearn learnType;
     private Long experience;
 
     @NotNull

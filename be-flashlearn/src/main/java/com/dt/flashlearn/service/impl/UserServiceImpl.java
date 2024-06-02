@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         entity.setEmail(input.getEmail());
         entity.setPassword(passwordEncoder.encode(input.getPassword()));
         entity.setName(input.getName());
-        entity.setRole(UserRole.ROLE_USER.name());
+        entity.setRole(UserRole.ROLE_USER);
         entity.setPhone(input.getPhone() == null ? null : input.getPhone());
         entity.setCreateAt(now);
         entity.setUpdateAt(now);
