@@ -57,8 +57,118 @@ Tạo ra một môi trường học tập đa dạng và thú vị, khuyến kh�
   - Hệ thống quản lý học sinh giúp giáo viên theo dõi và quản lý học sinh tham gia khóa học của mình một cách dễ dàng.
   - Công cụ tạo đáp án tương tự với kết quả giúp tăng cường độ khó cho bài học và tạo ra trải nghiệm học tập đa dạng và thú vị.
 
-## Use Case Diagram
-![Use Case Diagram](https://github.com/Trong-Nguyen-DT/FlashLearn/assets/103616323/49e86fd3-9c1e-471a-a170-854d5e423a29)
+## Triển khai
 
-## Database Diagram
-![Database Diagram](https://github.com/Trong-Nguyen-DT/FlashLearn/assets/103616323/ef631e85-4dad-455d-bf53-4c91620ad5f7)
+### Database - MySQL
+
+1. Cài đặt MySQL:
+   \`\`\`
+   sudo apt install mysql-server
+   \`\`\`
+2. Tạo user mới và gán quyền:
+   - Tạo user:
+     \`\`\`
+     CREATE USER IF NOT EXISTS 'username' IDENTIFIED BY 'password';
+     \`\`\`
+   - Gán quyền:
+     \`\`\`
+     GRANT ALL PRIVILEGES ON *.* TO 'username'@'%' WITH GRANT OPTION;
+     \`\`\`
+   - Tạo database:
+     \`\`\`
+     CREATE DATABASE IF NOT EXISTS namedatabase;
+     \`\`\`
+3. Chỉnh cấu hình để public MySQL:
+   - Mở file:
+     \`\`\`
+     sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+     \`\`\`
+   - Chỉnh sửa:
+     \`\`\`
+     bind-address = 127.0.0.1
+     \`\`\`
+     thành
+     \`\`\`
+     bind-address = 0.0.0.0
+     \`\`\`
+   - Restart MySQL:
+     \`\`\`
+     sudo systemctl restart mysql
+     \`\`\`
+
+### AIService - Python, FastAPI, Langchain
+
+1. Cài đặt Python và Nginx:
+   \`\`\`
+   sudo apt install -y python3-pip nginx
+   \`\`\`
+2. Cấu hình Nginx:
+   - Mở file:
+     \`\`\`
+     sudo nano /etc/nginx/sites-enabled/project_name
+     \`\`\`
+   - Thêm đoạn sau vào file:
+     \`\`\`
+     server {
+         listen 80;
+         server_name 'địa chỉ ip server hoặc domain';
+         localtion / {
+             proxy_pass http://127.0.0.1:8000;
+         }
+     }
+     \`\`\`
+   - Lưu và restart Nginx:
+     \`\`\`
+     sudo service nginx restart
+     \`\`\`
+3. Clone project.
+4. Chạy dự án:
+   - Tạo và truy cập môi trường ảo:
+     \`\`\`
+     python3 -m venv ~/venv
+     source ~/venv/bin/activate
+     \`\`\`
+   - Cài đặt thư viện:
+     \`\`\`
+     pip install fastapi[all] langchain langchain_google_genai
+     \`\`\`
+   - Mở file .env và nhập GOOGLE_AI_API_KEY hoặc export GOOGLE_AI_API_KEY.
+   - Run:
+     \`\`\`
+     nohup python3 -m app.main &
+     \`\`\`
+
+### BackEnd - Java, Spring boot
+
+1. Cài đặt Java và Maven:
+   \`\`\`
+   sudo apt install openjdk-17-jre-headless maven
+   \`\`\`
+2. Clone project.
+3. Mở file application.properties và thay đổi:
+   \`\`\`
+   spring.datasource.url=jdbc:mysql://ip_server_sql:3306/namedatabase
+   spring.datasource.username=username
+   spring.datasource.password=password
+
+   jwtSecret=key
+   jwtExpiration=thời gian tồn tại của token
+
+   aws.access.key.id=aws_access_key
+   aws.secret.access.key=aws_secret_key
+   endpoint.url=url lưu trữ ảnh
+   ai.url=http://ip_ai_server/api/generate
+   \`\`\`
+4. Build dự án:
+   \`\`\`
+   mvn clean install
+   \`\`\`
+5. Di chuyển đến thư mục target.
+6. Chạy dự án:
+   \`\`\`
+   sudo nohup java -jar flashlearn-0.0.1-SNAPSHOT.jar &
+   \`\`\`
+
+EOF
+
+### FrontEnd - React, TypeScript
