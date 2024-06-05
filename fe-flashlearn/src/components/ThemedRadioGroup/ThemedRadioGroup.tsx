@@ -21,7 +21,8 @@ const ThemedRadioGroup = forwardRef<HTMLDivElement, ThemedRadioGroupProps>(
       scrollToElementIdOnChange = null,
       preventFocusOnScroll = false,
       variant = 'default',
-      maxWidth = 'md',
+      color = 'default',
+      spacing = 1,
       ...props
     },
     ref,
@@ -53,6 +54,27 @@ const ThemedRadioGroup = forwardRef<HTMLDivElement, ThemedRadioGroupProps>(
       scrollToElement();
     };
 
+    const backgroundColor =
+      color === 'default'
+        ? COLOR_CODE.PRIMARY_100
+        : color === 'danger'
+        ? COLOR_CODE.DANGER_BG
+        : COLOR_CODE.SUCCESS_BG;
+
+    const borderColor =
+      color === 'default'
+        ? COLOR_CODE.PRIMARY
+        : color === 'danger'
+        ? COLOR_CODE.DANGER
+        : COLOR_CODE.SUCCESS;
+
+    const shadowColor =
+      color === 'default'
+        ? COLOR_CODE.PRIMARY_400
+        : color === 'danger'
+        ? COLOR_CODE.DANGER
+        : COLOR_CODE.SUCCESS;
+
     return (
       <div ref={ref}>
         <Element
@@ -70,9 +92,9 @@ const ThemedRadioGroup = forwardRef<HTMLDivElement, ThemedRadioGroupProps>(
           >
             <Grid
               container
-              spacing={1}
+              spacing={spacing}
               margin={variant === 'square' ? 'auto' : 'default'}
-              maxWidth={variant === 'square' ? 'sm' : maxWidth}
+              maxWidth={variant === 'square' ? 'sm' : '100%'}
             >
               {options.map(({ label, value: optionValue, shortcutKey, disabled }) => {
                 const active = value === optionValue;
@@ -83,14 +105,12 @@ const ThemedRadioGroup = forwardRef<HTMLDivElement, ThemedRadioGroupProps>(
                       direction="row"
                       sx={{
                         p: 2,
-                        backgroundColor: active ? COLOR_CODE.PRIMARY_100 : 'white',
-                        border: `3px solid ${active ? COLOR_CODE.PRIMARY : COLOR_CODE.GREY_200}`,
+                        backgroundColor: active ? backgroundColor : 'white',
+                        border: `3px solid ${active ? borderColor : COLOR_CODE.GREY_200}`,
                         borderRadius: 3,
                         cursor: 'pointer',
                         alignItems: 'center',
-                        boxShadow: `4px 4px 0px ${
-                          active ? COLOR_CODE.PRIMARY_400 : COLOR_CODE.GREY_200
-                        }`,
+                        boxShadow: `4px 4px 0px ${active ? shadowColor : COLOR_CODE.GREY_200}`,
                         ':hover': {
                           backgroundColor: active ? COLOR_CODE.PRIMARY_200 : COLOR_CODE.GREY_50,
                           boxShadow: `4px 4px 0px ${
@@ -108,9 +128,9 @@ const ThemedRadioGroup = forwardRef<HTMLDivElement, ThemedRadioGroupProps>(
                           justifyContent: 'center',
                           margin: 'auto',
                           ':after': {
-                            content: '',
+                            content: "''",
                             display: 'block',
-                            paddingBottom: '100%',
+                            paddingBottom: '50%',
                           },
                         }),
                       }}
@@ -124,9 +144,12 @@ const ThemedRadioGroup = forwardRef<HTMLDivElement, ThemedRadioGroupProps>(
                         sx={{
                           ...(variant === 'square' && {
                             position: 'absolute',
-                            top: 0,
-                            left: 0,
+                            top: 8,
+                            left: 8,
                           }),
+                          '&.Mui-checked': {
+                            color: active && borderColor,
+                          },
                         }}
                       />
                       <Stack direction="row" alignItems="center" gap={2} px={1}>

@@ -47,7 +47,7 @@ const NewWord: React.FC<Props> = ({ vocabulary, step, setStep }) => {
           {vocabulary.meaning}
         </Typography>
       </Stack>
-      <LearnFooter isAnswered={true} step={step} setStep={setStep}  />
+      <LearnFooter isAnswered={true} handleNext={() => setStep(step + 1)} />
     </Stack>
   );
 };

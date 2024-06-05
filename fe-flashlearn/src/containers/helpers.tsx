@@ -50,6 +50,7 @@ export const routerGroup = [
   { path: PATHS.lessonsList, element: <CourseDetail />, isRequireAuth: false },
   { path: PATHS.learning, element: <Learn />, isRequireAuth: true },
   { path: PATHS.practiceLesson, element: <Learn />, isRequireAuth: true },
+  { path: PATHS.practiceCourse, element: <Learn />, isRequireAuth: true },
   { path: PATHS.practice, element: <CourseDetail />, isRequireAuth: true },
   { path: PATHS.rankList, element: <CourseDetail />, isRequireAuth: true },
   { path: PATHS.studentsList, element: <CourseDetail />, isRequireAuth: true },

@@ -1,30 +1,35 @@
-import { COLOR_CODE, IMAGES } from '@appConfig';
+import { COLOR_CODE, IMAGES, PATHS } from '@appConfig';
 import { Image } from '@components';
 import { Stack, Typography } from '@mui/material';
-import { ProgressPayload, useUpdateLearnProgress } from '@queries';
+import { LearnQuestionResponse, ProgressPayload } from '@queries';
 import { Callback } from '@utils';
+import { useNavigate } from 'react-router-dom';
 import LearnFooter from '../Footer';
 import PreviewItem from './PreviewItem';
-import { useEffect } from 'react';
+import { GoGoal } from 'react-icons/go';
+import { FaBoltLightning } from 'react-icons/fa6';
 
 type Props = {
   courseId: string;
   xp: ProgressPayload[];
   step: number;
   setStep: Callback;
+  learnContent: LearnQuestionResponse;
 };
 
-const Preview: React.FC<Props> = ({ xp, step, setStep, courseId }) => {
-  const { onUpdateLearnProgress, isLoading } = useUpdateLearnProgress();
+const Preview: React.FC<Props> = ({ xp, courseId, learnContent }) => {
+  const navigate = useNavigate();
 
-  const totalXP = xp.reduce((acc, item) => acc + item.quality, 0);
-  console.log("🚀 ~ totalXP:", totalXP)
+  const totalXP = ((xp.reduce((acc, item) => acc + item.quality, 0) / 6) * 1000).toFixed(0);
 
-  useEffect(() => {
-    
-    onUpdateLearnProgress({ courseId: courseId, learningVocabularies: xp });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const totalCorrect = (
+    (xp.reduce((acc, item) => acc + Math.floor(item.quality), 0) / learnContent.questions.length) *
+    100
+  ).toFixed(0);
+
+  const handleNext = () => {
+    navigate(PATHS.courseDetail.replace(':courseId', courseId));
+  };
 
   return (
     <Stack
@@ -53,11 +58,24 @@ const Preview: React.FC<Props> = ({ xp, step, setStep, courseId }) => {
           </Stack>
         </Stack>
         <Typography fontSize={40} fontWeight={700} color={COLOR_CODE.GREY_600}>
-          Bạn đã Hoàn thành bài học
+          Bạn đã hoàn thành bài học
         </Typography>
-        <PreviewItem title="Tổng Điểm XP" content={totalXP.toString()} />
+        <Stack direction={'row'} gap={2}>
+          <PreviewItem
+            title="Tổng Điểm XP"
+            content={totalXP.toString()}
+            icon={<FaBoltLightning color={COLOR_CODE.PRIMARY} size={50} />}
+            color={COLOR_CODE.PRIMARY}
+          />
+          <PreviewItem
+            title="Chính Xác"
+            content={`${totalCorrect.toString()}%`}
+            icon={<GoGoal color={COLOR_CODE.SUCCESS} size={50} />}
+            color={COLOR_CODE.SUCCESS}
+          />
+        </Stack>
       </Stack>
-      <LearnFooter isAnswered={true} step={step} setStep={setStep} />
+      <LearnFooter isAnswered={true} handleNext={handleNext} />
     </Stack>
   );
 };

@@ -17,15 +17,17 @@ export type StepContent = {
 
 export const getInitStepContent = (learnContent: LearnQuestionResponse): StepContent[] => {
   if (learnContent) {
-    const newWordSteps: StepContent[] = learnContent.vocabularyNew.map((item) => ({
-      newWord: item,
-      type: StepType.NEW_WORD,
-    }));
-    const questionSteps: StepContent[] = learnContent.questions.map((item) => ({
-      question: item,
-      type: StepType.QUESTION,
-      repeat: 0,
-    }));
+    const newWordSteps: StepContent[] =
+      learnContent.vocabularyNew?.map((item) => ({
+        newWord: item,
+        type: StepType.NEW_WORD,
+      })) ?? [];
+    const questionSteps: StepContent[] =
+      learnContent.questions?.map((item) => ({
+        question: item,
+        type: StepType.QUESTION,
+        repeat: 0,
+      })) ?? [];
     const previewSteps: StepContent = {
       type: StepType.PREVIEW,
     };

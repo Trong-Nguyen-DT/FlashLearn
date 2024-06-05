@@ -1,6 +1,7 @@
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import LearnLesson from './LearnLesson';
 import PracticeLesson from './PracticeLesson';
+import PracticeCourse from './PracticeCourse';
 
 const Learn = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -18,6 +19,8 @@ const Learn = () => {
     switch (tab) {
       case 'practice-lesson':
         return <PracticeLesson lessonId={lessonId} courseId={courseId} />;
+      case 'practice-course':
+        return <PracticeCourse courseId={courseId} />;
       default:
         return <LearnLesson lessonId={lessonId} courseId={courseId} />;
     }

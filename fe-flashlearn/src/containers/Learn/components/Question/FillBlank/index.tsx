@@ -11,9 +11,18 @@ type Props = {
   answer: string;
   setAnswer: Callback;
   repeat: number;
+  isAnswer?: boolean;
+  isCorrect?: boolean;
 };
 
-const FillBlank: React.FC<Props> = ({ question, answer, setAnswer, repeat }) => {
+const FillBlank: React.FC<Props> = ({
+  question,
+  answer,
+  setAnswer,
+  repeat,
+  isAnswer,
+  isCorrect,
+}) => {
   const sentence = useMemo(() => question.question.split(':')[0], [question]);
 
   const options = useMemo(
@@ -39,6 +48,7 @@ const FillBlank: React.FC<Props> = ({ question, answer, setAnswer, repeat }) => 
           options={options}
           value={answer}
           onChange={(_name, value) => setAnswer(value)}
+          color={isAnswer ? (isCorrect ? 'success' : 'danger') : 'default'}
         />
       </Stack>
     </Stack>

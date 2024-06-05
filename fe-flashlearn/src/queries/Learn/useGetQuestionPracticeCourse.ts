@@ -5,7 +5,7 @@ import { ApiKey } from '../keys';
 import { LearnQuestionResponse } from './type';
 import { LearnApi } from '.';
 
-export function useGetQuestionPracticeLesson(
+export function useGetQuestionPracticeCourse(
   options?: UseQueryOptions<
     ApiResponseType<LearnQuestionResponse>,
     Error,
@@ -17,7 +17,7 @@ export function useGetQuestionPracticeLesson(
   },
 ) {
   const handleGetQuestionLearn: QueryFunction<ApiResponseType<LearnQuestionResponse>> = () =>
-    responseWrapper<ApiResponseType<LearnQuestionResponse>>(LearnApi.getQuestionPracticeLesson, [
+    responseWrapper<ApiResponseType<LearnQuestionResponse>>(LearnApi.getQuestionPracticeCourse, [
       options?.id,
     ]);
 
@@ -28,7 +28,7 @@ export function useGetQuestionPracticeLesson(
     isFetching: isLoading,
     isSuccess,
   } = useQuery<ApiResponseType<LearnQuestionResponse>, Error, LearnQuestionResponse>(
-    [ApiKey.PRACTICE_LESSON, options?.id],
+    [ApiKey.PRACTICE_COURSE, options.id],
     {
       queryFn: handleGetQuestionLearn,
       notifyOnChangeProps: ['data', 'isFetching'],
@@ -58,8 +58,8 @@ export function useGetQuestionPracticeLesson(
 
   const queryClient = useQueryClient();
 
-  const handleInvalidateQuestionPracticeLesson = () =>
-    queryClient.invalidateQueries([ApiKey.PRACTICE_LESSON, options?.id]);
+  const handleInvalidateQuestionPracticeCourse = () =>
+    queryClient.invalidateQueries([ApiKey.PRACTICE_COURSE, options?.id]);
 
   return {
     question: data,
@@ -67,6 +67,6 @@ export function useGetQuestionPracticeLesson(
     error,
     isLoading: isLoading,
     isSuccess,
-    handleInvalidateQuestionPracticeLesson,
+    handleInvalidateQuestionPracticeCourse,
   };
 }

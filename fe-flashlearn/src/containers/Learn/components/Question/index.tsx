@@ -1,13 +1,24 @@
 import { Stack } from '@mui/material';
-import { ProgressPayload, QuestionResponse, TypeQuestion } from '@queries';
-import LearnFooter, { FooterType } from '../Footer';
+import {
+  ProgressPayload,
+  QuestionResponse,
+  TypeQuestion,
+  useGetLesson,
+  useGetMyLearningCourse,
+  useGetQuestionPracticeCourse,
+  useGetQuestionPracticeLesson,
+  useGetStudents,
+  useUpdateLearnProgress,
+} from '@queries';
+import { Toastify } from '@services';
 import { Callback } from '@utils';
-import FillBlank from './FillBlank';
 import { useState } from 'react';
+import { StepContent, StepType } from '../../helpers';
+import LearnFooter, { FooterType } from '../Footer';
+import FillBlank from './FillBlank';
+import ListenToWord from './ListenToWord';
 import MultipleChoice from './MultipleChoice';
 import WordToListen from './WordToListen';
-import ListenToWord from './ListenToWord';
-import { StepContent, StepType } from '../../helpers';
 
 type Props = {
   question: QuestionResponse;
@@ -18,6 +29,8 @@ type Props = {
   repeat: number;
   stepContent: StepContent[];
   setStepContent: Callback;
+  courseId: string;
+  invalidCallback: Callback;
 };
 
 const Question: React.FC<Props> = ({
@@ -29,12 +42,36 @@ const Question: React.FC<Props> = ({
   repeat = 0,
   stepContent,
   setStepContent,
+  courseId,
+  invalidCallback,
 }) => {
   const [answer, setAnswer] = useState<string>(null);
   const [isCorrect, setIsCorrect] = useState<boolean>(null);
+  const { handleInvalidateLessonList } = useGetLesson({ courseId });
+  const { handleInvalidateStudentList } = useGetStudents({ courseId });
+  const { handleInvalidateMyLearningCourseList } = useGetMyLearningCourse();
+  const { handleInvalidateQuestionPracticeCourse } = useGetQuestionPracticeCourse({
+    id: courseId,
+  });
+  const { handleInvalidateQuestionPracticeLesson } = useGetQuestionPracticeLesson();
+  const { onUpdateLearnProgress, isLoading } = useUpdateLearnProgress({
+    onSuccess() {
+      handleInvalidateLessonList();
+      handleInvalidateStudentList();
+      handleInvalidateMyLearningCourseList();
+      handleInvalidateQuestionPracticeCourse();
+      handleInvalidateQuestionPracticeLesson();
+      invalidCallback();
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError(error: any) {
+      Toastify.error(error.message?.[0]?.errorMessage);
+    },
+  });
+
+  const correctAnswer = question.answers.find((item) => item.correct);
 
   const handleCheck = () => {
-    const correctAnswer = question.answers.find((item) => item.correct);
     if (answer === correctAnswer.title) {
       setIsCorrect(true);
       const exist = xp.find((item) => item.id === question.id);
@@ -57,6 +94,9 @@ const Question: React.FC<Props> = ({
     setAnswer(null);
     setIsCorrect(null);
     setStep(step + 1);
+    if (step === stepContent.length - 2) {
+      onUpdateLearnProgress({ courseId: courseId, learningVocabularies: xp });
+    }
   };
 
   return (
@@ -70,23 +110,53 @@ const Question: React.FC<Props> = ({
       }}
     >
       {question.typeQuestion === TypeQuestion.FILL_THE_BLANK && (
-        <FillBlank question={question} answer={answer} setAnswer={setAnswer} repeat={repeat} />
+        <FillBlank
+          question={question}
+          answer={answer}
+          setAnswer={setAnswer}
+          repeat={repeat}
+          isCorrect={isCorrect}
+          isAnswer={isCorrect !== null}
+        />
       )}
       {question.typeQuestion === TypeQuestion.MULTIPLE_CHOICE && (
-        <MultipleChoice question={question} answer={answer} setAnswer={setAnswer} repeat={repeat} />
+        <MultipleChoice
+          question={question}
+          answer={answer}
+          setAnswer={setAnswer}
+          repeat={repeat}
+          isCorrect={isCorrect}
+          isAnswer={isCorrect !== null}
+        />
       )}
       {question.typeQuestion === TypeQuestion.WORD_TO_LISTENING && (
-        <WordToListen question={question} answer={answer} setAnswer={setAnswer} repeat={repeat} />
+        <WordToListen
+          question={question}
+          answer={answer}
+          setAnswer={setAnswer}
+          repeat={repeat}
+          isCorrect={isCorrect}
+          isAnswer={isCorrect !== null}
+        />
       )}
       {question.typeQuestion === TypeQuestion.LISTENING_TO_WORD && (
-        <ListenToWord question={question} answer={answer} setAnswer={setAnswer} repeat={repeat} />
+        <ListenToWord
+          question={question}
+          answer={answer}
+          setAnswer={setAnswer}
+          repeat={repeat}
+          isCorrect={isCorrect}
+          isAnswer={isCorrect !== null}
+        />
       )}
       <LearnFooter
         isAnswered={isCorrect !== null}
         variant={isCorrect ? FooterType.CORRECT : isCorrect === false ? FooterType.INCORRECT : null}
-        step={step}
-        setStep={handleNext}
+        handleNext={handleNext}
         handleCheck={handleCheck}
+        isDisableCheck={!answer}
+        isLoading={isLoading}
+        correctAnswer={correctAnswer.title}
       />
     </Stack>
   );

@@ -30,7 +30,7 @@ const LearnHeader: React.FC<Props> = ({ courseId, stepContent, step }) => {
           message={`Đợi chút, đừng đi mà! Bạn sẽ mất hết tiến trình của bài học này nếu thoát bây giờ`}
           image={IMAGES.dontImage}
           yesText="Tiếp tục học"
-          noText="Dừng Học"
+          noText="Dừng lại"
         />
       ),
       maxWidth: 'sm',

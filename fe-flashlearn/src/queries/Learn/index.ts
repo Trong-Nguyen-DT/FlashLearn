@@ -6,3 +6,4 @@ export * from './type';
 export * from './useGetQuestionLean';
 export * from './useGetQuestionPracticeLesson';
 export * from './useUpdateLearnProgress';
+export * from './useGetQuestionPracticeCourse';

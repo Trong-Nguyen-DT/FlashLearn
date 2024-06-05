@@ -7,13 +7,15 @@ import { StepContent, StepType, getInitStepContent } from '../../helpers';
 import NewWord from '../NewWord';
 import Question from '../Question';
 import Preview from '../Preview';
+import { Callback } from '@utils';
 
 type Props = {
   learnContent: LearnQuestionResponse;
   courseId: string;
+  invalidCallback: Callback;
 };
 
-const LearnContainer: React.FC<Props> = ({ learnContent, courseId }) => {
+const LearnContainer: React.FC<Props> = ({ learnContent, courseId, invalidCallback }) => {
   const isMobileScreen = useMediaQuery('(max-width: 840px)');
   const [step, setStep] = useState<number>(0);
   const [stepContent, setStepContent] = useState<StepContent[]>([]);
@@ -49,10 +51,18 @@ const LearnContainer: React.FC<Props> = ({ learnContent, courseId }) => {
           repeat={currentStep.repeat}
           stepContent={stepContent}
           setStepContent={setStepContent}
+          courseId={courseId}
+          invalidCallback={invalidCallback}
         />
       )}
       {currentStep?.type === StepType.PREVIEW && (
-        <Preview xp={xp} step={step} setStep={setStep} courseId={courseId} />
+        <Preview
+          xp={xp}
+          step={step}
+          setStep={setStep}
+          courseId={courseId}
+          learnContent={learnContent}
+        />
       )}
     </Stack>
   );

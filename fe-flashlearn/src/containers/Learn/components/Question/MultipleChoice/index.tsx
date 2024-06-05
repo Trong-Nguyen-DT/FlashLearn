@@ -3,7 +3,6 @@ import { ThemedRadioGroup } from '@components';
 import { Stack, Typography } from '@mui/material';
 import { QuestionResponse } from '@queries';
 import { Callback } from '@utils';
-import { useMemo } from 'react';
 import RepeatIcon from '../../RepeatIcon';
 
 type Props = {
@@ -11,17 +10,22 @@ type Props = {
   answer: string;
   setAnswer: Callback;
   repeat: number;
+  isAnswer?: boolean;
+  isCorrect?: boolean;
 };
 
-const MultipleChoice: React.FC<Props> = ({ question, answer, setAnswer, repeat }) => {
-  const options = useMemo(
-    () =>
-      question.answers.map((item) => ({
-        label: item.title,
-        value: item.title,
-      })),
-    [question],
-  );
+const MultipleChoice: React.FC<Props> = ({
+  question,
+  answer,
+  setAnswer,
+  repeat,
+  isAnswer,
+  isCorrect,
+}) => {
+  const options = question.answers.map((item) => ({
+    label: item.title,
+    value: item.title,
+  }));
 
   return (
     <Stack width={'100%'} sx={{ alignItems: 'center' }} gap={1}>
@@ -38,6 +42,7 @@ const MultipleChoice: React.FC<Props> = ({ question, answer, setAnswer, repeat }
           options={options}
           value={answer}
           onChange={(_name, value) => setAnswer(value)}
+          color={isAnswer ? (isCorrect ? 'success' : 'danger') : 'default'}
         />
       </Stack>
     </Stack>

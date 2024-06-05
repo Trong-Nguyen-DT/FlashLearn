@@ -15,6 +15,7 @@ import LessonDetail from '../LessonDetail';
 import LessonList from '../LessonList';
 import StudentList from '../Student/StudentList';
 import { courseDetailBreadCrumb, courseTabs, studentTabs, teacherTabs } from './helpers';
+import Practice from '../Practice';
 
 const CourseDetail = () => {
   const isMobileScreen = useMediaQuery('(max-width: 840px)');
@@ -61,6 +62,8 @@ const CourseDetail = () => {
         return <LessonList isOwner={isOwner} />;
       case 'lesson':
         return <LessonDetail />;
+      case 'practice':
+        return <Practice courseId={courseId} />;
       case 'students':
         return <StudentList />;
       default:

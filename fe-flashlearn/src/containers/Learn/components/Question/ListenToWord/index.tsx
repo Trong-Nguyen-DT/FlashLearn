@@ -12,9 +12,18 @@ type Props = {
   answer: string;
   setAnswer: Callback;
   repeat: number;
+  isAnswer?: boolean;
+  isCorrect?: boolean;
 };
 
-const ListenToWord: React.FC<Props> = ({ question, answer, setAnswer, repeat }) => {
+const ListenToWord: React.FC<Props> = ({
+  question,
+  answer,
+  setAnswer,
+  repeat,
+  isAnswer,
+  isCorrect,
+}) => {
   const options = useMemo(
     () =>
       question.answers.map((item) => ({
@@ -51,6 +60,7 @@ const ListenToWord: React.FC<Props> = ({ question, answer, setAnswer, repeat }) 
           options={options}
           value={answer}
           onChange={(_name, value) => setAnswer(value)}
+          color={isAnswer ? (isCorrect ? 'success' : 'danger') : 'default'}
         />
       </Stack>
     </Stack>

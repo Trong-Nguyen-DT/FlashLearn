@@ -1,5 +1,6 @@
 import { useGetQuestionPracticeLesson } from '@queries';
 import LearnContainer from '../components/LearnContainer';
+import { Loading } from '@components';
 
 type Props = {
   lessonId: string;
@@ -7,9 +8,18 @@ type Props = {
 };
 
 const PracticeLesson: React.FC<Props> = ({ lessonId, courseId }) => {
-  const { question } = useGetQuestionPracticeLesson({ id: lessonId });
+  const { question, isLoading, handleInvalidateQuestionPracticeLesson } =
+    useGetQuestionPracticeLesson({ id: lessonId });
 
-  return <LearnContainer learnContent={question} courseId={courseId} />;
+  if (isLoading) return <Loading />;
+
+  return (
+    <LearnContainer
+      learnContent={question}
+      courseId={courseId}
+      invalidCallback={handleInvalidateQuestionPracticeLesson}
+    />
+  );
 };
 
 export default PracticeLesson;

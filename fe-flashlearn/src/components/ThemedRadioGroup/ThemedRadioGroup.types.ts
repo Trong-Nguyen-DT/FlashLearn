@@ -26,7 +26,10 @@ export type ThemedRadioGroupProps = Omit<MuiRadioGroupProps, 'onChange' | 'onBlu
     scrollToElementIdOnChange?: string | null;
     preventFocusOnScroll?: boolean;
     variant?: ThemedRadioGroupVariant;
+    color?: RadioGroupColor;
     maxWidth?: Breakpoint;
+    spacing?: number;
   };
 
 export type ThemedRadioGroupVariant = 'default' | 'square';
+export type RadioGroupColor = 'default' | 'danger' | 'success';

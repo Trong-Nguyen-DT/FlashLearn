@@ -29,7 +29,11 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
   };
 
   const getQuestionPracticeLesson = (id: string) => {
-    return api.get(`${ApiKey.USERS}${ApiKey.PRACTICE}${ApiKey.LEARN}/${id}`);
+    return api.get(`${ApiKey.USERS}${ApiKey.PRACTICE}${ApiKey.LESSON}/${id}`);
+  };
+
+  const getQuestionPracticeCourse = (id: string) => {
+    return api.get(`${ApiKey.USERS}${ApiKey.PRACTICE}${ApiKey.COURSE}/${id}`);
   };
 
   const updateLearnProgress = (payload: updateLearnProgressPayload) => {
@@ -41,6 +45,7 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     getQuestionLearn,
     getQuestionPracticeLesson,
     updateLearnProgress,
+    getQuestionPracticeCourse,
   };
 };
 
