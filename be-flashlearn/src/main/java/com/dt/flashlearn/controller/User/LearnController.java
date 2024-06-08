@@ -28,6 +28,15 @@ public class LearnController {
     @Autowired
     private ResponseHandler responseHandler;
 
+    @GetMapping("practice/course/{courseId}/listen")
+    public ResponseEntity<?> getVocabularyOfCoursePracticeListen(@PathVariable Long courseId) {
+        try {
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(learnService.getVocabularyOfCoursePracticeListen(courseId)));
+        } catch (MessageException e) {
+            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
+        }
+    }
+
     @GetMapping("practice/course/{courseId}")
     public ResponseEntity<?> getVocabularyOfCoursePractice(@PathVariable Long courseId) {
         try {

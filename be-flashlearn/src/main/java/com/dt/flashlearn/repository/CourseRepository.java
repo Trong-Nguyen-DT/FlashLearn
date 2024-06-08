@@ -75,7 +75,8 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
                         "JOIN c.students s " +
                         "WHERE s.user = :userEntity " +
                         "AND c.deleted = false " +
-                        "AND s.deleted = false")
+                        "AND s.deleted = false " +
+                        "ORDER BY s.updateAt DESC")
         List<CourseEntity> findAllCourseByStudentAndDeletedFlase(UserEntity userEntity);
 
         Optional<CourseEntity> findByIdAndDeletedFalse(Long id);

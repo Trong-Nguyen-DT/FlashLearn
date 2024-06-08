@@ -17,6 +17,8 @@ public interface StudentService {
 
     ResponseData leaveCourse(Long courseId);
 
+    ResponseData getRankByCourse(Long courseId, String orderBy);
+
     
     
 }

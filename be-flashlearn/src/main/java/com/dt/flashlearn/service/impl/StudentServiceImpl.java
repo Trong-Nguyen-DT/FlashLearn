@@ -1,6 +1,11 @@
 package com.dt.flashlearn.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +18,7 @@ import com.dt.flashlearn.entity.Course.CourseEntity;
 import com.dt.flashlearn.entity.Course.CourseStatus;
 import com.dt.flashlearn.entity.User.UserEntity;
 import com.dt.flashlearn.exception.MessageException;
+import com.dt.flashlearn.model.Student;
 import com.dt.flashlearn.model.request.AddStudentInput;
 import com.dt.flashlearn.model.response.ResponseData;
 import com.dt.flashlearn.repository.CourseRepository;
@@ -142,6 +148,40 @@ public class StudentServiceImpl implements StudentService {
     private ResponseData createResponseData(CourseEntity courseEntity) {
         return new ResponseData(queryService.getAllStudentByCourse(courseEntity).stream().map(StudentConverter::toModel)
                 .toList());
+    }
+
+    @Override
+    public ResponseData getRankByCourse(Long courseId, String orderBy){
+        CourseEntity courseEntity = queryService.getCourseEntityById(courseId);
+        LocalDate date = getConditionDate(orderBy);
+        return new ResponseData(getStudentByRank(queryService.getAllStudentByCourse(courseEntity), date));
+    }
+
+    private List<Student> getStudentByRank(List<StudentEntity> studentEntities, LocalDate date) {
+        List<Student> students = new ArrayList<>();
+        for (StudentEntity studentEntity : studentEntities) {
+            Student student = StudentConverter.toModel(studentEntity);
+            student.setExperience(studentEntity.calculateExperienceByTime(date));
+            students.add(student);
+        }
+        Collections.sort(students, Comparator.comparingLong(Student::getExperience).reversed());
+        return students;
+    }
+
+    private LocalDate getConditionDate(String orderBy) {
+        LocalDate date = LocalDate.now();
+        switch (orderBy) {
+            case "day":
+                return date.minusDays(1);
+            case "week":
+                return date.minusWeeks(1);
+            case "month":
+                return date.minusMonths(1);
+            case "total":
+                return null;
+            default:
+                return date;
+        }
     }
 
 }

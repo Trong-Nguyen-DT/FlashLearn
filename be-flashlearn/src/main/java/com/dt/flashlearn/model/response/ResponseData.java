@@ -1,7 +1,5 @@
 package com.dt.flashlearn.model.response;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 

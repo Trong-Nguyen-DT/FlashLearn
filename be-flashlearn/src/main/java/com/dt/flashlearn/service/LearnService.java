@@ -13,4 +13,6 @@ public interface LearnService {
 
     ResponseData learnVocabulary(Long courseId, LearnInput input);
 
+    ResponseData getVocabularyOfCoursePracticeListen(Long courseId);
+
 }

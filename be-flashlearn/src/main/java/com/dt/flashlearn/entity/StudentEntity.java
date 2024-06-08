@@ -1,5 +1,6 @@
 package com.dt.flashlearn.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -61,5 +62,11 @@ public class StudentEntity {
 
     public long calculateTotalExperience() {
         return this.learningHistories.stream().mapToLong(history -> history.getExperience()).sum();
+    }
+
+    public long calculateExperienceByTime(LocalDate time) {
+        return this.learningHistories.stream()
+                .filter(history -> history.getLearnAt().isAfter(time))
+                .mapToLong(history -> history.getExperience()).sum();
     }
 }

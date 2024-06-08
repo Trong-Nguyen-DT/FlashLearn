@@ -45,6 +45,15 @@ public class StudentController {
         }
     }
 
+    @GetMapping("rank/{courseId}")
+    public ResponseEntity<?> getRankByCourse(@PathVariable Long courseId, @RequestParam(required = false, defaultValue = "day") String period) {
+        try {
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(studentService.getRankByCourse(courseId, ValidateData.validateOrderBy(period))));
+        } catch (MessageException e) {
+            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
+        }
+    }
+
     @PostMapping()
     public ResponseEntity<?> addStudent(@RequestBody AddStudentInput input) {
         try {

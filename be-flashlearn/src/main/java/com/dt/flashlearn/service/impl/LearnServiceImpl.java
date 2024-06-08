@@ -1,6 +1,7 @@
 package com.dt.flashlearn.service.impl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +26,7 @@ import com.dt.flashlearn.model.response.ResponseData;
 import com.dt.flashlearn.model.response.learn.LearnResponse;
 import com.dt.flashlearn.model.response.learn.QuestionLearn;
 import com.dt.flashlearn.model.response.learn.VocabularyLearn;
+import com.dt.flashlearn.repository.CourseRepository;
 import com.dt.flashlearn.repository.LearningHistoryRepository;
 import com.dt.flashlearn.repository.LearningVocabularyRepository;
 import com.dt.flashlearn.repository.StudentRepository;
@@ -101,6 +103,20 @@ public class LearnServiceImpl implements LearnService {
                 return new ResponseData(learnResponse);
         }
 
+        @Override
+        public ResponseData getVocabularyOfCoursePracticeListen(Long courseId) {
+                List<LearningVocabularyEntity> learningVocabularyEntities = queryService
+                                .getLearningVocabularyEntityByStudent(queryService.getCourseEntityById(courseId), 4);
+                LearnResponse learnResponse = new LearnResponse();
+                learnResponse.setVocabularyOld(learningVocabularyEntities.stream()
+                                .map(vocabulary -> VocabularyConverter
+                                                .vocabularyOfLessonToVocabularyReponse(
+                                                                vocabulary.getVocabularyOfLesson()))
+                                .toList());
+                learnResponse.setQuestions(createQuestionLearnsListen(learningVocabularyEntities));
+                return new ResponseData(learnResponse);
+        }
+
         private List<QuestionLearn> createQuestionLearns(List<VocabularyOfLessonEntity> vocabulariesNew,
                         List<LearningVocabularyEntity> vocabulariesOld) {
                 List<QuestionLearn> questionLearns = new ArrayList<>();
@@ -112,20 +128,39 @@ public class LearnServiceImpl implements LearnService {
                 return questionLearns;
         }
 
+        private List<QuestionLearn> createQuestionLearnsListen(List<LearningVocabularyEntity> vocabulariesOld) {
+                List<QuestionLearn> questionLearns = new ArrayList<>();
+                vocabulariesOld.forEach(
+                                vocabulary -> questionLearns
+                                                .addAll(createQuestionLearnsListen(vocabulary.getVocabularyOfLesson())));
+                Collections.shuffle(questionLearns);
+                return questionLearns;
+        }
+
+        private List<QuestionLearn> createQuestionLearnsListen(VocabularyOfLessonEntity entity) {
+                List<QuestionLearn> questionLearns = new ArrayList<>();
+                questionLearns.add(createQuestion(entity, TypeQuestion.LISTENING_TO_WORD.name(),
+                                entity.getVocabulary().getWord(), entity.getVocabulary().getWord(), false));
+                questionLearns.add(createQuestion(entity, TypeQuestion.WORD_TO_LISTENING.name(),
+                                entity.getVocabulary().getWord(), entity.getVocabulary().getMeaning(), false));
+                return questionLearns;
+        }
+
         private List<QuestionLearn> createQuestionLearnNew(VocabularyOfLessonEntity entity) {
                 List<QuestionLearn> questionLearns = new ArrayList<>();
                 questionLearns.add(createQuestion(entity, TypeQuestion.MULTIPLE_CHOICE.name(),
-                                entity.getVocabulary().getWord(),
-                                entity.getMeaning(), true));
+                                entity.getVocabulary().getWord(), entity.getMeaning(), true));
                 questionLearns.add(createQuestion(entity, TypeQuestion.MULTIPLE_CHOICE.name(), entity.getMeaning(),
                                 entity.getVocabulary().getWord(), false));
                 questionLearns.add(createQuestion(entity, TypeQuestion.LISTENING_TO_WORD.name(),
                                 entity.getVocabulary().getWord(), entity.getVocabulary().getWord(), false));
-                questionLearns.add(createQuestion(entity, TypeQuestion.LISTENING_TO_WORD.name(),
-                                entity.getVocabulary().getWord(), entity.getVocabulary().getMeaning(), true));
                 questionLearns.add(createQuestion(entity, TypeQuestion.WORD_TO_LISTENING.name(),
                                 entity.getVocabulary().getWord(), entity.getVocabulary().getWord(), false));
+                questionLearns.add(createQuestion(entity, TypeQuestion.FILL_THE_BLANK_CHOICE.name(),
+                                getRandomSentence(entity), entity.getVocabulary().getWord(), false));
                 questionLearns.add(createQuestion(entity, TypeQuestion.FILL_THE_BLANK.name(), getRandomSentence(entity),
+                                entity.getVocabulary().getWord(), false));
+                questionLearns.add(createQuestion(entity, TypeQuestion.TRANSLATE.name(), entity.getMeaning(),
                                 entity.getVocabulary().getWord(), false));
                 return questionLearns;
         }
@@ -136,16 +171,21 @@ public class LearnServiceImpl implements LearnService {
                 questionLearn.setId(entity.getId());
                 questionLearn.setTypeQuestion(typeQuestion);
                 questionLearn.setQuestion(questionText);
+                if (typeQuestion.equals(TypeQuestion.TRANSLATE.name())) {
+                        String question = String.format("Dịch '%s' sang tiếng Anh", questionText);
+                        questionLearn.setQuestion(question);
+                }
 
                 List<VocabularyLearn> answers = new ArrayList<>();
                 answers.add(new VocabularyLearn(correctAnswerText, true));
 
-                List<SimilarWordEntity> similarWords = getRandomSimilarWords(entity.getVocabulary().getSimilarWords());
-                similarWords.forEach(similarWord -> answers
-                                .add(new VocabularyLearn(
-                                                isWordToMeaning ? similarWord.getMeaning() : similarWord.getWord(),
-                                                false)));
-
+                if (!typeQuestion.equals(TypeQuestion.FILL_THE_BLANK.name()) && !typeQuestion.equals(TypeQuestion.TRANSLATE.name())) {
+                        List<SimilarWordEntity> similarWords = getRandomSimilarWords(entity.getVocabulary().getSimilarWords());
+                        similarWords.forEach(similarWord -> answers
+                                        .add(new VocabularyLearn(
+                                                        isWordToMeaning ? similarWord.getMeaning() : similarWord.getWord(),
+                                                        false)));
+                }
                 Collections.shuffle(answers, random);
                 questionLearn.setAnswers(answers);
                 return questionLearn;
@@ -201,6 +241,9 @@ public class LearnServiceImpl implements LearnService {
                 learningVocabularyEntity.setStudent(studentEntity);
                 learningVocabularyEntity.setVocabularyOfLesson(vocabularyOfLessonEntity);
                 updateLearning(learningVocabularyEntity, (int) Math.floor(quality));
+                studentEntity.setUpdateAt(LocalDateTime.now());
+                studentRepository.save(studentEntity);
+                
         }
 
         private void updateLearningVocabulary(LearningVocabularyEntity learningVocabularyEntity, double quality) {

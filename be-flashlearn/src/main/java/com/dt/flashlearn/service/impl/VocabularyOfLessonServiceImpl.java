@@ -10,6 +10,7 @@ import com.dt.flashlearn.converter.VocabularyConverter;
 import com.dt.flashlearn.entity.LessonEntity;
 import com.dt.flashlearn.entity.VocabularyOfLessonEntity;
 import com.dt.flashlearn.entity.Course.CourseEntity;
+import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
 import com.dt.flashlearn.model.request.VocabularyOfLessonInput;
 import com.dt.flashlearn.model.request.AddVocabularyOfLessonInput;
 import com.dt.flashlearn.model.response.ResponseData;
@@ -108,10 +109,11 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
     private VocabularyOfLessonEntity createVocabularyOfLessonEntity(VocabularyOfLessonInput input,
             LessonEntity lessonEntity) {
         LocalDateTime now = LocalDateTime.now();
+        VocabularyEntity entity = queryService.getVocabularyEntityById(input.getVocabularyId());
         VocabularyOfLessonEntity vocabularyOfLessonEntity = new VocabularyOfLessonEntity();
         vocabularyOfLessonEntity.setLesson(lessonEntity);
-        vocabularyOfLessonEntity.setVocabulary(queryService.getVocabularyEntityById(input.getVocabularyId()));
-        vocabularyOfLessonEntity.setMeaning(input.getMeaning());
+        vocabularyOfLessonEntity.setVocabulary(entity);
+        vocabularyOfLessonEntity.setMeaning(input.getMeaning() != null ? input.getMeaning() : entity.getMeaning());
         vocabularyOfLessonEntity.setImage(
                 input.getImage() != null ? imageService.upload(input.getImage(), TypeImageConstants.VOCABULARY_IMAGE)
                         : null);

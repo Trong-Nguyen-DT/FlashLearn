@@ -1,5 +1,8 @@
 package com.dt.flashlearn.validate;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.entity.Vocabulary.PartOfSpeech;
 import com.dt.flashlearn.exception.MessageException;
@@ -45,5 +48,21 @@ public class ValidateData {
         }
         throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
     }
+
+    public static String validateOrderBy(String orderBy) {
+        if (orderBy == null) {
+            throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
+        }
+        
+        String lowerCaseOrderBy = orderBy.toLowerCase();
+        List<String> validOrders = Arrays.asList("day", "week", "month", "total");
+        
+        if (validOrders.contains(lowerCaseOrderBy)) {
+            return lowerCaseOrderBy;
+        } else {
+            throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
+        }
+    }
+    
 
 }
