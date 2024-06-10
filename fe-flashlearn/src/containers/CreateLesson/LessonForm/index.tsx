@@ -41,6 +41,7 @@ const LessonForm: React.FC<Props> = ({ formik }) => {
         {values.lesson.image && (
           <ImagePreview
             image={values.lesson.image}
+            imageUrl={values.lesson.image.url}
             onRemove={() => {
               handleRemoveImage();
             }}

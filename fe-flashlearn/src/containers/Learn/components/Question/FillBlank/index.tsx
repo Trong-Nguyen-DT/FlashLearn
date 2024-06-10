@@ -1,6 +1,6 @@
 import { COLOR_CODE } from '@appConfig';
-import { ThemedRadioGroup } from '@components';
-import { Stack, Typography } from '@mui/material';
+import { Input } from '@components';
+import { Box, Stack, Typography } from '@mui/material';
 import { QuestionResponse } from '@queries';
 import { Callback } from '@utils';
 import { useMemo } from 'react';
@@ -15,24 +15,9 @@ type Props = {
   isCorrect?: boolean;
 };
 
-const FillBlank: React.FC<Props> = ({
-  question,
-  answer,
-  setAnswer,
-  repeat,
-  isAnswer,
-  isCorrect,
-}) => {
+const FillBlank: React.FC<Props> = ({ question, answer, setAnswer, repeat, isAnswer }) => {
   const sentence = useMemo(() => question.question.split(':')[0], [question]);
-
-  const options = useMemo(
-    () =>
-      question.answers.map((item) => ({
-        label: item.title,
-        value: item.title,
-      })),
-    [question],
-  );
+  const mean = useMemo(() => question.question.split(':')[1], [question]);
 
   return (
     <Stack width={'100%'} sx={{ alignItems: 'center' }} gap={1}>
@@ -42,14 +27,32 @@ const FillBlank: React.FC<Props> = ({
       </Typography>
       <Stack sx={{ width: '40%', pt: 4, gap: 4 }}>
         <Typography fontSize={24} fontWeight={600} color={COLOR_CODE.GREY_600}>
-          {sentence}
+          {mean}
         </Typography>
-        <ThemedRadioGroup
-          options={options}
-          value={answer}
-          onChange={(_name, value) => setAnswer(value)}
-          color={isAnswer ? (isCorrect ? 'success' : 'danger') : 'default'}
-        />
+        <Typography fontSize={20}>
+          {sentence.split('____')[0]}
+          <Box
+            component="span"
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              borderBottom: '1px solid black',
+            }}
+          >
+            <Input
+              disabled={isAnswer}
+              variant="standard"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              InputProps={{
+                disableUnderline: true,
+                sx: { fontSize: 'inherit' },
+              }}
+              sx={{ width: '100px' }}
+            />
+          </Box>{' '}
+          {sentence.split('____')[1]}
+        </Typography>
       </Stack>
     </Stack>
   );

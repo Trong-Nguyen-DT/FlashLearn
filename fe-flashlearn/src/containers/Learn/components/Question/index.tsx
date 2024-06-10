@@ -63,7 +63,7 @@ const Question: React.FC<Props> = ({
   const correctAnswer = question.answers.find((item) => item.correct);
 
   const handleCheck = () => {
-    if (answer === correctAnswer.title) {
+    if (answer.toLowerCase() === correctAnswer.title.toLowerCase()) {
       setIsCorrect(true);
       const exist = xp.find((item) => item.id === question.id);
       const score = 1 / (repeat + 1);

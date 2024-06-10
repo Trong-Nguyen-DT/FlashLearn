@@ -19,6 +19,7 @@ export { default as ImagePreview } from './ImagePreview';
 export { default as YesNoImageModal } from './YesNoImageModal';
 export { default as BreadCrumbs } from './BreadCrumbs';
 export { default as CreatableSelect } from './CreatableSelect';
+export { default as InputMask } from './MuiInputMask';
 
 export * from './CustomDropdown';
 export * from './Dialog';

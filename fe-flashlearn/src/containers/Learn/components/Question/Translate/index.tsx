@@ -1,5 +1,5 @@
 import { COLOR_CODE } from '@appConfig';
-import { ThemedRadioGroup } from '@components';
+import { Input } from '@components';
 import { Stack, Typography } from '@mui/material';
 import { QuestionResponse } from '@queries';
 import { Callback } from '@utils';
@@ -15,24 +15,8 @@ type Props = {
   isCorrect?: boolean;
 };
 
-const Translate: React.FC<Props> = ({
-  question,
-  answer,
-  setAnswer,
-  repeat,
-  isAnswer,
-  isCorrect,
-}) => {
+const Translate: React.FC<Props> = ({ question, answer, setAnswer, repeat, isAnswer }) => {
   const sentence = useMemo(() => question.question.split(':')[0], [question]);
-
-  const options = useMemo(
-    () =>
-      question.answers.map((item) => ({
-        label: item.title,
-        value: item.title,
-      })),
-    [question],
-  );
 
   return (
     <Stack width={'100%'} sx={{ alignItems: 'center' }} gap={1}>
@@ -44,11 +28,14 @@ const Translate: React.FC<Props> = ({
         <Typography fontSize={24} fontWeight={600} color={COLOR_CODE.GREY_600}>
           {sentence}
         </Typography>
-        <ThemedRadioGroup
-          options={options}
+        <Input
+          title={'Nhập câu trả lời của bạn vào đây nhé'}
           value={answer}
-          onChange={(_name, value) => setAnswer(value)}
-          color={isAnswer ? (isCorrect ? 'success' : 'danger') : 'default'}
+          disabled={isAnswer}
+          onChange={(e) => {
+            const { value } = e.target;
+            setAnswer(value);
+          }}
         />
       </Stack>
     </Stack>
