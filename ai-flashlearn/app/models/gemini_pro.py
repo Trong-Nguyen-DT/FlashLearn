@@ -1,7 +1,7 @@
 
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import GoogleGenerativeAI
 
 from app.config import GOOGLE_API_KEY
 from app.shemas.response import Response
@@ -9,7 +9,7 @@ from app.shemas.response import Response
 
 class GeminiPro():
     def __init__(self):
-        llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=GOOGLE_API_KEY)
+        llm = GoogleGenerativeAI(model="gemini-pro", google_api_key=GOOGLE_API_KEY)
         parser = JsonOutputParser(pydantic_object=Response)
         prompt = PromptTemplate(
             template="""

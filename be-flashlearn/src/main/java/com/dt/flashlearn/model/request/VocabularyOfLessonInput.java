@@ -12,9 +12,9 @@ import lombok.Setter;
 public class VocabularyOfLessonInput {
 
     private Long id;
-    @NotNull
+    @NotNull(message = "Id của từ vựng không được để trống")
     private Long vocabularyId;
-    @NotBlank
+    @NotBlank(message = "Nghĩa của từ không được để trống")
     private String meaning;
     private MultipartFile image;
     

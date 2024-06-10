@@ -10,12 +10,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ForgotInput {
-    @NotBlank
+    @NotBlank(message = "Email không được để trống")
     @Size(max = 50)
     @Email(message = "Email không đúng định dạng")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Mật khẩu không được để trống")
     @Pattern(regexp = "(?=.*[0-9]).+", message = "Mật khẩu phải có ít nhất 1 chứ số")
     @Pattern(regexp = "(?=.*[a-z]).+", message = "Mật khẩu phải có ít nhất 1 chữ thường")
     @Pattern(regexp = "(?=.*[A-Z]).+", message = "Mật khẩu phải có ít nhất 1 chữ hoa")

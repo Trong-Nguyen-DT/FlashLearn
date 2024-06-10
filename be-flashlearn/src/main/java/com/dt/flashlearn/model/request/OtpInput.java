@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class OtpInput {
     
-    @NotBlank
+    @NotBlank(message = "Email không được để trống")
     @Size(max = 50)
     @Email(message = ErrorConstants.EMAIL_INVALID_MESSAGE)
     private String email;

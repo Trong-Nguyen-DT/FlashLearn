@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 public class UserInput {
     
-    @NotBlank
+    @NotBlank(message = "Email không được để trống")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Mật khẩu không được để trống")
     private String name;
     private String phone;
 }

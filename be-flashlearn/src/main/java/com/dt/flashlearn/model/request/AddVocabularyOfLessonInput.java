@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 public class AddVocabularyOfLessonInput {
     
-    @NotNull
+    @NotNull(message = "Id của bài học không được để trống")
     private Long lessonId;
-    @NotNull
+    @NotNull(message = "Danh sách từ vựng không được để trống")
     private List<VocabularyOfLessonInput> vocabularies;
 }

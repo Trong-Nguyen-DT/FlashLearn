@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RatingCourseInput {
-    @NotNull
+    @NotNull(message = "Id của khóa học không được để trống")
     private Long id;
-    @NotNull
+    @NotNull(message = "Rating không được để trống")
     private int rating;
 }

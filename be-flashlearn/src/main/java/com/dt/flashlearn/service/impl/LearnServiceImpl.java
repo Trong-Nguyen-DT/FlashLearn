@@ -26,7 +26,6 @@ import com.dt.flashlearn.model.response.ResponseData;
 import com.dt.flashlearn.model.response.learn.LearnResponse;
 import com.dt.flashlearn.model.response.learn.QuestionLearn;
 import com.dt.flashlearn.model.response.learn.VocabularyLearn;
-import com.dt.flashlearn.repository.CourseRepository;
 import com.dt.flashlearn.repository.LearningHistoryRepository;
 import com.dt.flashlearn.repository.LearningVocabularyRepository;
 import com.dt.flashlearn.repository.StudentRepository;

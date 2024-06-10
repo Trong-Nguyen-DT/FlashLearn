@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class VocabularyInput {
-    @NotBlank
+    @NotBlank(message = "Từ không được để trống")
     private String word;
-    @NotBlank
+    @NotBlank(message = "Từ loại của từ không được để trống")
     private String partOfSpeech;
 }

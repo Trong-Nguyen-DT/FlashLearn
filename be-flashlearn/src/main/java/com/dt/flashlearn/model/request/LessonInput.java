@@ -12,11 +12,11 @@ import lombok.Setter;
 @Setter
 public class LessonInput {
     private Long id;
-    @NotBlank
+    @NotBlank(message = "Tên không được để trống")
     private String name;
     @Size(max = 1024, message = "Mô tả không quá 1024 kí tự")
     private String description;
     private MultipartFile image;
-    @NotNull
+    @NotNull(message = "Id của khóa học không được để trống")
     private Long courseId;
 }

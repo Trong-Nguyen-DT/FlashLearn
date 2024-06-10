@@ -65,6 +65,9 @@ public class StudentEntity {
     }
 
     public long calculateExperienceByTime(LocalDate time) {
+        if (time == null) {
+            return calculateTotalExperience();
+        }
         return this.learningHistories.stream()
                 .filter(history -> history.getLearnAt().isAfter(time))
                 .mapToLong(history -> history.getExperience()).sum();

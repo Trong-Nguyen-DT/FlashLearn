@@ -13,10 +13,13 @@ import com.dt.flashlearn.entity.Vocabulary.SentenceEntity;
 import com.dt.flashlearn.entity.Vocabulary.SimilarWordEntity;
 import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
 import com.dt.flashlearn.exception.MessageException;
+import com.dt.flashlearn.model.request.VocabulariesInput;
 import com.dt.flashlearn.model.request.VocabularyInput;
 import com.dt.flashlearn.model.response.AIResponse;
 import com.dt.flashlearn.model.response.ResponseData;
 import com.dt.flashlearn.model.response.Sentence;
+import com.dt.flashlearn.model.response.VocabulariesResponse;
+import com.dt.flashlearn.model.response.VocabularyResponseError;
 import com.dt.flashlearn.model.response.Word;
 import com.dt.flashlearn.repository.SentenceRepository;
 import com.dt.flashlearn.repository.SimilarWordRepository;
@@ -48,19 +51,33 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     @Override
     public ResponseData createNewVocabulary(VocabularyInput input) {
-        VocabularyEntity entity = vocabularyRepository
-                .findByWordAndPartOfSpeech(input.getWord(), ValidateData.validatePartOfSpeech(input.getPartOfSpeech()));
+        VocabularyEntity entity = createVocabularyEntity(input);
+        return new ResponseData(VocabularyConverter.toModel(entity));
+    }
 
-        if (entity != null) {
-            if (entity.isDeleted()) {
-                entity.setDeleted(false);
-                entity.setUpdateAt(LocalDateTime.now());
-                return new ResponseData(VocabularyConverter.toModel(vocabularyRepository.save(entity)));
-            } 
-            throw new MessageException(ErrorConstants.VOCABULARY_EXIST_MESSAGE,
-                        ErrorConstants.VOCABULARY_EXIST_CODE);
-        } else {
-            AIResponse aiResponse = aiService.generateSimilarWord(input.getWord(), input.getPartOfSpeech());
+    @Override
+    public ResponseData createNewVocabularies(VocabulariesInput input) {
+        List<VocabularyEntity> entities = new ArrayList<>();
+        List<VocabularyResponseError> errors = new ArrayList<>();
+        input.getVocabularies().forEach(vocabulary -> {
+            try {
+                entities.add(createVocabularyEntity(vocabulary));
+            } catch (MessageException e) {
+                errors.add(new VocabularyResponseError(vocabulary.getWord(), e.getErrorMessage()));
+            }
+        });
+        VocabulariesResponse response = new VocabulariesResponse();
+        response.setVocabularies(entities.stream().map(VocabularyConverter::toModel).toList());
+        response.setErrors(errors);
+        return new ResponseData(response);
+    }
+
+    private VocabularyEntity createVocabularyEntity(VocabularyInput vocabulary) {
+        VocabularyEntity entity = vocabularyRepository
+                .findByWordAndPartOfSpeech(vocabulary.getWord(),
+                        ValidateData.validatePartOfSpeech(vocabulary.getPartOfSpeech()));
+        if (entity == null) {
+            AIResponse aiResponse = aiService.generateSimilarWord(vocabulary.getWord(), vocabulary.getPartOfSpeech());
             if (aiResponse == null) {
                 throw new MessageException(ErrorConstants.SERVER_ERROR_MESSAGE, ErrorConstants.SERVER_ERROR_CODE);
             }
@@ -68,10 +85,18 @@ public class VocabularyServiceImpl implements VocabularyService {
                 throw new MessageException(ErrorConstants.INVALID_VOCABULARY_MESSAGE,
                         ErrorConstants.INVALID_VOCABULARY_CODE);
             }
-            VocabularyEntity vocabularyEntity = saveVocabulary(aiResponse.getOriginalWord(), input);
+            VocabularyEntity vocabularyEntity = saveVocabulary(aiResponse.getOriginalWord(), vocabulary);
             saveSimilarWords(aiResponse.getSimilarWord(), vocabularyEntity);
             saveSentence(aiResponse.getSentences(), vocabularyEntity);
-            return new ResponseData(VocabularyConverter.toModel(vocabularyEntity));
+            return vocabularyEntity;
+        } else {
+            if (entity.isDeleted()) {
+                entity.setDeleted(false);
+                entity.setUpdateAt(LocalDateTime.now());
+                return vocabularyRepository.save(entity);
+            }
+            throw new MessageException(ErrorConstants.VOCABULARY_EXIST_MESSAGE,
+                    ErrorConstants.VOCABULARY_EXIST_CODE);
         }
     }
 

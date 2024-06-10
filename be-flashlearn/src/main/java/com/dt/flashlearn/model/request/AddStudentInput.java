@@ -9,8 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddStudentInput {
-    @NotNull
+    @NotNull(message = "Emails của sinh viên không được để trống")
     private List<String> emailStudents;
-    @NotNull
+    @NotNull(message = "Id của khóa học không được để trống")
     private Long courseId;
 }
