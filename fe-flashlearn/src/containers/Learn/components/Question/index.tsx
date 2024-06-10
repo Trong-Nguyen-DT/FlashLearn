@@ -5,8 +5,6 @@ import {
   TypeQuestion,
   useGetLesson,
   useGetMyLearningCourse,
-  useGetQuestionPracticeCourse,
-  useGetQuestionPracticeLesson,
   useGetStudents,
   useUpdateLearnProgress,
 } from '@queries';
@@ -16,8 +14,10 @@ import { useState } from 'react';
 import { StepContent, StepType } from '../../helpers';
 import LearnFooter, { FooterType } from '../Footer';
 import FillBlank from './FillBlank';
+import FillBlankChoice from './FillBlankChoice';
 import ListenToWord from './ListenToWord';
 import MultipleChoice from './MultipleChoice';
+import Translate from './Translate';
 import WordToListen from './WordToListen';
 
 type Props = {
@@ -30,7 +30,6 @@ type Props = {
   stepContent: StepContent[];
   setStepContent: Callback;
   courseId: string;
-  invalidCallback: Callback;
 };
 
 const Question: React.FC<Props> = ({
@@ -43,25 +42,17 @@ const Question: React.FC<Props> = ({
   stepContent,
   setStepContent,
   courseId,
-  invalidCallback,
 }) => {
   const [answer, setAnswer] = useState<string>(null);
   const [isCorrect, setIsCorrect] = useState<boolean>(null);
   const { handleInvalidateLessonList } = useGetLesson({ courseId });
   const { handleInvalidateStudentList } = useGetStudents({ courseId });
   const { handleInvalidateMyLearningCourseList } = useGetMyLearningCourse();
-  const { handleInvalidateQuestionPracticeCourse } = useGetQuestionPracticeCourse({
-    id: courseId,
-  });
-  const { handleInvalidateQuestionPracticeLesson } = useGetQuestionPracticeLesson();
   const { onUpdateLearnProgress, isLoading } = useUpdateLearnProgress({
     onSuccess() {
       handleInvalidateLessonList();
       handleInvalidateStudentList();
       handleInvalidateMyLearningCourseList();
-      handleInvalidateQuestionPracticeCourse();
-      handleInvalidateQuestionPracticeLesson();
-      invalidCallback();
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError(error: any) {
@@ -95,7 +86,10 @@ const Question: React.FC<Props> = ({
     setIsCorrect(null);
     setStep(step + 1);
     if (step === stepContent.length - 2) {
-      onUpdateLearnProgress({ courseId: courseId, learningVocabularies: xp });
+      onUpdateLearnProgress({
+        courseId: courseId,
+        learningVocabularies: xp.map((item) => ({ ...item, quality: (item.quality * 6) / 7 })),
+      });
     }
   };
 
@@ -109,8 +103,8 @@ const Question: React.FC<Props> = ({
         justifyContent: 'space-between',
       }}
     >
-      {question.typeQuestion === TypeQuestion.FILL_THE_BLANK && (
-        <FillBlank
+      {question.typeQuestion === TypeQuestion.FILL_THE_BLANK_CHOICE && (
+        <FillBlankChoice
           question={question}
           answer={answer}
           setAnswer={setAnswer}
@@ -141,6 +135,26 @@ const Question: React.FC<Props> = ({
       )}
       {question.typeQuestion === TypeQuestion.LISTENING_TO_WORD && (
         <ListenToWord
+          question={question}
+          answer={answer}
+          setAnswer={setAnswer}
+          repeat={repeat}
+          isCorrect={isCorrect}
+          isAnswer={isCorrect !== null}
+        />
+      )}
+      {question.typeQuestion === TypeQuestion.FILL_THE_BLANK && (
+        <FillBlank
+          question={question}
+          answer={answer}
+          setAnswer={setAnswer}
+          repeat={repeat}
+          isCorrect={isCorrect}
+          isAnswer={isCorrect !== null}
+        />
+      )}
+      {question.typeQuestion === TypeQuestion.TRANSLATE && (
+        <Translate
           question={question}
           answer={answer}
           setAnswer={setAnswer}

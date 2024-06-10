@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import cn from 'classnames';
 import { useRef } from 'react';
-import Select from 'react-select';
+import CreatableSelect from 'react-select';
 import Stack from '@mui/material/Stack';
 import './styles.scss';
 import { Typography } from '@mui/material';
@@ -34,6 +34,7 @@ const SelectCmp = ({
   styles = null,
   icon = null,
   alignEnd = false,
+  allowCreateOption = false,
   ...props
 }) => {
   const id = useRef(`select-${getRandomId()}`);
@@ -77,7 +78,7 @@ const SelectCmp = ({
           {label} {required && <span className="text-danger font-bold text-md">*</span>}
         </Typography>
       )}
-      <Select
+      <CreatableSelect
         id={id.current}
         isClearable={isClearable}
         value={selectedOption}
@@ -105,7 +106,6 @@ const SelectCmp = ({
           },
         })}
         styles={customStyles}
-        {...props}
         isDisabled={disabled}
         isMulti={multi}
         isLoading={isLoading}
@@ -113,6 +113,10 @@ const SelectCmp = ({
         hideSelectedOptions={hideSelectedOptions}
         closeMenuOnSelect={!multi}
         components={{ Control: (props) => <CustomControl icon={icon} {...props} /> }}
+        {...(!allowCreateOption && {
+          isValidNewOption: () => false,
+        })}
+        {...props}
       />
       {!isEmpty(errorMessage) && (
         <Typography color={COLOR_CODE.DANGER} fontSize={14} mt={'6px'}>

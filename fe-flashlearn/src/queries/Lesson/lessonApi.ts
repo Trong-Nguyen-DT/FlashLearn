@@ -4,6 +4,8 @@ import { AuthService } from '@services';
 import apisauce from 'apisauce';
 import axios from 'axios';
 import appConfig from 'src/appConfig';
+import { LessonPayload } from './type';
+import { entries } from 'lodash';
 
 axios.defaults.withCredentials = true;
 const create = (baseURL = `${appConfig.API_URL}`) => {
@@ -31,9 +33,51 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.get(`${ApiKey.LESSON}/${id}`);
   };
 
+  const createLesson = (body: LessonPayload) => {
+    const { id: _, ...rest } = body;
+    const payload = {
+      ...rest,
+      image: rest.image.file,
+    };
+    // eslint-disable-next-line prefer-const
+    let formData = new FormData();
+
+    entries(payload).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    return api.post(`${ApiKey.USERS}${ApiKey.LESSON}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };
+
+  const updateLesson = (body: LessonPayload) => {
+    const { id: _, ...rest } = body;
+    const payload = {
+      ...rest,
+      image: rest.image.file,
+    };
+    // eslint-disable-next-line prefer-const
+    let formData = new FormData();
+
+    entries(payload).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    return api.put(`${ApiKey.USERS}${ApiKey.LESSON}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };
+
   return {
     getLessonList,
     getLessonDetail,
+    createLesson,
+    updateLesson,
   };
 };
 

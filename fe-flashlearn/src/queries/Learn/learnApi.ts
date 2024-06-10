@@ -36,6 +36,10 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.get(`${ApiKey.USERS}${ApiKey.PRACTICE}${ApiKey.COURSE}/${id}`);
   };
 
+  const getQuestionPracticeListeningCourse = (id: string) => {
+    return api.get(`${ApiKey.USERS}${ApiKey.PRACTICE}${ApiKey.COURSE}/${id}/listen`);
+  };
+
   const updateLearnProgress = (payload: updateLearnProgressPayload) => {
     const { courseId, ...body } = payload;
     return api.post(`${ApiKey.USERS}${ApiKey.LEARN}/${courseId}`, body);
@@ -46,6 +50,7 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     getQuestionPracticeLesson,
     updateLearnProgress,
     getQuestionPracticeCourse,
+    getQuestionPracticeListeningCourse,
   };
 };
 

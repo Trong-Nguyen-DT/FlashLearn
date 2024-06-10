@@ -15,6 +15,7 @@ export interface CourseResponse {
   avgRating: number;
   owner: UserResponse;
   totalVocal: number;
+  totalVocabLearned: number;
   totalStudent: number;
   createAt: string;
   updateAt: string;

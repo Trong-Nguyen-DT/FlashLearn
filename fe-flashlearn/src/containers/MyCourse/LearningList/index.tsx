@@ -44,7 +44,7 @@ const LearningList = () => {
           </Typography>
           <Typography variant="body2">Bạn chưa đăng ký học khóa học nào...</Typography>
         </Stack>
-      )}{' '}
+      )}
     </Stack>
   );
 };

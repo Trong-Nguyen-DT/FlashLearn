@@ -14,6 +14,8 @@ import dontImage from 'src/assets/images/gifs/giphy.gif';
 import confuseImage from 'src/assets/images/gifs/giphy (1).gif';
 import connectLine from 'src/assets/images/Line 2.png';
 import niceImage from 'src/assets/images/gifs/giphy (2).gif';
+import learning from 'src/assets/images/gifs/giphy (3).gif';
+import listening from 'src/assets/images/gifs/giphy (4).gif';
 
 export const IMAGES = {
   logo,
@@ -32,4 +34,6 @@ export const IMAGES = {
   dontImage,
   confuseImage,
   niceImage,
+  learning,
+  listening,
 };

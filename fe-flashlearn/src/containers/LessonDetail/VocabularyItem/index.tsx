@@ -3,9 +3,20 @@ import { IMAGES } from '@appConfig/images';
 import { Image } from '@components';
 import { Card, IconButton, Stack, Typography } from '@mui/material';
 import { VocabularyOfLessonResponse } from '@queries';
+import { useCallback, useMemo } from 'react';
 import { HiSpeakerWave } from 'react-icons/hi2';
 
 const VocabularyItem = ({ vocabulary }: Props) => {
+  const handlePlay = useCallback((utterance: SpeechSynthesisUtterance) => {
+    const synth = window.speechSynthesis;
+    synth.speak(utterance);
+  }, []);
+
+  const utterance = useMemo(
+    () => new SpeechSynthesisUtterance(vocabulary.vocabulary.word),
+    [vocabulary],
+  );
+
   return (
     <Card sx={{ borderRadius: 4, width: '100%' }}>
       <Stack justifyContent={'space-between'} direction="row" alignItems="center" p={2} px={6}>
@@ -33,7 +44,7 @@ const VocabularyItem = ({ vocabulary }: Props) => {
           </Stack>
         </Stack>
         <Stack>
-          <IconButton>
+          <IconButton onClick={() => handlePlay(utterance)}>
             <HiSpeakerWave size={100} />
           </IconButton>
         </Stack>

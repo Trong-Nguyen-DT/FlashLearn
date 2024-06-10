@@ -52,7 +52,6 @@ const LearnContainer: React.FC<Props> = ({ learnContent, courseId, invalidCallba
           stepContent={stepContent}
           setStepContent={setStepContent}
           courseId={courseId}
-          invalidCallback={invalidCallback}
         />
       )}
       {currentStep?.type === StepType.PREVIEW && (
@@ -62,6 +61,7 @@ const LearnContainer: React.FC<Props> = ({ learnContent, courseId, invalidCallba
           setStep={setStep}
           courseId={courseId}
           learnContent={learnContent}
+          invalidCallback={invalidCallback}
         />
       )}
     </Stack>

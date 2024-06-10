@@ -10,11 +10,11 @@ export enum FileType {
 }
 
 export type UploadFileType = {
-  id: string;
+  id?: string;
   file?: File & { path?: string };
   url?: string;
   name?: string;
-  type: FileType;
+  type?: FileType;
 };
 
 export const getFilesInfo = (files: Array<File & { path?: string }>): UploadFileType[] =>

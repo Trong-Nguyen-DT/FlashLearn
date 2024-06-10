@@ -31,7 +31,7 @@ const CourseInfoForm: React.FC<Props> = ({ step, setStep }) => {
 
   const { handleInvalidateMyTeachingCourseList } = useGetMyTeachingCourse();
 
-  const { onAddNewCourse } = useAddCourse({
+  const { onAddNewCourse, isLoading } = useAddCourse({
     onSuccess(data) {
       toastify.success('Tạo khoá học thành công');
       navigate(`${PATHS.courses}/${data.data.data.id}`);
@@ -166,7 +166,10 @@ const CourseInfoForm: React.FC<Props> = ({ step, setStep }) => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => setStep(2)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setStep(2);
+                }}
                 sx={{
                   fontWeight: 800,
                   boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
@@ -179,6 +182,7 @@ const CourseInfoForm: React.FC<Props> = ({ step, setStep }) => {
               <Button
                 type="submit"
                 variant="contained"
+                disabled={step !== 2 || isLoading}
                 color="primary"
                 sx={{
                   fontWeight: 800,

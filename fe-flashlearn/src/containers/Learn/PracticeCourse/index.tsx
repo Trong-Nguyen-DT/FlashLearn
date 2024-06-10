@@ -8,7 +8,7 @@ type Props = {
 
 const PracticeCourse: React.FC<Props> = ({ courseId }) => {
   const { question, isLoading, handleInvalidateQuestionPracticeCourse } =
-    useGetQuestionPracticeCourse({ id: courseId });
+    useGetQuestionPracticeCourse({ id: courseId, refetchOnMount: true });
 
   if (isLoading) return <Loading />;
 

@@ -1,12 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { COLOR_CODE, IMAGES, PATHS } from '@appConfig';
 import { Image } from '@components';
-import { Box, Button, Card, CircularProgress, Popover, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  IconButton,
+  Popover,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { LessonResponse } from '@queries';
 import { isOdd } from '@utils';
 import { isNaN } from 'lodash';
 import { useState } from 'react';
+import { BiEdit } from 'react-icons/bi';
 import { FaLock } from 'react-icons/fa';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -14,10 +26,11 @@ type Props = {
   lesson: LessonResponse;
   index: number;
   isNext?: boolean;
+  isOwner?: boolean;
+  isStudent?: boolean;
 };
 
-const LessonItem: React.FC<Props> = ({ lesson, index, courseId, isNext }) => {
-  console.log('🚀 ~ isNext:', isNext);
+const LessonItem: React.FC<Props> = ({ lesson, index, courseId, isNext, isOwner, isStudent }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: any) => {
@@ -45,6 +58,16 @@ const LessonItem: React.FC<Props> = ({ lesson, index, courseId, isNext }) => {
       ? navigate(`${PATHS.practiceLesson.replace(':courseId', courseId)}?lessonId=${lesson?.id}`)
       : navigate(`${PATHS.learning.replace(':courseId', courseId)}?lessonId=${lesson?.id}`);
   };
+
+  const handleEdit = () => {
+    navigate(
+      PATHS.lessonsUpdate
+        .replace(':lessonId', lesson?.id.toString())
+        .replace(':courseId', courseId),
+    );
+  };
+
+  const handleDelete = () => {};
 
   const progress = lesson?.totalVocabLearned / lesson?.totalVocabOfLesson;
   const learnPercentage = isNaN(progress) ? 0 : progress * 100;
@@ -204,42 +227,84 @@ const LessonItem: React.FC<Props> = ({ lesson, index, courseId, isNext }) => {
                 alignItems: !isActive && 'center',
               }}
             >
-              <Typography fontSize={24} fontWeight={800} color="white">
-                {lesson?.name}
-              </Typography>
+              <Stack
+                sx={{ alignItems: 'center', justifyContent: 'space-between', width: '100%' }}
+                direction={'row'}
+              >
+                <Typography fontSize={24} fontWeight={800} color="white">
+                  {lesson?.name}
+                </Typography>
+                {isOwner && (
+                  <Stack direction={'row'}>
+                    <Tooltip title="Chỉnh sửa bài học" arrow placement="top">
+                      <IconButton onClick={handleEdit}>
+                        <BiEdit color="white" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Xóa bài học" arrow placement="top">
+                      <IconButton onClick={handleDelete}>
+                        <RiDeleteBin6Line color={COLOR_CODE.DANGER} />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
+                )}
+              </Stack>
               <Typography color="white">{lesson?.description}</Typography>
+              <Button
+                variant="outlined"
+                onClick={handleViewDetail}
+                sx={{
+                  width: '100%',
+                  mt: 2,
+                  fontWeight: 800,
+                  border: `1px solid ${isActive ? COLOR_CODE.PRIMARY : COLOR_CODE.GREY_500}`,
+                  color: isActive ? COLOR_CODE.PRIMARY : COLOR_CODE.GREY_500,
+                  boxShadow: `4px 4px 0px ${
+                    isActive ? COLOR_CODE.PRIMARY_600 : COLOR_CODE.GREY_300
+                  }`,
+                  '&:hover': {
+                    boxShadow: `3px 3px 0px ${
+                      isActive ? COLOR_CODE.PRIMARY_600 : COLOR_CODE.GREY_300
+                    }`,
+                    border: `1px solid ${isActive ? COLOR_CODE.PRIMARY : COLOR_CODE.GREY_500}`,
+                    color: isActive ? COLOR_CODE.PRIMARY : COLOR_CODE.GREY_500,
+                    backgroundColor: isActive ? COLOR_CODE.PRIMARY_100 : COLOR_CODE.GREY_100,
+                  },
+                }}
+              >
+                Chi tiết Khóa học
+              </Button>
               {isActive ? (
                 <>
-                  <Button
-                    variant="outlined"
-                    onClick={handleViewDetail}
-                    sx={{
-                      mt: 2,
-                      fontWeight: 800,
-                      boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
-                      '&:hover': {
-                        boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}`,
-                      },
-                    }}
+                  <Tooltip
+                    title={
+                      !isStudent
+                        ? 'Bạn phải đăng ký để tiếp tục'
+                        : lesson.totalVocabOfLesson === 0
+                        ? 'Bài học này chưa có từ vựng nào'
+                        : null
+                    }
+                    arrow
+                    placement="top"
                   >
-                    Chi tiết Khóa học
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    onClick={handleLearn}
-                    sx={{
-                      mt: 2,
-                      fontWeight: 800,
-                      boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
-                      '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}` },
-                    }}
-                    color="primary"
-                  >
-                    {isLearned ? 'Ôn Tập' : 'Học'}
-                  </Button>
+                    <Button
+                      variant="outlined"
+                      onClick={handleLearn}
+                      disabled={lesson.totalVocabOfLesson === 0 || !isStudent}
+                      sx={{
+                        mt: 2,
+                        fontWeight: 800,
+                        boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
+                        '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}` },
+                      }}
+                      color="primary"
+                    >
+                      {isLearned ? 'Ôn Tập' : 'Học'}
+                    </Button>
+                  </Tooltip>
                 </>
               ) : (
-                <FaLock size={50} color="white" />
+                <FaLock size={50} color="white" style={{ marginTop: '10px' }} />
               )}
             </Stack>
           </Box>

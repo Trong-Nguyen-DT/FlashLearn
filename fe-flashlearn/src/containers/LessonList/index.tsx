@@ -7,12 +7,14 @@ import { isOdd } from '@utils';
 import { useParams } from 'react-router-dom';
 import LessonItem from './LessonItem';
 import StartScreen from './StartScreen';
+import NewItem from './NewItem';
 
 type Props = {
   isOwner: boolean;
+  isStudent: boolean;
 };
 
-const LessonList: React.FC<Props> = ({ isOwner }) => {
+const LessonList: React.FC<Props> = ({ isOwner, isStudent }) => {
   const { courseId } = useParams<{ courseId: string }>();
 
   const { lessons, isFetching } = useGetLesson({ courseId });
@@ -41,8 +43,10 @@ const LessonList: React.FC<Props> = ({ isOwner }) => {
                 courseId={courseId}
                 index={index}
                 isNext={(lessons[index - 1]?.learned ?? true) && !lesson?.learned}
+                isOwner={isOwner}
+                isStudent={isStudent}
               />
-              {index !== lessons.length - 1 && (
+              {(index !== lessons.length - 1 || isOwner) && (
                 <Image
                   src={IMAGES.connectLine}
                   width={500}
@@ -55,6 +59,7 @@ const LessonList: React.FC<Props> = ({ isOwner }) => {
               )}
             </>
           ))}
+          {isOwner && <NewItem courseId={courseId} index={lessons.length} />}
         </>
       ) : isOwner ? (
         <StartScreen courseId={courseId} />

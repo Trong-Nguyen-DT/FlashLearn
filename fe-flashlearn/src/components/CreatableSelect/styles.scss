@@ -1,0 +1,124 @@
+@use 'src/components/scss/vars' as *;
+@use 'src/components/scss/mixin' as *;
+
+.cmp-creatable-select {
+  text-align: left;
+
+  .cmp-creatable-select {
+    &__control {
+      min-height: $input-normal !important;
+      max-height: 120px;
+      overflow: auto;
+      border: 1px solid $color-grey-200;
+      background-color: $color-white;
+      transition: $default-transition;
+      border-radius: $default-border-radius;
+      font-size: 20;
+
+      &.cmp-creatable-select__control--is-disabled {
+        background-color: $color-grey-100;
+        border: 1px solid $color-grey-200;
+      }
+
+      // &:hover {
+      //   border-color: $color-border;
+      // }
+
+      &--is-focused {
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2) !important;
+        border: 1px solid $color-primary !important;
+      }
+    }
+
+    &__placeholder {
+      color: $color-grey-300 !important;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &__value-container {
+      padding: 0 10px;
+    }
+
+    &__indicator-separator {
+      display: none;
+    }
+    &__indicators {
+      align-self: stretch;
+    }
+
+    // &__menu {
+    //   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+    //   border-radius: 8px;
+    // }
+
+    &__single-value {
+      &--is-disabled {
+        color: $color-grey-500;
+      }
+    }
+
+    &__multi-value {
+      border-radius: 12px;
+      &__remove {
+        border-radius: 12px;
+        &:hover {
+          background-color: inherit;
+          cursor: pointer;
+          svg {
+            color: $color-primary;
+          }
+        }
+      }
+    }
+  }
+
+  &__option {
+    font-size: 20px;
+    padding-left: 16px;
+    padding-right: 16px;
+    &--is-focused {
+      background-color: $color-grey-100 !important;
+    }
+    &--is-selected {
+      color: $color-primary !important;
+      background-color: $color-primary-100 !important;
+      font-weight: 600;
+      &::after {
+        content: '';
+      }
+    }
+  }
+
+  &--error {
+    .cmp-creatable-select__control {
+      border-color: $danger;
+
+      &:hover {
+        border-color: $danger;
+      }
+
+      &--is-focused {
+        border-color: $danger;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2) !important;
+      }
+    }
+  }
+
+  &__menu-portal {
+    min-width: 200px;
+    z-index: 5000 !important;
+  }
+
+  &__icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  &__menu {
+    box-shadow: 0px 0px 6px 0px #00000026, 0px 5px 24px 0px #34343414 !important;
+    border: none !important;
+    border-radius: 8px !important;
+  }
+}

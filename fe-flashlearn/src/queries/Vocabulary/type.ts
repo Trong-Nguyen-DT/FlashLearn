@@ -1,5 +1,14 @@
+import { UploadFileType } from '@components';
+
 export enum PartOfSpeech {
   NOUN = 'NOUN',
+  VERB = 'VERB',
+  ADJECTIVE = 'ADJECTIVE',
+  ADVERB = 'ADVERB',
+  PRONOUN = 'PRONOUN',
+  PREPOSITION = 'PREPOSITION',
+  CONJUNCTION = 'CONJUNCTION',
+  INTERJECTION = 'INTERJECTION',
 }
 
 export interface VocabularyResponse {
@@ -18,4 +27,30 @@ export interface VocabularyOfLessonResponse {
   meaning: string;
   createAt: string;
   updateAt: string;
+}
+
+export interface VocabularyPayload {
+  word: string;
+  partOfSpeech: PartOfSpeech;
+}
+
+export interface VocabularyOfLessonPayload {
+  vocabularyId: number;
+  meaning: string;
+  image: UploadFileType;
+}
+
+export interface VocabulariesOfLessonPayload {
+  lessonId: number;
+  vocabularies: VocabularyOfLessonPayload[];
+}
+
+export interface VocabulariesPayload {
+  vocabularies: VocabularyPayload[];
+}
+
+export interface CreateVocabulariesResponse {
+  vocabularies: VocabularyResponse[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  errors: any[];
 }

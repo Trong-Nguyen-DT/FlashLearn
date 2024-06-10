@@ -14,7 +14,6 @@ const Element: React.FC<ElementProps> = ({
   className,
   subLabel,
   required,
-  tooltip,
   ...props
 }) => {
   const hasError = !isEmpty(errorMessage);
@@ -23,13 +22,9 @@ const Element: React.FC<ElementProps> = ({
   return (
     <Stack className={cn(className, 'form-element')} {...props}>
       {hasLabel && (
-        <ElementLabel
-          {...{
-            label,
-            required,
-            tooltip,
-          }}
-        />
+        <Typography variant="h5" color={COLOR_CODE.GREY_700} fontWeight={800}>
+          {label} {required && <span className="text-danger font-bold text-md">*</span>}
+        </Typography>
       )}
 
       {hasSubLabel && <>{subLabel}</>}

@@ -3,11 +3,11 @@ import { Image } from '@components';
 import { Stack, Typography } from '@mui/material';
 import { LearnQuestionResponse, ProgressPayload } from '@queries';
 import { Callback } from '@utils';
+import { FaBoltLightning } from 'react-icons/fa6';
+import { GoGoal } from 'react-icons/go';
 import { useNavigate } from 'react-router-dom';
 import LearnFooter from '../Footer';
 import PreviewItem from './PreviewItem';
-import { GoGoal } from 'react-icons/go';
-import { FaBoltLightning } from 'react-icons/fa6';
 
 type Props = {
   courseId: string;
@@ -15,9 +15,10 @@ type Props = {
   step: number;
   setStep: Callback;
   learnContent: LearnQuestionResponse;
+  invalidCallback: Callback;
 };
 
-const Preview: React.FC<Props> = ({ xp, courseId, learnContent }) => {
+const Preview: React.FC<Props> = ({ xp, courseId, learnContent, invalidCallback }) => {
   const navigate = useNavigate();
 
   const totalXP = ((xp.reduce((acc, item) => acc + item.quality, 0) / 6) * 1000).toFixed(0);
@@ -29,6 +30,7 @@ const Preview: React.FC<Props> = ({ xp, courseId, learnContent }) => {
 
   const handleNext = () => {
     navigate(PATHS.courseDetail.replace(':courseId', courseId));
+    invalidCallback();
   };
 
   return (

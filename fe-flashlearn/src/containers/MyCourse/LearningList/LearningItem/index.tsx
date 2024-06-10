@@ -10,6 +10,10 @@ import { FaStar } from 'react-icons/fa6';
 import { IoMdMore } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 
+type Props = {
+  course: CourseResponse;
+};
+
 const LearningItem = ({ course }: Props) => {
   const { setDialogContent, openModal, closeModal } = useContext(DialogContext);
 
@@ -114,12 +118,15 @@ const LearningItem = ({ course }: Props) => {
               {course.description}
             </Typography>
             <Typography fontSize={20}>
-              <b>0/{course.totalVocal}</b> từ đã học
+              <b>
+                {course.totalVocabLearned}/{course.totalVocal}
+              </b>{' '}
+              từ đã học
             </Typography>
             <Stack direction="row" gap={4} alignItems={'center'}>
               <LinearProgress
                 variant="determinate"
-                value={40}
+                value={(course.totalVocabLearned / course.totalVocal) * 100}
                 sx={{
                   width: '80%',
                   background: COLOR_CODE.GREY_200,
@@ -132,7 +139,7 @@ const LearningItem = ({ course }: Props) => {
                 }}
               />
               <Typography fontSize={20} mr={4}>
-                0%
+                {(course.totalVocabLearned / course.totalVocal) * 100}%
               </Typography>
             </Stack>
           </Stack>
@@ -140,10 +147,6 @@ const LearningItem = ({ course }: Props) => {
       </Stack>
     </Card>
   );
-};
-
-type Props = {
-  course: CourseResponse;
 };
 
 export default LearningItem;

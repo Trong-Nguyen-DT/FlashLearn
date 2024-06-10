@@ -13,6 +13,7 @@ import { SignIn, SignUp } from './UAMContainer';
 import Welcome from './Welcome';
 import MyCourse from './MyCourse';
 import Learn from './Learn';
+import CreateLesson from './CreateLesson';
 
 type RouteWrapperProps = {
   isAuthenticated: boolean;
@@ -51,7 +52,10 @@ export const routerGroup = [
   { path: PATHS.learning, element: <Learn />, isRequireAuth: true },
   { path: PATHS.practiceLesson, element: <Learn />, isRequireAuth: true },
   { path: PATHS.practiceCourse, element: <Learn />, isRequireAuth: true },
+  { path: PATHS.lessonsCreate, element: <CreateLesson />, isRequireAuth: true },
+  { path: PATHS.lessonsUpdate, element: <CreateLesson />, isRequireAuth: true },
   { path: PATHS.practice, element: <CourseDetail />, isRequireAuth: true },
+  { path: PATHS.rankList, element: <CourseDetail />, isRequireAuth: true },
   { path: PATHS.rankList, element: <CourseDetail />, isRequireAuth: true },
   { path: PATHS.studentsList, element: <CourseDetail />, isRequireAuth: true },
   { path: PATHS.lessonsDetail, element: <CourseDetail />, isRequireAuth: false },

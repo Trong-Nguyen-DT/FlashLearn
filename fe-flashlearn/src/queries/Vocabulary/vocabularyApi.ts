@@ -4,6 +4,8 @@ import { AuthService } from '@services';
 import apisauce from 'apisauce';
 import axios from 'axios';
 import appConfig from 'src/appConfig';
+import { VocabulariesOfLessonPayload, VocabulariesPayload, VocabularyPayload } from './type';
+import { entries } from 'lodash';
 
 axios.defaults.withCredentials = true;
 const create = (baseURL = `${appConfig.API_URL}`) => {
@@ -27,7 +29,50 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.get(`${ApiKey.VOCABULARY}/${lessonId}`);
   };
 
-  return { getVocabularyOfLesson };
+  const getAllVocabulary = () => {
+    return api.get(`${ApiKey.VOCABULARY}`);
+  };
+
+  const createVocabulary = (body: VocabularyPayload) => {
+    return api.post(`${ApiKey.USERS}${ApiKey.VOCABULARY}/create-vocabulary`, body);
+  };
+
+  const createVocabularies = (body: VocabulariesPayload) => {
+    return api.post(`${ApiKey.USERS}${ApiKey.VOCABULARY}/create-vocabularies`, body);
+  };
+
+  const addVocabulariesOfLesson = (body: VocabulariesOfLessonPayload) => {
+    // eslint-disable-next-line prefer-const
+    let formData = new FormData();
+
+    formData.append('lessonId', body.lessonId.toString());
+
+    body.vocabularies.forEach((vocabulary, index) => {
+      const prefix = `vocabularies[${index}].`;
+      const payload = {
+        ...vocabulary,
+        vocabularyId: vocabulary.vocabularyId.toString(),
+        image: vocabulary.image.file,
+      };
+      entries(payload).forEach(([key, value]) => {
+        formData.append(prefix + key, value);
+      });
+    });
+
+    return api.post(`${ApiKey.USERS}${ApiKey.VOCABULARY}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };
+
+  return {
+    getVocabularyOfLesson,
+    getAllVocabulary,
+    createVocabulary,
+    createVocabularies,
+    addVocabulariesOfLesson,
+  };
 };
 
 export default {

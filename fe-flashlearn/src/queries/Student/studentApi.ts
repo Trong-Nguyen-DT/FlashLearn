@@ -4,7 +4,7 @@ import { AuthService } from '@services';
 import apisauce from 'apisauce';
 import axios from 'axios';
 import appConfig from 'src/appConfig';
-import { AddStudentPayload, RemoveStudentPayload } from './type';
+import { AddStudentPayload, GetRankParam, RemoveStudentPayload } from './type';
 
 axios.defaults.withCredentials = true;
 const create = (baseURL = `${appConfig.API_URL}`) => {
@@ -40,6 +40,11 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.get(`${ApiKey.USERS}${ApiKey.STUDENT}?courseId=${id}`);
   };
 
+  const getRankingList = (params: GetRankParam) => {
+    const { courseId, period } = params;
+    return api.get(`${ApiKey.USERS}${ApiKey.STUDENT}/rank/${courseId}?period=${period}`, {});
+  };
+
   const addStudent = (body: AddStudentPayload) => {
     return api.post(`${ApiKey.USERS}${ApiKey.STUDENT}`, body);
   };
@@ -49,7 +54,15 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.delete(`${ApiKey.USERS}${ApiKey.STUDENT}/${courseId}/${studentId}`, {});
   };
 
-  return { leaveCourse, joinCourse, getStudentList, addStudent, deleteStudent, joinCourseByCode };
+  return {
+    leaveCourse,
+    joinCourse,
+    getStudentList,
+    addStudent,
+    deleteStudent,
+    joinCourseByCode,
+    getRankingList,
+  };
 };
 
 export default {

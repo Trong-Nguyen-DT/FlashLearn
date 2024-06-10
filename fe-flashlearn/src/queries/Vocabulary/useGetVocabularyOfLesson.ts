@@ -15,7 +15,7 @@ export function useGetVocabularyOfLesson(
     isFetching,
     refetch: onGetAllVocabulary,
   } = useQuery<PaginationResponseType<VocabularyOfLessonResponse>, Error>(
-    [ApiKey.VOCABULARY, options?.lessonId],
+    [ApiKey.VOCABULARY_LESSON, options?.lessonId],
     {
       queryFn: () => {
         return responseWrapper<PaginationResponseType<VocabularyOfLessonResponse>>(
@@ -33,7 +33,7 @@ export function useGetVocabularyOfLesson(
   const queryClient = useQueryClient();
 
   const handleInvalidateVocabularyList = () =>
-    queryClient.invalidateQueries([ApiKey.VOCABULARY, options?.lessonId]);
+    queryClient.invalidateQueries([ApiKey.VOCABULARY_LESSON, options?.lessonId]);
 
   const { data: vocabulary = [], page } = data?.data || {};
 

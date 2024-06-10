@@ -1,3 +1,5 @@
+import { UploadFileType } from '@components';
+
 export interface LessonResponse {
   id: number;
   name: string;
@@ -13,3 +15,11 @@ export interface LessonResponse {
 export type LessonParams = {
   courseId: string;
 };
+
+export interface LessonPayload {
+  id: string;
+  name: string;
+  description: string;
+  image: UploadFileType;
+  courseId: string;
+}
