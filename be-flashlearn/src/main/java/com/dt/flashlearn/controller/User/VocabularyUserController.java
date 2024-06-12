@@ -1,5 +1,7 @@
 package com.dt.flashlearn.controller.User;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,6 @@ import com.dt.flashlearn.model.response.ResponseError;
 import com.dt.flashlearn.service.VocabularyOfLessonService;
 import com.dt.flashlearn.service.VocabularyService;
 import com.dt.flashlearn.service.component.ResponseHandler;
-import com.dt.flashlearn.validate.ValidateData;
 
 import jakarta.validation.Valid;
 
@@ -71,12 +72,11 @@ public class VocabularyUserController {
     }
 
     @PutMapping()
-    public ResponseEntity<?> updateVocabularyOfLesson(@Valid VocabularyOfLessonInput input) {
+    public ResponseEntity<?> updateVocabularyOfLesson(@Valid List<VocabularyOfLessonInput> inputs) {
         try {
-            ValidateData.validateNotNull(input.getId());
             return ResponseEntity
                     .ok(responseHandler
-                            .createSuccessResponse(vocabularyOfLessonService.updateVocabularyOfLesson(input)));
+                            .createSuccessResponse(vocabularyOfLessonService.updateVocabularyOfLesson(inputs)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }

@@ -1,6 +1,8 @@
 package com.dt.flashlearn.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,15 +13,19 @@ import com.dt.flashlearn.entity.LessonEntity;
 import com.dt.flashlearn.entity.VocabularyOfLessonEntity;
 import com.dt.flashlearn.entity.Course.CourseEntity;
 import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
+import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.model.request.VocabularyOfLessonInput;
+import com.dt.flashlearn.model.VocabularyOfLesson;
 import com.dt.flashlearn.model.request.AddVocabularyOfLessonInput;
 import com.dt.flashlearn.model.response.ResponseData;
+import com.dt.flashlearn.model.response.VocabularyResponseError;
 import com.dt.flashlearn.repository.CourseRepository;
 import com.dt.flashlearn.repository.LessonRepository;
 import com.dt.flashlearn.repository.VocabularyOfLessonRepository;
 import com.dt.flashlearn.service.VocabularyOfLessonService;
 import com.dt.flashlearn.service.component.ImageService;
 import com.dt.flashlearn.validate.CourseValidate;
+import com.dt.flashlearn.validate.ValidateData;
 
 @Service
 public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService {
@@ -77,7 +83,21 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
     }
 
     @Override
-    public ResponseData updateVocabularyOfLesson(VocabularyOfLessonInput input) {
+    public ResponseData updateVocabularyOfLesson(List<VocabularyOfLessonInput> inputs) {
+        List<VocabularyOfLesson> vocabularyOfLessons = new ArrayList<>();
+        List<VocabularyResponseError> errors = new ArrayList<>();
+        inputs.stream().forEach(input -> {
+            ValidateData.validateNotNull(input.getId());
+            try {
+                vocabularyOfLessons.add(VocabularyConverter.vocabularyOfLessonToModel(updateVocabularyOfLesson(input)));
+            } catch (MessageException e) {
+                errors.add(new VocabularyResponseError("Từ vựng có id: " + input.getId() + "Không tồn tại", e.getMessage()));
+            }
+        });
+        return new ResponseData(vocabularyOfLessons);
+    }
+
+    private VocabularyOfLessonEntity updateVocabularyOfLesson(VocabularyOfLessonInput input) {
         VocabularyOfLessonEntity vocabularyOfLessonEntity = queryService.getVocabularyOfLessonEntityById(input.getId());
         CourseValidate.validateCourseOwner(vocabularyOfLessonEntity.getLesson().getCourse());
         if (!vocabularyOfLessonEntity.getVocabulary().getId().equals(input.getVocabularyId())) {
@@ -88,8 +108,7 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
         }
         vocabularyOfLessonEntity.setMeaning(input.getMeaning());
         vocabularyOfLessonEntity.setUpdateAt(LocalDateTime.now());
-        vocabularyOfLessonRepository.save(vocabularyOfLessonEntity);
-        return new ResponseData(VocabularyConverter.vocabularyOfLessonToModel(vocabularyOfLessonEntity));
+        return vocabularyOfLessonRepository.save(vocabularyOfLessonEntity);
     }
 
     @Override

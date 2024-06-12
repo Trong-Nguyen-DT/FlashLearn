@@ -141,7 +141,11 @@ public class LearnServiceImpl implements LearnService {
                 questionLearns.add(createQuestion(entity, TypeQuestion.LISTENING_TO_WORD.name(),
                                 entity.getVocabulary().getWord(), entity.getVocabulary().getWord(), false));
                 questionLearns.add(createQuestion(entity, TypeQuestion.WORD_TO_LISTENING.name(),
-                                entity.getVocabulary().getWord(), entity.getVocabulary().getMeaning(), false));
+                                entity.getVocabulary().getWord(), entity.getVocabulary().getWord(), false));
+                questionLearns.add(createQuestion(entity, TypeQuestion.LISTENING_TO_WORD.name(),
+                                entity.getVocabulary().getWord(), entity.getVocabulary().getWord(), false));
+                questionLearns.add(createQuestion(entity, TypeQuestion.WORD_TO_LISTENING.name(),
+                                entity.getVocabulary().getWord(), entity.getVocabulary().getWord(), false));
                 return questionLearns;
         }
 
