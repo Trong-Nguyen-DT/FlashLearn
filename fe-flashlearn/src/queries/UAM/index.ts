@@ -5,5 +5,6 @@ export * from './useLogin';
 export * from './useSignUp';
 export * from './useForgotPassword';
 export * from './useResetPassword';
+export * from './useVerifyEmail';
 
 export const UAMApi = uamApi.create();

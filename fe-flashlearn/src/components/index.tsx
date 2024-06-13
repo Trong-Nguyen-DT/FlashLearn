@@ -20,6 +20,8 @@ export { default as YesNoImageModal } from './YesNoImageModal';
 export { default as BreadCrumbs } from './BreadCrumbs';
 export { default as CreatableSelect } from './CreatableSelect';
 export { default as InputMask } from './MuiInputMask';
+export { default as Form } from './Form';
+export { default as ConfirmationCodeField } from './ConfirmationCodeField';
 
 export * from './CustomDropdown';
 export * from './Dialog';

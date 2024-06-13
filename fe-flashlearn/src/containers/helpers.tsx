@@ -51,6 +51,7 @@ export const routerGroup = [
   { path: PATHS.lessonsList, element: <CourseDetail />, isRequireAuth: false },
   { path: PATHS.learning, element: <Learn />, isRequireAuth: true },
   { path: PATHS.practiceLesson, element: <Learn />, isRequireAuth: true },
+  { path: PATHS.practiceListen, element: <Learn />, isRequireAuth: true },
   { path: PATHS.practiceCourse, element: <Learn />, isRequireAuth: true },
   { path: PATHS.lessonsCreate, element: <CreateLesson />, isRequireAuth: true },
   { path: PATHS.lessonsUpdate, element: <CreateLesson />, isRequireAuth: true },

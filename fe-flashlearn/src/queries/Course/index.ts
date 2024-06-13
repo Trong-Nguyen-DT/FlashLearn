@@ -9,3 +9,4 @@ export * from './useGetMyTeachingCourse';
 export * from './useAddCourse';
 export * from './useDeleteCourse';
 export * from './type';
+export * from './useRateCourse';

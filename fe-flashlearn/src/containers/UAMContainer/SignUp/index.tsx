@@ -1,20 +1,76 @@
 import { COLOR_CODE, IMAGES } from '@appConfig';
 import { PATHS } from '@appConfig/paths';
-import { Input, Link } from '@components';
+import { DialogContext, DialogType, Input, Link, Loading } from '@components';
 import { Button, Stack, Typography } from '@mui/material';
 import { getErrorMessage } from '@utils';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import LogoContainer from '../components/LogoContainer';
 import { SignUpFormField, SignUpFormSchema, SignUpFormType, signUpInitialValues } from './helpers';
+import { useSignUp, useVerifyEmail } from '@queries';
+import { Toastify } from '@services';
+import { useContext } from 'react';
+import EmailConfirmationModal from '../components/EmailConfirmationModal';
 
 const SignUp = () => {
   const navigate = useNavigate();
+
+  const { setDialogContent, openModal, closeModal } = useContext(DialogContext);
+
+  const { verifyEmail, isLoading: isLoadingEmail } = useVerifyEmail({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError(error: any) {
+      Toastify.error(error.message?.[0]?.errorMessage);
+    },
+    onSuccess(value) {
+      Toastify.success('Mã xác nhận đã được gửi thành công đến email của bạn!');
+      setDialogContent({
+        type: DialogType.CONTENT_DIALOG,
+        data: (
+          <EmailConfirmationModal
+            email={values.email}
+            onSignIn={handleSignIn}
+            encodeOTP={value.data.data.encodeOTP}
+          />
+        ),
+        hideTitle: true,
+        maxWidth: 'sm',
+      });
+      openModal();
+    },
+  });
+
+  const { signup } = useSignUp({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError(error: any) {
+      Toastify.error(error.message?.[0]?.errorMessage);
+      closeModal();
+    },
+    onSuccess() {
+      Toastify.success('Đăng ký tài khoản mới thành công.');
+      navigate(PATHS.signIn);
+      closeModal();
+    },
+  });
+
   const handleOnSubmit = (payload: SignUpFormType) => {
-    console.log('payload', payload);
+    verifyEmail({
+      email: payload.email,
+      isSignUp: true,
+    });
   };
 
-  const { touched, errors, getFieldProps, handleSubmit } = useFormik<SignUpFormType>({
+  const handleSignIn = (otp: string, encodeOTP: string) => {
+    signup({
+      email: values.email,
+      name: values.name,
+      password: values.password,
+      otp,
+      encodeOTP,
+    });
+  };
+
+  const { touched, errors, getFieldProps, handleSubmit, values } = useFormik<SignUpFormType>({
     initialValues: signUpInitialValues,
     validationSchema: SignUpFormSchema,
     onSubmit: handleOnSubmit,
@@ -97,7 +153,12 @@ const SignUp = () => {
               </Stack>
             </Stack>
             <Stack width={'500px'} gap={3}>
-              <Button variant="contained" type="submit" fullWidth>
+              <Button
+                variant="contained"
+                type="submit"
+                fullWidth
+                startIcon={isLoadingEmail && <Loading size="small" />}
+              >
                 ĐĂNG KÝ
               </Button>
               <Typography textAlign={'center'}>

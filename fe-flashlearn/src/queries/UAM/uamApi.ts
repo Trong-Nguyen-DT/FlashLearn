@@ -1,7 +1,13 @@
 import axios from 'axios';
 import apisauce from 'apisauce';
 import appConfig from 'src/appConfig';
-import { ChangePasswordPayload, ForgotPasswordPayload, SignInPayload, SignUpPayload } from './type';
+import {
+  ChangePasswordPayload,
+  ForgotPasswordPayload,
+  SignInPayload,
+  SignUpPayload,
+  VerifyEmailPayload,
+} from './type';
 import { ApiKey } from '@queries/keys';
 
 axios.defaults.withCredentials = true;
@@ -30,12 +36,15 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
   };
 
   const forgotPassword = (payload: ForgotPasswordPayload) => {
-    const { email } = payload;
-    return api.post(`${ApiKey.AUTH}/request-reset-password?email=${email}`, {});
+    return api.post(`${ApiKey.AUTH}/forgot-password`, payload);
   };
 
   const resetPassword = (body: ChangePasswordPayload) => {
     return api.post(`${ApiKey.AUTH}/reset-password`, body, {});
+  };
+
+  const verifyEmail = (body: VerifyEmailPayload) => {
+    return api.post(`${ApiKey.OTP}/generateOtp`, body, {});
   };
 
   return {
@@ -43,6 +52,7 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     signup,
     forgotPassword,
     resetPassword,
+    verifyEmail,
   };
 };
 

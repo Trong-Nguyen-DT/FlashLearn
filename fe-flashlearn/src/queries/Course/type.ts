@@ -29,3 +29,8 @@ export interface CoursePayload {
   image: UploadFileType;
   status: CourseStatus;
 }
+
+export interface RateCoursePayload {
+  id: number;
+  rating: number;
+}

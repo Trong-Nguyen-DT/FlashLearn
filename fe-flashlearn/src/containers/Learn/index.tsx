@@ -2,6 +2,7 @@ import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import LearnLesson from './LearnLesson';
 import PracticeLesson from './PracticeLesson';
 import PracticeCourse from './PracticeCourse';
+import PracticeListen from './PracticeListen';
 
 const Learn = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -21,6 +22,8 @@ const Learn = () => {
         return <PracticeLesson lessonId={lessonId} courseId={courseId} />;
       case 'practice-course':
         return <PracticeCourse courseId={courseId} />;
+      case 'practice-listen':
+        return <PracticeListen courseId={courseId} />;
       default:
         return <LearnLesson lessonId={lessonId} courseId={courseId} />;
     }

@@ -1,3 +1,4 @@
+import RatingForm from '@/containers/RatingForm';
 import { COLOR_CODE, PATHS } from '@appConfig';
 import { IMAGES } from '@appConfig/images';
 import { CustomDropdown, DialogContext, DialogType, DropdownItem, Image } from '@components';
@@ -49,7 +50,13 @@ const LearningItem = ({ course }: Props) => {
   ];
 
   const handleRateCourse = () => {
-    // TODO: Rate course
+    setDialogContent({
+      type: DialogType.CONTENT_DIALOG,
+      data: <RatingForm courseId={course.id} />,
+      hideTitle: true,
+      maxWidth: 'md',
+    });
+    openModal();
   };
 
   const handleLeaveCourse = () => {
@@ -74,6 +81,9 @@ const LearningItem = ({ course }: Props) => {
   const handleViewDetail = () => {
     navigate(PATHS.courseDetail.replace(':courseId', course.id.toString()));
   };
+
+  const progress = course?.totalVocabLearned / course?.totalVocal;
+  const learnPercentage = isNaN(progress) ? 0 : progress * 100;
 
   return (
     <Card
@@ -126,7 +136,7 @@ const LearningItem = ({ course }: Props) => {
             <Stack direction="row" gap={4} alignItems={'center'}>
               <LinearProgress
                 variant="determinate"
-                value={(course.totalVocabLearned / course.totalVocal) * 100}
+                value={learnPercentage}
                 sx={{
                   width: '80%',
                   background: COLOR_CODE.GREY_200,
@@ -139,7 +149,7 @@ const LearningItem = ({ course }: Props) => {
                 }}
               />
               <Typography fontSize={20} mr={4}>
-                {(course.totalVocabLearned / course.totalVocal) * 100}%
+                {learnPercentage.toFixed(0)}%
               </Typography>
             </Stack>
           </Stack>

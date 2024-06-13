@@ -1,0 +1,87 @@
+@use 'src/components/scss/vars' as *;
+@use 'src/components/scss/mixin' as *;
+
+.cmp-code-field {
+  &__container {
+    display: flex;
+    justify-content: start;
+    width: 100%;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  &__input--container {
+    div {
+      margin: 0 4px;
+      width: auto;
+      padding: 0;
+    }
+  }
+
+  &__input--container:first-child {
+    div {
+      margin-left: 0;
+      padding: 0;
+    }
+  }
+
+  &__input--container:last-child {
+    div {
+      margin-right: 0;
+      padding: 0;
+    }
+  }
+
+  &__input--container-small {
+    div {
+      margin: 0 4px;
+      width: auto;
+      padding: 0;
+    }
+  }
+
+  &__input--container-small:first-child {
+    div {
+      margin-left: 0;
+    }
+  }
+
+  &__input--container-small:last-child {
+    div {
+      margin-right: 0;
+    }
+  }
+
+  &__input {
+    input {
+      text-align: center;
+      background-color: $color-grey-100;
+      border-radius: 8px;
+      padding: 0;
+      height: 60px !important;
+      width: 60px !important;
+
+      @include mobileScreen {
+        height: calc((95vw - 52px) / 6) !important;
+        width: calc((95vw - 52px) / 6) !important;
+      }
+    }
+    .MuiOutlinedInput-root {
+      & fieldset {
+        border-color: var(--grayscale-100, #edeff1);
+        padding: 0;
+      }
+    }
+    input:focus {
+      background: $color-white;
+      box-shadow: 0px 2px 8px 0px $color-primary-300;
+    }
+  }
+  &__separator {
+    align-self: center;
+    font-size: 16px;
+    font-weight: 425;
+    margin-left: 4px;
+    margin-right: 4px;
+  }
+}

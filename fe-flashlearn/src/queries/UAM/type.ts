@@ -1,5 +1,8 @@
 export type ForgotPasswordPayload = {
   email: string;
+  password: string;
+  otp: string;
+  encodeOTP: string;
 };
 
 export type ChangePasswordPayload = {
@@ -19,10 +22,20 @@ export type SignInResponse = {
 export type SignUpResponse = SignInResponse;
 
 export type SignUpPayload = {
-  id: number;
   email: string;
   password: string;
   name: string;
-  avatar: string;
-  phone: string;
-}
+  otp: string;
+  encodeOTP: string;
+};
+
+export type VerifyEmailPayload = {
+  email: string;
+  isSignUp: boolean;
+};
+
+export type VerifyEmailResponse = {
+  email: string;
+  encodeOTP: string;
+  otpExpiration: string;
+};

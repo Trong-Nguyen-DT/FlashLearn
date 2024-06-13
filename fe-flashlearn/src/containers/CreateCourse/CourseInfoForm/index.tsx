@@ -2,7 +2,7 @@
 import { COLOR_CODE } from '@appConfig';
 import { FileUpload, ImagePreview, Input, Select, UploadFileType } from '@components';
 import { Box, Button, Stack } from '@mui/material';
-import { CoursePayload, useAddCourse, useGetMyTeachingCourse } from '@queries';
+import { CoursePayload, useAddCourse, useGetAllCourse, useGetMyTeachingCourse } from '@queries';
 import { Callback, getErrorMessage } from '@utils';
 import { Form, FormikProvider, useFormik } from 'formik';
 import {
@@ -30,12 +30,14 @@ const CourseInfoForm: React.FC<Props> = ({ step, setStep }) => {
   };
 
   const { handleInvalidateMyTeachingCourseList } = useGetMyTeachingCourse();
+  const { handleInvalidateCourseList } = useGetAllCourse();
 
   const { onAddNewCourse, isLoading } = useAddCourse({
     onSuccess(data) {
       toastify.success('Tạo khoá học thành công');
       navigate(`${PATHS.courses}/${data.data.data.id}`);
       handleInvalidateMyTeachingCourseList();
+      handleInvalidateCourseList();
     },
     onError(error) {
       toastify.success(error.message);

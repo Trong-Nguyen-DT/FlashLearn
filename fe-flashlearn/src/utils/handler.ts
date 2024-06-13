@@ -8,6 +8,8 @@ import { getCapitalize } from './format';
 
 export const getRandomId = (): string => uuidv4();
 
+export const generateArray = (length: number, initial = '') => Array(length).fill(initial);
+
 export const isString = (value: any): value is string => typeof value === 'string';
 
 export const isYesValue = (value: any) => value === YesNoValue.YES;

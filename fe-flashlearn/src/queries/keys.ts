@@ -2,6 +2,7 @@ import { UseQueryOptions } from '@tanstack/react-query';
 
 export enum ApiKey {
   USERS = '/user',
+  OTP = '/otp',
   STUDENT = '/student',
   LESSON = '/lesson',
   LESSON_DETAIL = '/lesson-detail',

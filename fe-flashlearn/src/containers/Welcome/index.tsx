@@ -1,46 +1,58 @@
-import { COLOR_CODE, IMAGES } from '@appConfig';
+import { COLOR_CODE, IMAGES, NAVBAR_HEIGHT, PATHS } from '@appConfig';
 import { Image } from '@components';
-import { Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const Welcome = () => {
+  const navigate = useNavigate();
+
+  const handleStart = () => {
+    navigate(PATHS.signIn);
+  };
+
   return (
     <Stack
       sx={{
+        position: 'relative',
         width: '100%',
-        height: '100vh',
         backgroundColor: 'white',
+        marginTop: `${NAVBAR_HEIGHT}px`,
       }}
     >
-      <Stack
-        direction="row"
+      <Image src={IMAGES.bannerHome} width={'100.55%'} />
+      <Typography
         sx={{
-          width: '100%',
-          height: '50vh',
-          backgroundImage: `url(${IMAGES.banner})`,
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: '0 0 40px 40px',
-          margin: -0.5,
+          position: 'absolute',
+          top: '27%',
+          left: '7%',
+          fontSize: 32,
+          fontWeight: 700,
+          color: COLOR_CODE.GREY_600,
         }}
       >
-        <Stack>
-          <Typography
-            textAlign={'center'}
-            fontSize={70}
-            color={COLOR_CODE.GREY_700}
-            fontWeight={600}
-          >
-            Chào mừng bạn
-            <br />
-            đến với{' '}
-            <Typography component="span" color={COLOR_CODE.PRIMARY} fontSize={70} fontWeight={900}>
-              Flash Learn
-            </Typography>
-          </Typography>
-          {/* <Image src={IMAGES.slogan} sx={{ height: '300px' }} /> */}
-        </Stack>
-        <Image src={IMAGES.teaching} sx={{ height: '400px', ml: 14 }} />
-      </Stack>
+        Học nhanh, nhớ lâu, từ vựng tiếng Anh <br /> dễ dàng với{' '}
+        <Typography component="span" fontWeight={800} fontSize={32}>
+          flashcard
+        </Typography>
+        !
+      </Typography>
+      <Button
+        variant="contained"
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '20%',
+          fontSize: 40,
+          fontWeight: 700,
+          height: 70,
+          borderRadius: 20,
+          boxShadow: `6px 6px 0px ${COLOR_CODE.PRIMARY_600}`,
+          '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}` },
+        }}
+        onClick={handleStart}
+      >
+        Bắt đầu nào
+      </Button>
     </Stack>
   );
 };

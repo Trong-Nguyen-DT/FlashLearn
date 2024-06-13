@@ -6,7 +6,7 @@ import appConfig from 'src/appConfig';
 import { AuthService } from '@services';
 import { stringify } from '@utils';
 import { TableParams } from '@components';
-import { CoursePayload } from './type';
+import { CoursePayload, RateCoursePayload } from './type';
 import { entries } from 'lodash';
 
 axios.defaults.withCredentials = true;
@@ -64,6 +64,10 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     });
   };
 
+  const rateCourse = (body: RateCoursePayload) => {
+    return api.patch(`${ApiKey.USERS}${ApiKey.COURSE}`, body);
+  };
+
   const deleteCourse = (body: { id: string }) => {
     const { id } = body;
     return api.delete(`${ApiKey.USERS}${ApiKey.COURSE}/${id}`, {});
@@ -76,6 +80,7 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     getMyLearningCourses,
     getMyTeachingCourses,
     deleteCourse,
+    rateCourse,
   };
 };
 

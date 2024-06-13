@@ -17,9 +17,10 @@ export function useGetQuestionPracticeCourseListen(
   },
 ) {
   const handleGetQuestionLearn: QueryFunction<ApiResponseType<LearnQuestionResponse>> = () =>
-    responseWrapper<ApiResponseType<LearnQuestionResponse>>(LearnApi.getQuestionPracticeCourse, [
-      options?.id,
-    ]);
+    responseWrapper<ApiResponseType<LearnQuestionResponse>>(
+      LearnApi.getQuestionPracticeListeningCourse,
+      [options?.id],
+    );
 
   const {
     data,

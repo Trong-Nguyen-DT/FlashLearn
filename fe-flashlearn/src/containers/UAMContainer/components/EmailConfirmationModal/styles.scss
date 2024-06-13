@@ -1,0 +1,52 @@
+@use 'src/components/scss/vars' as *;
+@use 'src/components/scss/mixin' as *;
+
+.ctn-mfa {
+  margin: 0 -24px -20px;
+  // background-color: lightblue;
+
+  &__container {
+    display: flex;
+    padding: 8px 24px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+  }
+
+  &__container-button {
+    display: flex;
+    margin-top: 8px;
+    padding: 16px 24px 24px 24px;
+    align-self: stretch;
+    gap: 2;
+  }
+
+  &__title {
+    font-size: 20px;
+    // font-family: Roboto;
+    font-weight: 600;
+    line-height: 28px;
+    letter-spacing: 0.05px;
+  }
+
+  .cmp-button {
+    &--disabled {
+      border-radius: 8px;
+      border: 1px solid var(--grayscale-300, #cfd4d9);
+      background-color: var(--grayscale-100, #edeff1);
+      opacity: 100%;
+      color: black;
+    }
+  }
+
+  @include mobileScreen {
+    padding: 8px 0;
+  }
+  &__text {
+    font-size: 14px;
+    // font-family: Roboto Flex;
+    line-height: 20px;
+  }
+}
