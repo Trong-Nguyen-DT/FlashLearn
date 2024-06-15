@@ -1,10 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
-from app.models import GeminiPro, GeminiChat
-from app.shemas.request import Request, RequestChat
-from app.shemas.response import Response
+from app.models import GeminiPro
+from app.shemas.request import Request
+
 
 router = APIRouter()
+
+@router.get("/")
+def read_root():
+    return {"Hello": "World"}
 
 @router.post("/generate")
 def generate(request: Request):
@@ -12,8 +16,4 @@ def generate(request: Request):
     response = chat.run(request.input, request.part_of_speech)
     return response
 
-@router.post("/chat-completions")
-def chat_completions(request: RequestChat):
-    chat = GeminiChat()
-    response = chat.run(request.message)
-    return response
+    

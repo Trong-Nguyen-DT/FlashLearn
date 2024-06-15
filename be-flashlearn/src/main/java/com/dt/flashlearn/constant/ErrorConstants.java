@@ -23,6 +23,9 @@ public class ErrorConstants {
     public static final int OTP_NOT_FOUND_CODE = 400;
     public static final String OTP_NOT_FOUND_MESSAGE = "Mã OTP không tồn tại";
 
+    public static final int INVALID_SIMILAR_WORD_CODE = 400;
+    public static final String INVALID_SIMILAR_WORD_MESSAGE = "Từ đồng nghĩa không hợp lệ";
+
     public static final int INVALID_CREDENTIALS_CODE = 401;
     public static final String INVALID_CREDENTIALS_MESSAGE = "Email hoặc mật khẩu không chính xác";
 

@@ -119,6 +119,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     private void saveSimilarWords(List<Word> similarWords, VocabularyEntity entity) {
         LocalDateTime now = LocalDateTime.now();
         List<String> duplicateWord = new ArrayList<>();
+        List<SimilarWordEntity> similarWordEntities = new ArrayList<>();
         similarWords.forEach(word -> {
             boolean isDuplicate = duplicateWord.stream().anyMatch(w -> w.equals(word.getWord()));
             if (!word.getWord().equals(entity.getWord()) && !isDuplicate) {
@@ -129,10 +130,16 @@ public class VocabularyServiceImpl implements VocabularyService {
                 similarWordEntity.setCreateAt(now);
                 similarWordEntity.setUpdateAt(now);
                 similarWordEntity.setDeleted(false);
-                similarWordRepository.save(similarWordEntity);
+                similarWordEntities.add(similarWordEntity);
                 duplicateWord.add(word.getWord());
             }
         });
+        if (similarWordEntities.size() < 4){
+            vocabularyRepository.delete(entity);
+            throw new MessageException(ErrorConstants.INVALID_SIMILAR_WORD_MESSAGE,
+                    ErrorConstants.INVALID_SIMILAR_WORD_CODE);
+        }
+        similarWordRepository.saveAll(similarWordEntities);
     }
 
     private void saveSentence(List<Sentence> sentences, VocabularyEntity entity) {
