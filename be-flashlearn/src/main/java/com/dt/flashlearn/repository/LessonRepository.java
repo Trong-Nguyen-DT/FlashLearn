@@ -3,6 +3,7 @@ package com.dt.flashlearn.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +16,6 @@ public interface LessonRepository extends JpaRepository<LessonEntity, Long>{
     Optional<LessonEntity> findByIdAndDeletedFalse(Long id);
 
     List<LessonEntity> findByCourseAndDeletedFalse(CourseEntity courseEntity);
+    List<LessonEntity> findAllByCourseAndDeletedFalse(CourseEntity courseEntity, Sort sort);
     
 }

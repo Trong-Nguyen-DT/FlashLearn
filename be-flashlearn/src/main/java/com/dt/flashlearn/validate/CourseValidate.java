@@ -72,7 +72,7 @@ public class CourseValidate {
     public static String[] parseSort(String sort) {
         String[] sortParts = sort.split(":");
         String orderBy = "createAt";
-        String sortBy = "desc";
+        String sortBy = "DESC";
         if (sortParts.length == 2) {
             orderBy = sortParts[0];
             sortBy = sortParts[1];
@@ -85,6 +85,9 @@ public class CourseValidate {
         }
         if (!sortBy.equals(OrderByConstants.SORT_BY_DESC) && !sortBy.equals(OrderByConstants.SORT_BY_ASC)) {
             throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
+        }
+        if (sortBy.toUpperCase().equals(OrderByConstants.SORT_BY_ASC)) {
+            sortBy = "ASC";
         }
         return new String[] { orderBy, sortBy };
     }

@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.constant.SuccessConstants;
@@ -44,8 +41,6 @@ public class ResponseHandler {
         return response;
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseError handleValidationExceptions(MethodArgumentNotValidException ex) {
         ResponseError response = new ResponseError();
         response.setCode(ErrorConstants.INVALID_CREDENTIALS_CODE);

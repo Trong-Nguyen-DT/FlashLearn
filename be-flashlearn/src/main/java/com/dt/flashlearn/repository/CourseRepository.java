@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.dt.flashlearn.constant.OrderByConstants;
 import com.dt.flashlearn.entity.Course.CourseEntity;
 import com.dt.flashlearn.entity.Course.CourseStatus;
 import com.dt.flashlearn.entity.User.UserEntity;
@@ -18,58 +21,32 @@ import com.dt.flashlearn.entity.User.UserEntity;
 public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
 
         @Query("SELECT c FROM CourseEntity c " +
-                        "JOIN c.owner o " +
-                        "WHERE ((:userEntity IS NULL) OR (c.owner = :userEntity)) " +
-                        "AND (c.deleted = false) " +
-                        "AND (:searchText IS NULL OR " +
-                        "c.name LIKE %:searchText% OR " +
-                        "c.description LIKE %:searchText% OR " +
-                        "o.name LIKE %:searchText%) " +
-                        "AND (c.avgRating >= :rating) " +
-                        "AND (c.totalVocal BETWEEN :startCount AND :endCount) " +
-                        "AND (:status IS NULL OR c.status = :status) " +
-                        "ORDER BY " +
-                        "CASE " +
-                        "    WHEN :orderBy = 'createAt' THEN c.createAt " +
-                        "    WHEN :orderBy = 'rating' THEN c.avgRating " +
-                        "    WHEN :orderBy = 'wordCount' THEN c.totalVocal " +
-                        "    WHEN :orderBy = 'name' THEN c.name " +
-                        "END DESC")
-        Page<CourseEntity> findAllCourseDesc(@Param("searchText") String searchText,
-                        @Param("rating") int rating,
-                        @Param("startCount") int startCount,
-                        @Param("endCount") int endCount,
-                        @Param("userEntity") UserEntity userEntity,
-                        @Param("status") CourseStatus status,
-                        @Param("orderBy") String orderBy,
-                        Pageable pageable);
+                "JOIN c.owner o " +
+                "WHERE ((:userEntity IS NULL) OR (c.owner = :userEntity)) " +
+                "AND (c.deleted = false) " +
+                "AND (:searchText IS NULL OR " +
+                "c.name LIKE %:searchText% OR " +
+                "c.description LIKE %:searchText% OR " +
+                "o.name LIKE %:searchText%) " +
+                "AND (c.avgRating >= :rating) " +
+                "AND (c.totalVocal BETWEEN :startCount AND :endCount) " +
+                "AND (:status IS NULL OR c.status = :status) ")
+        Page<CourseEntity> findAllCourses(@Param("searchText") String searchText,
+                                        @Param("rating") int rating,
+                                        @Param("startCount") int startCount,
+                                        @Param("endCount") int endCount,
+                                        @Param("userEntity") UserEntity userEntity,
+                                        @Param("status") CourseStatus status,
+                                        Pageable pageable);
 
-        @Query("SELECT c FROM CourseEntity c " +
-                        "JOIN c.owner o " +
-                        "WHERE ((:userEntity IS NULL) OR (c.owner = :userEntity)) " +
-                        "AND (c.deleted = false) " +
-                        "AND (:searchText IS NULL OR " +
-                        "c.name LIKE %:searchText% OR " +
-                        "c.description LIKE %:searchText% OR " +
-                        "o.name LIKE %:searchText%) " +
-                        "AND (c.avgRating >= :rating) " +
-                        "AND (c.totalVocal BETWEEN :startCount AND :endCount) " +
-                        "AND (:status IS NULL OR c.status = :status) " +
-                        "ORDER BY " +
-                        "CASE " +
-                        "    WHEN :orderBy = 'createAt' THEN c.createAt " +
-                        "    WHEN :orderBy = 'rating' THEN c.avgRating " +
-                        "    WHEN :orderBy = 'wordCount' THEN c.totalVocal " +
-                        "    WHEN :orderBy = 'name' THEN c.name " +
-                        "END ASC")
-        Page<CourseEntity> findAllCourseAsc(@Param("searchText") String searchText,
-                        @Param("rating") int rating,
-                        @Param("startCount") int startCount,
-                        @Param("endCount") int endCount,
-                        @Param("userEntity") UserEntity userEntity,
-                        @Param("status") CourseStatus status,
-                        @Param("orderBy") String orderBy,
-                        Pageable pageable);
+        default Page<CourseEntity> findAllCourses(String searchText, int rating, int startCount, int endCount, UserEntity userEntity, CourseStatus status, String orderBy, String sortBy, Pageable pageable) {
+                Sort sort = Sort.by(Sort.Direction.DESC, orderBy);
+                if (sortBy.equals(OrderByConstants.SORT_BY_ASC)) {
+                        sort = Sort.by(Sort.Direction.ASC, orderBy);
+                }
+                Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+                return findAllCourses(searchText, rating, startCount, endCount, userEntity, status, sortedPageable);
+        }
 
         @Query("SELECT c FROM CourseEntity c " +
                         "JOIN c.students s " +

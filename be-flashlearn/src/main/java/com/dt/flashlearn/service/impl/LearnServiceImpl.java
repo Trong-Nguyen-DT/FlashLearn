@@ -153,18 +153,18 @@ public class LearnServiceImpl implements LearnService {
                 List<QuestionLearn> questionLearns = new ArrayList<>();
                 questionLearns.add(createQuestion(entity, TypeQuestion.MULTIPLE_CHOICE.name(),
                                 entity.getVocabulary().getWord(), entity.getMeaning(), true));
-                questionLearns.add(createQuestion(entity, TypeQuestion.MULTIPLE_CHOICE.name(), entity.getMeaning(),
-                                entity.getVocabulary().getWord(), false));
+                questionLearns.add(createQuestion(entity, TypeQuestion.MULTIPLE_CHOICE.name(), 
+                                entity.getMeaning(), entity.getVocabulary().getWord(), false));
                 questionLearns.add(createQuestion(entity, TypeQuestion.LISTENING_TO_WORD.name(),
                                 entity.getVocabulary().getWord(), entity.getVocabulary().getWord(), false));
                 questionLearns.add(createQuestion(entity, TypeQuestion.WORD_TO_LISTENING.name(),
                                 entity.getVocabulary().getWord(), entity.getVocabulary().getWord(), false));
                 questionLearns.add(createQuestion(entity, TypeQuestion.FILL_THE_BLANK_CHOICE.name(),
                                 getRandomSentence(entity), entity.getVocabulary().getWord(), false));
-                questionLearns.add(createQuestion(entity, TypeQuestion.FILL_THE_BLANK.name(), getRandomSentence(entity),
-                                entity.getVocabulary().getWord(), false));
-                questionLearns.add(createQuestion(entity, TypeQuestion.TRANSLATE.name(), entity.getMeaning(),
-                                entity.getVocabulary().getWord(), false));
+                questionLearns.add(createQuestion(entity, TypeQuestion.FILL_THE_BLANK.name(),
+                                getRandomSentence(entity), entity.getVocabulary().getWord(), false));
+                questionLearns.add(createQuestion(entity, TypeQuestion.TRANSLATE.name(),
+                                entity.getMeaning(), entity.getVocabulary().getWord(), false));
                 return questionLearns;
         }
 

@@ -1,6 +1,7 @@
 package com.dt.flashlearn.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dt.flashlearn.constant.SuccessConstants;
@@ -91,6 +92,7 @@ public class AuthController {
     }
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseError handleValidationExceptions(MethodArgumentNotValidException ex) {
         return responseHandler.handleValidationExceptions(ex);
     }

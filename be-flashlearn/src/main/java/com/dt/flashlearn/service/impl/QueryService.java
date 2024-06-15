@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -142,11 +143,11 @@ public class QueryService {
     protected List<LessonEntity> getAllLessonByCourseId(Long courseId) {
         CourseEntity courseEntity = getCourseEntityById(courseId);
         CourseValidate.validateCoursePrivate(courseEntity);
-        return lessonRepository.findByCourseAndDeletedFalse(courseEntity);
+        return lessonRepository.findAllByCourseAndDeletedFalse(courseEntity, Sort.by(Sort.Direction.ASC, "createAt"));
     }
 
     protected List<VocabularyOfLessonEntity> getAllVocabularyOfLessonEntityByLessonEntity(LessonEntity lessonEntity) {
-        return vocabularyOfLessonRepository.findByLessonAndDeletedFalse(lessonEntity);
+        return vocabularyOfLessonRepository.findAllByLessonAndDeletedFalse(lessonEntity, Sort.by(Sort.Direction.ASC, "createAt"));
     }
 
     protected VocabularyEntity getVocabularyEntityById(Long id) {
@@ -169,7 +170,7 @@ public class QueryService {
     protected List<VocabularyOfLessonEntity> getVocabularyToLearnNew(LessonEntity lessonEntity) {
         StudentEntity studentEntity = getStudentEntityByCourse(lessonEntity.getCourse());
         List<VocabularyOfLessonEntity> vocabularyOfLessonEntities = vocabularyOfLessonRepository
-                .findByLessonAndDeletedFalse(lessonEntity);
+                .findAllByLessonAndDeletedFalse(lessonEntity, Sort.by(Sort.Direction.ASC, "createAt"));
         int startIndex = (int) studentEntity.getLearningVocabularies().stream()
                 .filter(learningVocabularyEntity -> learningVocabularyEntity.getVocabularyOfLesson().getLesson().getId()
                         .equals(lessonEntity.getId())

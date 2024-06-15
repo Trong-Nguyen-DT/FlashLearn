@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.dt.flashlearn.constant.OrderByConstants;
 import com.dt.flashlearn.constant.TypeImageConstants;
 import com.dt.flashlearn.converter.CourseConverter;
 import com.dt.flashlearn.entity.StudentEntity;
@@ -46,17 +45,12 @@ public class CourseServiceImpl implements CourseService {
             int rating,
             int startCount, int endCount,
             String orderBy, String sortBy) {
-        Page<CourseEntity> courses;
+        
         CourseStatus status = CourseStatus.PUBLIC;
-        if (OrderByConstants.SORT_BY_ASC.equalsIgnoreCase(sortBy.toUpperCase())) {
-            courses = courseRepository.findAllCourseAsc(searchText, rating, startCount, endCount, null, status,
-                    orderBy,
+        Page<CourseEntity> courses = courseRepository.findAllCourses(searchText, rating, startCount, endCount, null, status,
+                    orderBy, sortBy,
                     PageRequest.of(page - 1, perPage));
-        } else {
-            courses = courseRepository.findAllCourseDesc(searchText, rating, startCount, endCount, null, status,
-                    orderBy,
-                    PageRequest.of(page - 1, perPage));
-        }
+            
         return new ResponseData(
                 CourseConverter.convertToObjects(
                         courses.getContent().stream().map(course -> CourseConverter.toModel(course)).toList()),
@@ -72,17 +66,11 @@ public class CourseServiceImpl implements CourseService {
             int startCount, int endCount,
             CourseStatus status,
             String orderBy, String sortBy) {
-        Page<CourseEntity> courses;
+        
         UserEntity userEntity = queryService.getUserEntity();
-        if (OrderByConstants.SORT_BY_ASC.equalsIgnoreCase(sortBy.toUpperCase())) {
-            courses = courseRepository.findAllCourseAsc(searchText, rating, startCount, endCount, userEntity, status,
-                    orderBy,
+        Page<CourseEntity> courses = courseRepository.findAllCourses(searchText, rating, startCount, endCount, userEntity, status,
+                    orderBy, sortBy,
                     PageRequest.of(page - 1, perPage));
-        } else {
-            courses = courseRepository.findAllCourseDesc(searchText, rating, startCount, endCount, userEntity, status,
-                    orderBy,
-                    PageRequest.of(page - 1, perPage));
-        }
         return new ResponseData(courses.getContent().stream().map(CourseConverter::toModel).toList(),
                 new ResponsePage(courses.getNumber() + 1, courses.getSize(), courses.getTotalElements(),
                         courses.getTotalPages()));
@@ -99,6 +87,7 @@ public class CourseServiceImpl implements CourseService {
     public ResponseData createCourse(CourseInput input) {
         LocalDateTime now = LocalDateTime.now();
         CourseEntity courseEntity = new CourseEntity();
+        UserEntity userEntity = queryService.getUserEntity();
         courseEntity.setName(input.getName());
         courseEntity.setDescription(input.getDescription());
         courseEntity.setImage(
@@ -107,10 +96,23 @@ public class CourseServiceImpl implements CourseService {
         courseEntity.setStatus(CourseValidate.parseStatus(input.getStatus()));
         courseEntity.setCreateAt(now);
         courseEntity.setUpdateAt(now);
-        courseEntity.setOwner(queryService.getUserEntity());
+        courseEntity.setOwner(userEntity);
         courseEntity.setCode(generateUniqueCourseCode());
         courseEntity.setDeleted(false);
-        return createResponseData(courseRepository.save(courseEntity));
+        courseEntity = courseRepository.save(courseEntity);
+        createStudentEntity(courseEntity, userEntity);
+        return createResponseData(courseEntity);
+    }
+
+    private StudentEntity createStudentEntity(CourseEntity courseEntity, UserEntity userEntity) {
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setCourse(courseEntity);
+        studentEntity.setUser(userEntity);
+        studentEntity.setRating(0);
+        studentEntity.setCreateAt(LocalDateTime.now());
+        studentEntity.setUpdateAt(LocalDateTime.now());
+        studentEntity.setDeleted(false);
+        return studentRepository.save(studentEntity);
     }
 
     private String generateUniqueCourseCode() {
