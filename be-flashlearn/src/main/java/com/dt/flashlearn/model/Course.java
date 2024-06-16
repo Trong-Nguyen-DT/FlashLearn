@@ -19,6 +19,7 @@ public class Course {
     private Long totalVocal;
     private Long totalVocabLearned;
     private Long totalStudent;
+    private int rating;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 }

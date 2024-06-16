@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.model.request.AddStudentInput;
+import com.dt.flashlearn.model.request.StudentInput;
 import com.dt.flashlearn.model.response.ResponseError;
 import com.dt.flashlearn.service.StudentService;
 import com.dt.flashlearn.service.component.ResponseHandler;
@@ -55,8 +56,17 @@ public class StudentController {
         }
     }
 
+    @PostMapping("sendmail-student")
+    public ResponseEntity<?> sendmailStudent(@RequestBody AddStudentInput input) {
+        try {
+            return ResponseEntity.ok(responseHandler.createCreatedResponse(studentService.sendMailStudent(input)));
+        } catch (MessageException e) {
+            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
+        }
+    }
+
     @PostMapping()
-    public ResponseEntity<?> addStudent(@RequestBody AddStudentInput input) {
+    public ResponseEntity<?> addStudent(@RequestBody StudentInput input) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(responseHandler.createCreatedResponse(studentService.addStudent(input)));
         } catch (MessageException e) {

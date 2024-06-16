@@ -107,8 +107,8 @@ public class VocabularyServiceImpl implements VocabularyService {
         }
         LocalDateTime now = LocalDateTime.now();
         VocabularyEntity entity = new VocabularyEntity();
-        entity.setWord(word.getWord());
-        entity.setMeaning(word.getMeaning());
+        entity.setWord(word.getWord().toLowerCase());
+        entity.setMeaning(word.getMeaning().toLowerCase());
         entity.setPartOfSpeech(ValidateData.validatePartOfSpeech(vocabulary.getPartOfSpeech()));
         entity.setCreateAt(now);
         entity.setUpdateAt(now);
@@ -124,8 +124,8 @@ public class VocabularyServiceImpl implements VocabularyService {
             boolean isDuplicate = duplicateWord.stream().anyMatch(w -> w.equals(word.getWord()));
             if (!word.getWord().equals(entity.getWord()) && !isDuplicate) {
                 SimilarWordEntity similarWordEntity = new SimilarWordEntity();
-                similarWordEntity.setWord(word.getWord());
-                similarWordEntity.setMeaning(word.getMeaning());
+                similarWordEntity.setWord(word.getWord().toLowerCase());
+                similarWordEntity.setMeaning(word.getMeaning().toLowerCase());
                 similarWordEntity.setVocabulary(entity);
                 similarWordEntity.setCreateAt(now);
                 similarWordEntity.setUpdateAt(now);

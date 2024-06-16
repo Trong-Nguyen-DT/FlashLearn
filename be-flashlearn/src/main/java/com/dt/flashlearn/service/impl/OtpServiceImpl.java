@@ -41,7 +41,7 @@ public class OtpServiceImpl implements OtpService {
 
         String otp = randomOTP();
         mailService.sendEmail(input.getEmail(), input.getIsSignUp() ? createMessageSignUp(otp, input.getEmail())
-                : createMessageForgotPassword(otp, input.getEmail()));
+                : createMessageForgotPassword(otp, input.getEmail()), "Mã OTP của bạn từ FlashLearn");
         OtpEntity otpEntity = new OtpEntity();
         otpEntity.setOtp(otp);
         otpEntity.setEmail(input.getEmail());

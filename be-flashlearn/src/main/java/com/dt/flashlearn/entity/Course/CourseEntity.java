@@ -85,7 +85,7 @@ public class CourseEntity {
                                 .orElse(0.0);
 
 
-        return avgRating;
+        return Math.round(avgRating * 10) / 10.0;
     }
 
     public long calculateTotalVocab() {

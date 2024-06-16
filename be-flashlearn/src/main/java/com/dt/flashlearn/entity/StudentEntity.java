@@ -54,6 +54,9 @@ public class StudentEntity {
     private boolean deleted;
 
     public long calculateTotalVocabLearned() {
+        if (this.learningVocabularies == null) {
+            return 0;
+        }
         return this.learningVocabularies.stream()
                 .filter(vocabulary -> !vocabulary.getVocabularyOfLesson().isDeleted()
                                     && !vocabulary.getVocabularyOfLesson().getLesson().isDeleted())
@@ -61,6 +64,9 @@ public class StudentEntity {
     }
 
     public long calculateTotalExperience() {
+        if (this.learningHistories == null) {
+            return 0;
+        }
         return this.learningHistories.stream().mapToLong(history -> history.getExperience()).sum();
     }
 

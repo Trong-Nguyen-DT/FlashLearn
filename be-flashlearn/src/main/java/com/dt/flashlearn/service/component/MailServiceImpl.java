@@ -21,13 +21,13 @@ public class MailServiceImpl implements MailService{
     private String fromMail;
 
     @Override
-    public void sendEmail(String email, String message) {
+    public void sendEmail(String email, String message, String subject) {
         try {
             MimeMessage mimeMessage = sender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             helper.setFrom(fromMail);
             helper.setTo(email);
-            helper.setSubject("Mã OTP của bạn từ FlashLearn");
+            helper.setSubject(subject);
             helper.setText(message, true);
             sender.send(mimeMessage);
         } catch (Exception e) {

@@ -103,7 +103,7 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
         VocabularyOfLessonEntity vocabularyOfLessonEntity = new VocabularyOfLessonEntity();
         vocabularyOfLessonEntity.setLesson(lessonEntity);
         vocabularyOfLessonEntity.setVocabulary(entity);
-        vocabularyOfLessonEntity.setMeaning((input.getMeaning() != null || input.getMeaning().equals("")) ? input.getMeaning() : entity.getMeaning());
+        vocabularyOfLessonEntity.setMeaning((input.getMeaning() != null || input.getMeaning().equals("")) ? input.getMeaning().toLowerCase() : entity.getMeaning());
         vocabularyOfLessonEntity.setImage(
                 input.getImage() != null ? imageService.upload(input.getImage(), TypeImageConstants.VOCABULARY_IMAGE)
                         : null);
@@ -122,7 +122,7 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
             vocabularyOfLessonEntity
                     .setImage(imageService.upload(input.getImage(), TypeImageConstants.VOCABULARY_IMAGE));
         }
-        vocabularyOfLessonEntity.setMeaning(input.getMeaning());
+        vocabularyOfLessonEntity.setMeaning(input.getMeaning().toLowerCase());
         vocabularyOfLessonEntity.setUpdateAt(LocalDateTime.now());
         return vocabularyOfLessonRepository.save(vocabularyOfLessonEntity);
     }
