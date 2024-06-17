@@ -1,14 +1,33 @@
+/* eslint-disable react-refresh/only-export-components */
 import { COLOR_CODE, IMAGES, NAVBAR_HEIGHT, PATHS } from '@appConfig';
-import { Image } from '@components';
-import { Button, Stack, Typography } from '@mui/material';
+import { Image, Loading } from '@components';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { useGetAllCourse } from '@queries';
+import { IRootState } from '@redux/store';
+import { useEffect } from 'react';
+import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import WelcomeItem from './WelcomeItem';
 
-const Welcome = () => {
+type WelcomeProps = ReturnType<typeof mapStateToProps>;
+
+const mapStateToProps = (state: IRootState) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+const Welcome: React.FC<WelcomeProps> = ({ isAuthenticated }) => {
   const navigate = useNavigate();
+  const { courses, setParams, isFetching } = useGetAllCourse();
+
+  useEffect(() => {
+    setParams({ page: 1, perPage: 10, sort: 'rating:desc' });
+  });
 
   const handleStart = () => {
-    navigate(PATHS.signIn);
+    navigate(isAuthenticated ? PATHS.courses : PATHS.signIn);
   };
+
+  if (isFetching) return <Loading />;
 
   return (
     <Stack
@@ -20,29 +39,13 @@ const Welcome = () => {
       }}
     >
       <Image src={IMAGES.bannerHome} width={'100.55%'} />
-      <Typography
-        sx={{
-          position: 'absolute',
-          top: '27%',
-          left: '7%',
-          fontSize: 32,
-          fontWeight: 700,
-          color: COLOR_CODE.GREY_600,
-        }}
-      >
-        Học nhanh, nhớ lâu, từ vựng tiếng Anh <br /> dễ dàng với{' '}
-        <Typography component="span" fontWeight={800} fontSize={32}>
-          flashcard
-        </Typography>
-        !
-      </Typography>
       <Button
-        variant="contained"
+        variant="outlined"
         sx={{
           position: 'absolute',
-          top: '50%',
-          left: '20%',
-          fontSize: 40,
+          top: '35%',
+          right: '20%',
+          fontSize: 32,
           fontWeight: 700,
           height: 70,
           borderRadius: 20,
@@ -51,10 +54,26 @@ const Welcome = () => {
         }}
         onClick={handleStart}
       >
-        Bắt đầu nào
+        {isAuthenticated ? 'Khám phá nào' : 'Bắt đầu nào'}
       </Button>
+      <Stack mx={9} my={4}>
+        {courses?.length > 0 ? (
+          <>
+            <Typography fontWeight={800} fontSize={32} color={COLOR_CODE.PRIMARY}>
+              Những khóa học được đánh giá cao nhất
+            </Typography>
+            <Stack direction="row" gap={2} overflow="auto" height="400px">
+              {courses.map((course, index) => (
+                <Box key={index} width={300}>
+                  <WelcomeItem course={course} />
+                </Box>
+              ))}
+            </Stack>
+          </>
+        ) : null}
+      </Stack>
     </Stack>
   );
 };
 
-export default Welcome;
+export default connect(mapStateToProps)(Welcome);

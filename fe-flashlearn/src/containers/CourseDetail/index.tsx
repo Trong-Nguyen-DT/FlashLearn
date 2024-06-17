@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { COLOR_CODE, IMAGES, NAVBAR_HEIGHT } from '@appConfig';
-import { BreadCrumbs, Image, Tabs } from '@components';
+import { BreadCrumbs, DialogContext, DialogType, Image, Tabs } from '@components';
 import { Button, Rating, Stack, Typography, useMediaQuery } from '@mui/material';
 import {
   useGetCourseDetail,
@@ -17,9 +17,14 @@ import StudentList from '../Student/StudentList';
 import { courseDetailBreadCrumb, courseTabs, studentTabs, teacherTabs } from './helpers';
 import Practice from '../Practice';
 import Ranking from '../Ranking';
+import RatingForm from '../RatingForm';
+import { useContext } from 'react';
+import UpdateCourse from '../UpdateCourse';
 
 const CourseDetail = () => {
   const isMobileScreen = useMediaQuery('(max-width: 840px)');
+
+  const { setDialogContent, openModal } = useContext(DialogContext);
 
   const location = useLocation();
 
@@ -53,6 +58,16 @@ const CourseDetail = () => {
     onJoinCourse({ id: courseDetail?.id });
   };
 
+  const handleRateCourse = () => {
+    setDialogContent({
+      type: DialogType.CONTENT_DIALOG,
+      data: <RatingForm courseId={courseDetail.id} />,
+      hideTitle: true,
+      maxWidth: 'xs',
+    });
+    openModal();
+  };
+
   const isOwner = profile?.id === courseDetail?.owner.id;
 
   const isStudent = courses?.some((course) => course.id === courseDetail?.id);
@@ -69,6 +84,8 @@ const CourseDetail = () => {
         return <StudentList />;
       case 'rank':
         return <Ranking courseId={courseId} />;
+      case 'setting':
+        return <UpdateCourse courseDetail={courseDetail} />;
       default:
         return <LessonList isOwner={isOwner} isStudent={isStudent} />;
     }
@@ -107,7 +124,7 @@ const CourseDetail = () => {
           <Rating value={Number(courseDetail?.avgRating)} precision={0.1} readOnly />
           <Typography>{courseDetail?.description}</Typography>
           <Stack display="block" mt={2}>
-            {!isStudent && (
+            {!isStudent ? (
               <Button
                 variant="contained"
                 onClick={handleLearn}
@@ -120,7 +137,19 @@ const CourseDetail = () => {
               >
                 Bắt đầu học
               </Button>
-            )}
+            ) : courseDetail.totalVocabLearned !== 0 && !isOwner ? (
+              <Button
+                variant="contained"
+                onClick={handleRateCourse}
+                sx={{
+                  fontWeight: 800,
+                  boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
+                  '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}` },
+                }}
+              >
+                Đánh giá
+              </Button>
+            ) : null}
           </Stack>
         </Stack>
         <Stack width={'30%'}>

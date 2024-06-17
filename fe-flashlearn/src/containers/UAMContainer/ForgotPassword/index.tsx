@@ -6,13 +6,18 @@ import { getErrorMessage } from '@utils';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import LogoContainer from '../components/LogoContainer';
-import { SignUpFormField, SignUpFormSchema, SignUpFormType, signUpInitialValues } from './helpers';
-import { useSignUp, useVerifyEmail } from '@queries';
+import {
+  ForgotPasswordFormField,
+  ForgotPasswordFormSchema,
+  ForgotPasswordFormType,
+  forgotPasswordInitialValues,
+} from './helpers';
+import { useForgotPassword, useVerifyEmail } from '@queries';
 import { Toastify } from '@services';
 import { useContext } from 'react';
 import EmailConfirmationModal from '../components/EmailConfirmationModal';
 
-const SignUp = () => {
+const ForgotPassword = () => {
   const navigate = useNavigate();
 
   const { setDialogContent, openModal, closeModal } = useContext(DialogContext);
@@ -29,9 +34,9 @@ const SignUp = () => {
         data: (
           <EmailConfirmationModal
             email={values.email}
-            onCallBack={handleSignIn}
+            onCallBack={handleForgotPassword}
             encodeOTP={value.data.data.encodeOTP}
-            isSignUp={true}
+            isSignUp={false}
           />
         ),
         hideTitle: true,
@@ -41,41 +46,41 @@ const SignUp = () => {
     },
   });
 
-  const { signup } = useSignUp({
+  const { forgotPassword } = useForgotPassword({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError(error: any) {
       Toastify.error(error.message?.[0]?.errorMessage);
       closeModal();
     },
     onSuccess() {
-      Toastify.success('Đăng ký tài khoản mới thành công.');
+      Toastify.success('Đổi mật khẩu thành công.');
       navigate(PATHS.signIn);
       closeModal();
     },
   });
 
-  const handleOnSubmit = (payload: SignUpFormType) => {
+  const handleOnSubmit = (payload: ForgotPasswordFormType) => {
     verifyEmail({
       email: payload.email,
-      isSignUp: true,
+      isSignUp: false,
     });
   };
 
-  const handleSignIn = (otp: string, encodeOTP: string) => {
-    signup({
+  const handleForgotPassword = (otp: string, encodeOTP: string) => {
+    forgotPassword({
       email: values.email,
-      name: values.name,
       password: values.password,
       otp,
       encodeOTP,
     });
   };
 
-  const { touched, errors, getFieldProps, handleSubmit, values } = useFormik<SignUpFormType>({
-    initialValues: signUpInitialValues,
-    validationSchema: SignUpFormSchema,
-    onSubmit: handleOnSubmit,
-  });
+  const { touched, errors, getFieldProps, handleSubmit, values } =
+    useFormik<ForgotPasswordFormType>({
+      initialValues: forgotPasswordInitialValues,
+      validationSchema: ForgotPasswordFormSchema,
+      onSubmit: handleOnSubmit,
+    });
 
   const getFieldErrorMessage = (fieldName: string) =>
     getErrorMessage(fieldName, { touched, errors });
@@ -120,7 +125,7 @@ const SignUp = () => {
             <LogoContainer />
             <Stack sx={{ width: '500px' }} mt={2} gap={2}>
               <Typography textAlign={'center'} variant="h1" color={COLOR_CODE.GREY_700}>
-                Tạo tài khoản mới
+                Quên mật khẩu
               </Typography>
               <Stack gap={3}>
                 <Input
@@ -129,17 +134,8 @@ const SignUp = () => {
                   size="small"
                   label="Email"
                   placeholder="Enter your Email"
-                  errorMessage={getFieldErrorMessage(SignUpFormField.EMAIL)}
-                  {...getFieldProps(SignUpFormField.EMAIL)}
-                />
-                <Input
-                  required
-                  fullWidth
-                  size="small"
-                  label="Name"
-                  placeholder="Enter your name"
-                  errorMessage={getFieldErrorMessage(SignUpFormField.NAME)}
-                  {...getFieldProps(SignUpFormField.NAME)}
+                  errorMessage={getFieldErrorMessage(ForgotPasswordFormField.EMAIL)}
+                  {...getFieldProps(ForgotPasswordFormField.EMAIL)}
                 />
                 <Input
                   required
@@ -148,8 +144,8 @@ const SignUp = () => {
                   label="Password"
                   placeholder="Enter your Password"
                   isPassword
-                  errorMessage={getFieldErrorMessage(SignUpFormField.PASSWORD)}
-                  {...getFieldProps(SignUpFormField.PASSWORD)}
+                  errorMessage={getFieldErrorMessage(ForgotPasswordFormField.PASSWORD)}
+                  {...getFieldProps(ForgotPasswordFormField.PASSWORD)}
                 />
               </Stack>
             </Stack>
@@ -160,10 +156,10 @@ const SignUp = () => {
                 fullWidth
                 startIcon={isLoadingEmail && <Loading size="small" />}
               >
-                ĐĂNG KÝ
+                ĐỔI MẬT KHẨU
               </Button>
               <Typography textAlign={'center'}>
-                ĐÃ CÓ TÀI KHOẢN?{'   '}
+                QUAY VỀ{'   '}
                 <Link onClick={() => navigate(PATHS.signIn)}>
                   <strong style={{ color: COLOR_CODE.PRIMARY }}>ĐĂNG NHẬP</strong>
                 </Link>
@@ -176,4 +172,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default ForgotPassword;

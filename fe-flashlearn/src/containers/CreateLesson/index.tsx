@@ -47,9 +47,10 @@ const CreateLesson = () => {
 
   const { handleInvalidateLessonList } = useGetLesson({ courseId });
 
-  const { lessonDetail } = useGetLessonDetail({ id: paramLessonId });
+  const { lessonDetail, handleInvalidateLessonDetail } = useGetLessonDetail({ id: paramLessonId });
 
-  const { vocabulary: vocabularyOfLesson } = useGetVocabularyOfLesson({ lessonId: paramLessonId });
+  const { handleInvalidateVocalOfLesson } = useGetVocabularyOfLesson({ lessonId: paramLessonId });
+  const { vocabularyOfLesson } = useGetVocabularyOfLesson({ lessonId: paramLessonId });
 
   const { onUpdateLesson, isLoading: isLoadingUpdate } = useUpdateLesson({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -87,6 +88,8 @@ const CreateLesson = () => {
       onSuccess() {
         Toastify.success(isUpdate ? 'Cập nhật bài học thành công' : 'Tạo bài học thành công');
         handleInvalidateLessonList();
+        handleInvalidateVocalOfLesson();
+        handleInvalidateLessonDetail();
         navigate(PATHS.lessonsList.replace(':courseId', courseId));
       },
     });
@@ -103,7 +106,7 @@ const CreateLesson = () => {
         return {
           vocabularyId: vocal.id,
           image: existVocal?.image,
-          meaning: existVocal?.meaning,
+          meaning: existVocal?.meaning || vocal.meaning,
         };
       });
       const existVocal: VocabularyOfLessonPayload[] = values.vocabulary
@@ -115,27 +118,40 @@ const CreateLesson = () => {
             meaning: vocal.meaning,
           };
         });
+
+      const deletedVocal: VocabularyOfLessonPayload[] = vocabularyOfLesson
+        .filter((value) => {
+          const existVocal = values.vocabulary
+            .map((v) => v.vocabularyId)
+            .includes(value.vocabulary.id);
+          return !existVocal;
+        })
+        .map((v) => ({
+          id: v.id,
+          delete: true,
+          vocabularyId: v.vocabulary.id,
+          meaning: v.meaning,
+        }));
+      const payload = [...existVocal, ...newVocal, ...deletedVocal].map((value) => {
+        const id = vocabularyOfLesson.find((v) => v.vocabulary.id === value.vocabularyId)?.id;
+        return { ...value, id };
+      });
+      console.log('🚀 ~ onSuccess ~ payload:', payload);
       onAddVocabularyOfLesson({
-        vocabularies: [...existVocal, ...newVocal],
+        vocabularies: payload,
         lessonId: Number(values.lesson.id),
       });
     },
   });
 
-  const { vocabulary, handleInvalidateVocabularyList } = useGetAllVocabulary();
+  const { handleInvalidateVocabularyList } = useGetAllVocabulary();
 
   const handleAddVocabulary = () => {
     const newVocal = values.vocabulary
       .map((vocal) =>
         !isNumber(vocal.vocabularyId)
           ? {
-              word: vocal.vocabularyId,
-              partOfSpeech: vocal.partOfSpeech,
-            }
-          : vocal.partOfSpeech !==
-            vocabulary.find((voc) => voc.id === vocal.vocabularyId)?.partOfSpeech
-          ? {
-              word: vocabulary.find((voc) => voc.id === vocal.vocabularyId).word,
+              word: vocal.word,
               partOfSpeech: vocal.partOfSpeech,
             }
           : null,
@@ -161,15 +177,17 @@ const CreateLesson = () => {
           courseId: courseId,
         },
         vocabulary: vocabularyOfLesson.map((voc) => ({
+          id: voc.id,
           vocabularyId: voc.vocabulary.id,
           partOfSpeech: voc.vocabulary.partOfSpeech,
-          image: { url: voc.image },
+          ...(voc.image && { image: { url: voc.image } }),
           meaning: voc.meaning,
         })),
       };
     }
     return lessonVocabInitialValues;
-  }, [courseId, isUpdate, lessonDetail, vocabularyOfLesson]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lessonDetail, vocabularyOfLesson]);
 
   const formik = useFormik<LessonVocabForm>({
     initialValues: INITIAL,

@@ -2,7 +2,6 @@ import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.scss';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from '@emotion/react';
 import { theme } from '@appConfig/theme';
 import { BrowserRouter } from 'react-router-dom';
@@ -44,7 +43,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Containers />
               </Suspense>
             </BrowserRouter>
-            <ReactQueryDevtools initialIsOpen={false} />
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
           </QueryClientProvider>
         </DialogProvider>
       </Provider>

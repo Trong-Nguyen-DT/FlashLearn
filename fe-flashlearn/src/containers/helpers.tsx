@@ -11,9 +11,12 @@ import OnDevelop from './StartupContainers/OnDevelop';
 import SplashScreen from './StartupContainers/SplashScreen';
 import { SignIn, SignUp } from './UAMContainer';
 import Welcome from './Welcome';
+import JoinCourse from './JoinCourse';
 import MyCourse from './MyCourse';
 import Learn from './Learn';
 import CreateLesson from './CreateLesson';
+import { UserProfile } from './UserProfile';
+import ForgotPassword from './UAMContainer/ForgotPassword';
 
 type RouteWrapperProps = {
   isAuthenticated: boolean;
@@ -38,12 +41,12 @@ export const CustomRoute: React.FC<PropsWithChildren<RouteWrapperProps>> = ({
 };
 
 export const routerGroup = [
-  { path: PATHS.root, element: <OnDevelop />, isRequireAuth: true },
+  { path: PATHS.root, element: <Welcome />, isRequireAuth: true },
   { path: PATHS.welcome, element: <Welcome />, isRequireAuth: false },
+  { path: PATHS.joinCourse, element: <JoinCourse />, isRequireAuth: false },
   { path: PATHS.signIn, element: <SignIn />, isRequireAuth: false },
   { path: PATHS.signUp, element: <SignUp />, isRequireAuth: false },
-  { path: PATHS.forgotPassword, element: <OnDevelop />, isRequireAuth: false },
-  { path: PATHS.resetPassword, element: <OnDevelop />, isRequireAuth: false },
+  { path: PATHS.forgotPassword, element: <ForgotPassword />, isRequireAuth: false },
   { path: PATHS.courses, element: <CourseList />, isRequireAuth: false },
   { path: PATHS.courseCreate, element: <CreateCourse />, isRequireAuth: true },
   { path: PATHS.courseDetail, element: <CourseDetail />, isRequireAuth: false },
@@ -64,6 +67,6 @@ export const routerGroup = [
   { path: PATHS.myCourseLearning, element: <MyCourse />, isRequireAuth: true },
   { path: PATHS.myCourseTeaching, element: <MyCourse />, isRequireAuth: true },
   { path: PATHS.dashboard, element: <OnDevelop />, isRequireAuth: true },
-  { path: PATHS.profile, element: <OnDevelop />, isRequireAuth: true },
+  { path: PATHS.profile, element: <UserProfile />, isRequireAuth: true },
   { path: PATHS.dev, element: <Dev />, isRequireAuth: true },
 ];

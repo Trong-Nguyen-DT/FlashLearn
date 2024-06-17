@@ -32,18 +32,18 @@ export function useGetVocabularyOfLesson(
 
   const queryClient = useQueryClient();
 
-  const handleInvalidateVocabularyList = () =>
+  const handleInvalidateVocalOfLesson = () =>
     queryClient.invalidateQueries([ApiKey.VOCABULARY_LESSON, options?.lessonId]);
 
-  const { data: vocabulary = [], page } = data?.data || {};
+  const { data: vocabularyOfLesson = [], page } = data?.data || {};
 
   return {
-    vocabulary,
+    vocabularyOfLesson,
     page,
     error,
     isError,
     isFetching,
     onGetAllVocabulary,
-    handleInvalidateVocabularyList,
+    handleInvalidateVocalOfLesson,
   };
 }

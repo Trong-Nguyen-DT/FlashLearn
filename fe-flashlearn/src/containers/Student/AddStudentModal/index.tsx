@@ -1,7 +1,8 @@
 import { COLOR_CODE } from '@appConfig';
 import { DialogContext, Input } from '@components';
 import { Button, Divider, Stack, Typography } from '@mui/material';
-import { useAddStudents, useGetCourseDetail, useGetStudents } from '@queries';
+import { useGetCourseDetail, useGetStudents } from '@queries';
+import { useInviteStudents } from '@queries/Student/useInviteStudents';
 import { Toastify } from '@services';
 import { isEmpty } from 'lodash';
 import { useContext, useState } from 'react';
@@ -18,13 +19,13 @@ const AddStudentModal: React.FC<Props> = ({ courseId }) => {
   const { closeModal } = useContext(DialogContext);
   const { handleInvalidateStudentList } = useGetStudents();
 
-  const { onAddNewStudents } = useAddStudents({
+  const { onInviteStudents } = useInviteStudents({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError(error: any) {
       Toastify.error(error.message?.[0]?.errorMessage);
     },
     onSuccess() {
-      Toastify.success('Thêm học viên thành công');
+      Toastify.success('Đã gửi lời mời đến các học viên');
       handleInvalidateStudentList();
       closeModal();
     },
@@ -51,7 +52,7 @@ const AddStudentModal: React.FC<Props> = ({ courseId }) => {
     const emails = validateEmails(text);
     if (emails) {
       if ((emails as string[]).length > 0) {
-        onAddNewStudents({
+        onInviteStudents({
           courseId,
           emailStudents: emails as string[],
         });

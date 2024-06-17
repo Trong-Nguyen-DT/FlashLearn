@@ -12,10 +12,16 @@ import './styles.scss';
 type Props = {
   email: string;
   encodeOTP: string;
-  onSignIn?: Callback;
+  onCallBack?: Callback;
+  isSignUp?: boolean;
 };
 
-const EmailConfirmationModal: React.FC<Props> = ({ email, encodeOTP: encode, onSignIn }) => {
+const EmailConfirmationModal: React.FC<Props> = ({
+  email,
+  encodeOTP: encode,
+  onCallBack,
+  isSignUp,
+}) => {
   const { isLoading } = useSignUp();
 
   const { verifyEmail, isLoading: isLoadingEmail } = useVerifyEmail({
@@ -37,13 +43,13 @@ const EmailConfirmationModal: React.FC<Props> = ({ email, encodeOTP: encode, onS
   };
 
   const handleSubmitCode = () => {
-    onSignIn(code, encodeOTP);
+    onCallBack(code, encodeOTP);
   };
 
   const handleSendAgain = () => {
     verifyEmail({
       email,
-      isSignUp: true,
+      isSignUp,
     });
   };
 

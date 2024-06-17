@@ -8,6 +8,7 @@ import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import Rating, { IconContainerProps } from '@mui/material/Rating';
 import { styled } from '@mui/material/styles';
+import { Tooltip } from '@mui/material';
 
 export enum RatingFormField {
   ID = 'id',
@@ -37,23 +38,58 @@ export const customIcons: {
   };
 } = {
   1: {
-    icon: <SentimentVeryDissatisfiedIcon color="error" />,
+    icon: (
+      <Tooltip title="Rất không hài lòng">
+        <SentimentVeryDissatisfiedIcon
+          color="error"
+          sx={{ transform: 'scale(1)', width: 70, height: 70 }}
+        />
+      </Tooltip>
+    ),
     label: 'Very Dissatisfied',
   },
   2: {
-    icon: <SentimentDissatisfiedIcon color="error" />,
+    icon: (
+      <Tooltip title="Không hài lòng">
+        <SentimentDissatisfiedIcon
+          color="error"
+          sx={{ transform: 'scale(1)', width: 70, height: 70 }}
+        />
+      </Tooltip>
+    ),
     label: 'Dissatisfied',
   },
   3: {
-    icon: <SentimentSatisfiedIcon color="warning" />,
+    icon: (
+      <Tooltip title="Bình thường">
+        <SentimentSatisfiedIcon
+          color="warning"
+          sx={{ transform: 'scale(1)', width: 70, height: 70 }}
+        />
+      </Tooltip>
+    ),
     label: 'Neutral',
   },
   4: {
-    icon: <SentimentSatisfiedAltIcon color="success" />,
+    icon: (
+      <Tooltip title="Hài lòng">
+        <SentimentSatisfiedAltIcon
+          color="success"
+          sx={{ transform: 'scale(1)', width: 70, height: 70 }}
+        />
+      </Tooltip>
+    ),
     label: 'Satisfied',
   },
   5: {
-    icon: <SentimentVerySatisfiedIcon color="success" />,
+    icon: (
+      <Tooltip title="Rất hài lòng">
+        <SentimentVerySatisfiedIcon
+          color="success"
+          sx={{ transform: 'scale(1)', width: 70, height: 70 }}
+        />
+      </Tooltip>
+    ),
     label: 'Very Satisfied',
   },
 };

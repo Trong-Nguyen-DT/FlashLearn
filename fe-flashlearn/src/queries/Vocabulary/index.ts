@@ -8,3 +8,4 @@ export * from './useGetAllVocabulary';
 export * from './useAddVocabulary';
 export * from './useAddVocabularies';
 export * from './useAddVocabulariesOfLesson';
+export * from './useUpdateVocabulariesOfLesson';

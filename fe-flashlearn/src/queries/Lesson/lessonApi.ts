@@ -43,7 +43,7 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     let formData = new FormData();
 
     entries(payload).forEach(([key, value]) => {
-      formData.append(key, value);
+      value && formData.append(key, value);
     });
 
     return api.post(`${ApiKey.USERS}${ApiKey.LESSON}`, formData, {
@@ -54,16 +54,19 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
   };
 
   const updateLesson = (body: LessonPayload) => {
-    const { id: _, ...rest } = body;
+    const { id, ...rest } = body;
     const payload = {
-      ...rest,
-      image: rest.image.file,
+      id,
+      name: rest.name,
+      description: rest.description,
+      courseId: rest.courseId,
+      ...(rest.image && { image: rest.image.file }),
     };
     // eslint-disable-next-line prefer-const
     let formData = new FormData();
 
     entries(payload).forEach(([key, value]) => {
-      formData.append(key, value);
+      value && formData.append(key, value);
     });
 
     return api.put(`${ApiKey.USERS}${ApiKey.LESSON}`, formData, {

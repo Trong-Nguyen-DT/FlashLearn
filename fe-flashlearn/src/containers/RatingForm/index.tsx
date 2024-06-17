@@ -1,5 +1,5 @@
 import { COLOR_CODE } from '@appConfig';
-import { DialogContext } from '@components';
+import { DialogContext, Loading } from '@components';
 import { Button, Stack, Typography } from '@mui/material';
 import { RateCoursePayload, useGetAllCourse, useGetCourseDetail, useRateCourse } from '@queries';
 import { getErrorMessage } from '@utils';
@@ -66,6 +66,9 @@ const RatingForm = ({ courseId, rating }: Props) => {
   return (
     <form onSubmit={handleSubmit}>
       <Stack gap={3}>
+        <Typography fontSize={24} fontWeight={700}>
+          Đánh giá khoá học
+        </Typography>
         <StyledRating
           name="highlight-selected-only"
           defaultValue={2}
@@ -73,6 +76,8 @@ const RatingForm = ({ courseId, rating }: Props) => {
           getLabelText={(value: number) => customIcons[value].label}
           highlightSelectedOnly
           {...getFieldProps(RatingFormField.RATING)}
+          size="large"
+          disabled={isLoading}
         />
         {getFieldErrorMessage(RatingFormField.RATING) && (
           <Typography color={COLOR_CODE.DANGER}>
@@ -92,8 +97,14 @@ const RatingForm = ({ courseId, rating }: Props) => {
           <Button variant="outlined" color="inherit" onClick={closeModal} disabled={isLoading}>
             Hủy
           </Button>
-          <Button type="submit" disabled={isLoading} variant="contained" color="primary">
-            {rating ? 'Save' : 'Rate'}
+          <Button
+            type="submit"
+            disabled={isLoading}
+            variant="contained"
+            color="primary"
+            startIcon={isLoading && <Loading size="small" />}
+          >
+            {rating ? 'Lưu' : 'Đánh Giá'}
           </Button>
         </Stack>
       </Stack>

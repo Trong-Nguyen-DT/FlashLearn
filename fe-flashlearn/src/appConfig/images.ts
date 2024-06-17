@@ -16,7 +16,7 @@ import connectLine from 'src/assets/images/Line 2.png';
 import niceImage from 'src/assets/images/gifs/giphy (2).gif';
 import learning from 'src/assets/images/gifs/giphy (3).gif';
 import listening from 'src/assets/images/gifs/giphy (4).gif';
-import bannerHome from 'src/assets/images/bannerHome.png';
+import bannerHome from 'src/assets/images/banner.png';
 
 export const IMAGES = {
   logo,

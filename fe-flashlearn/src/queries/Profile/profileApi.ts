@@ -3,6 +3,8 @@ import { AuthService } from '@services';
 import apisauce from 'apisauce';
 import axios from 'axios';
 import appConfig from 'src/appConfig';
+import { ChangeAvatarPayload, ChangePasswordPayload, ProfilePayload } from './type';
+import { entries } from 'lodash';
 
 axios.defaults.withCredentials = true;
 const create = (baseURL = `${appConfig.API_URL}`) => {
@@ -27,23 +29,37 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.get(`${ApiKey.USERS}`, {});
   };
 
-  // const updateProfile = (body: UpdateProfilePayload) => {
-  //   return api.patch(`${ApiKey.USERS}/profile`, body, {});
-  // };
+  const updateProfile = (body: ProfilePayload) => {
+    return api.put(`${ApiKey.USERS}`, body, {});
+  };
 
-  // const requestChangePassword = () => {
-  //   return api.post(`${ApiKey.USERS}/request-change-password`, {});
-  // };
+  const changePassword = (body: ChangePasswordPayload) => {
+    return api.patch(`${ApiKey.USERS}/change-password`, body, {});
+  };
 
-  // const changePassword = (body: ChangePasswordPayload) => {
-  //   return api.post(`${ApiKey.USERS}/change-password`, body, {});
-  // };
+  const changeAvatar = (body: ChangeAvatarPayload) => {
+    const payload = {
+      uploadFile: body.uploadFile.file,
+    };
+    // eslint-disable-next-line prefer-const
+    let formData = new FormData();
+
+    entries(payload).forEach(([key, value]) => {
+      value && formData.append(key, value);
+    });
+
+    return api.patch(`${ApiKey.USERS}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };
 
   return {
     getProfile,
-    // updateProfile,
-    // changePassword,
-    // requestChangePassword,
+    changePassword,
+    updateProfile,
+    changeAvatar,
   };
 };
 

@@ -5,6 +5,7 @@ import { ERROR_MESSAGES } from '@utils';
 import * as yup from 'yup';
 
 export enum VocabularyFormField {
+  ID = 'id',
   VOCABULARY_ID = 'vocabularyId',
   PART_OF_SPEECH = 'partOfSpeech',
   MEANING = 'meaning',
@@ -13,7 +14,8 @@ export enum VocabularyFormField {
 }
 
 export type VocabularyFormType = {
-  vocabularyId: string | number;
+  id?: number;
+  vocabularyId?: string | number;
   partOfSpeech: PartOfSpeech;
   meaning: string;
   image: UploadFileType;
@@ -21,6 +23,7 @@ export type VocabularyFormType = {
 };
 
 export const vocalInitialValues: VocabularyFormType = {
+  [VocabularyFormField.ID]: null,
   [VocabularyFormField.VOCABULARY_ID]: '',
   [VocabularyFormField.MEANING]: '',
   [VocabularyFormField.IMAGE]: null,
@@ -30,9 +33,20 @@ export const vocalInitialValues: VocabularyFormType = {
 export const VocalFormSchema = yup.object().shape({
   [VocabularyFormField.VOCABULARY_ID]: yup
     .string()
-    .required(ERROR_MESSAGES.FIELD_REQUIRED)
-    .nullable(),
-  [VocabularyFormField.MEANING]: yup.string().nullable().required(ERROR_MESSAGES.FIELD_REQUIRED),
+    .nullable()
+    .test('required', ERROR_MESSAGES.FIELD_REQUIRED, (value, context) => {
+      const { word } = context.parent;
+      if (!word) return value != null;
+      return true;
+    }),
+  [VocabularyFormField.WORD]: yup
+    .string()
+    .nullable()
+    .test('required', ERROR_MESSAGES.FIELD_REQUIRED, (value, context) => {
+      const { vocabularyId } = context.parent;
+      if (!vocabularyId) return value != null;
+      return true;
+    }),
   [VocabularyFormField.PART_OF_SPEECH]: yup
     .string()
     .nullable()

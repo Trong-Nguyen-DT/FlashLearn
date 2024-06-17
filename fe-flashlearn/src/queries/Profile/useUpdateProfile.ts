@@ -1,17 +1,22 @@
-// import { useMutation, UseMutationOptions } from '@tanstack/react-query';
-// import { responseWrapper } from '@shared';
-// import { UpdateProfilePayload } from './type';
-// import { ProfileApi } from '.';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+import { ProfilePayload, UserResponse } from './type';
+import { ProfileApi } from '.';
+import { ApiResponseType, responseWrapper } from '@utils';
 
-// export function useUpdateProfile(options?: UseMutationOptions<any, Error, UpdateProfilePayload>) {
-//   const { mutate: updateProfile, isLoading } = useMutation<any, Error, UpdateProfilePayload>({
-//     mutationFn: (payload: UpdateProfilePayload) =>
-//       responseWrapper(ProfileApi.updateProfile, [payload]),
-//     ...options,
-//   });
+export function useUpdateProfile(
+  options?: UseMutationOptions<ApiResponseType<UserResponse>, Error, ProfilePayload>,
+) {
+  const { mutate: updateProfile, isLoading } = useMutation<
+    ApiResponseType<UserResponse>,
+    Error,
+    ProfilePayload
+  >({
+    mutationFn: (payload: ProfilePayload) => responseWrapper(ProfileApi.updateProfile, [payload]),
+    ...options,
+  });
 
-//   return {
-//     updateProfile,
-//     isLoading,
-//   };
-// }
+  return {
+    updateProfile,
+    isLoading,
+  };
+}

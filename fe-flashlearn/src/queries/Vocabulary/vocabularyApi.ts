@@ -50,16 +50,44 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     body.vocabularies.forEach((vocabulary, index) => {
       const prefix = `vocabularies[${index}].`;
       const payload = {
-        ...vocabulary,
+        id: vocabulary.id?.toString() || null,
+        meaning: vocabulary.meaning,
         vocabularyId: vocabulary.vocabularyId.toString(),
-        image: vocabulary.image.file,
+        ...(vocabulary.delete && { delete: 'true' }),
+        ...(vocabulary.image && { image: vocabulary.image.file }),
       };
       entries(payload).forEach(([key, value]) => {
-        formData.append(prefix + key, value);
+        value && formData.append(prefix + key, value);
       });
     });
 
     return api.post(`${ApiKey.USERS}${ApiKey.VOCABULARY}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };
+
+  const updateVocabulariesOfLesson = (body: VocabulariesOfLessonPayload) => {
+    // eslint-disable-next-line prefer-const
+    let formData = new FormData();
+
+    formData.append('lessonId', body.lessonId.toString());
+
+    body.vocabularies.forEach((vocabulary, index) => {
+      const prefix = `inputs[${index}].`;
+      const payload = {
+        id: vocabulary.id?.toString() || null,
+        meaning: vocabulary.meaning,
+        vocabularyId: vocabulary.vocabularyId.toString(),
+        ...(vocabulary.image && { image: vocabulary.image.file }),
+      };
+      entries(payload).forEach(([key, value]) => {
+        value && formData.append(prefix + key, value);
+      });
+    });
+
+    return api.put(`${ApiKey.USERS}${ApiKey.VOCABULARY}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -72,6 +100,7 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     createVocabulary,
     createVocabularies,
     addVocabulariesOfLesson,
+    updateVocabulariesOfLesson,
   };
 };
 

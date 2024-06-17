@@ -1,19 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { COLOR_CODE } from '@appConfig';
-import { FileUpload, ImagePreview, Input, Select, UploadFileType } from '@components';
+import { COLOR_CODE, PATHS } from '@appConfig';
+import { FileUpload, ImagePreview, Input, Loading, Select, UploadFileType } from '@components';
 import { Box, Button, Stack } from '@mui/material';
 import { CoursePayload, useAddCourse, useGetAllCourse, useGetMyTeachingCourse } from '@queries';
+import { Toastify } from '@services';
 import { Callback, getErrorMessage } from '@utils';
 import { Form, FormikProvider, useFormik } from 'formik';
+import { useNavigate } from 'react-router-dom';
 import {
   CourseFormField,
   CourseFormSchema,
   courseInitialValues,
   courseStatusOptions,
 } from './helpers';
-import { useNavigate } from 'react-router-dom';
-import { PATHS } from '@appConfig';
-import toastify from '@services/toastify';
 
 type Props = {
   courseId?: string;
@@ -34,13 +33,14 @@ const CourseInfoForm: React.FC<Props> = ({ step, setStep }) => {
 
   const { onAddNewCourse, isLoading } = useAddCourse({
     onSuccess(data) {
-      toastify.success('Tạo khoá học thành công');
+      Toastify.success('Tạo khoá học thành công');
       navigate(`${PATHS.courses}/${data.data.data.id}`);
       handleInvalidateMyTeachingCourseList();
       handleInvalidateCourseList();
     },
-    onError(error) {
-      toastify.success(error.message);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError(error: any) {
+      Toastify.error(error.message?.[0]?.errorMessage);
     },
   });
 
@@ -185,6 +185,7 @@ const CourseInfoForm: React.FC<Props> = ({ step, setStep }) => {
                 type="submit"
                 variant="contained"
                 disabled={step !== 2 || isLoading}
+                startIcon={isLoading && <Loading size="small" />}
                 color="primary"
                 sx={{
                   fontWeight: 800,

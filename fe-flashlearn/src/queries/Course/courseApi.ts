@@ -47,17 +47,42 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
   const createCourse = (body: CoursePayload) => {
     const { id: _, ...rest } = body;
     const payload = {
-      ...rest,
-      image: rest.image.file,
+      name: rest.name,
+      description: rest.description,
+      status: rest.status,
+      ...(rest.image && { image: rest.image.file }),
     };
     // eslint-disable-next-line prefer-const
     let formData = new FormData();
 
     entries(payload).forEach(([key, value]) => {
-      formData.append(key, value);
+      value && formData.append(key, value);
     });
 
     return api.post(`${ApiKey.USERS}${ApiKey.COURSE}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };
+
+  const updateCourse = (body: CoursePayload) => {
+    const { id, ...rest } = body;
+    const payload = {
+      id,
+      name: rest.name,
+      description: rest.description,
+      status: rest.status,
+      ...(rest.image && { image: rest.image.file }),
+    };
+    // eslint-disable-next-line prefer-const
+    let formData = new FormData();
+
+    entries(payload).forEach(([key, value]) => {
+      value && formData.append(key, value);
+    });
+
+    return api.put(`${ApiKey.USERS}${ApiKey.COURSE}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -81,6 +106,7 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     getMyTeachingCourses,
     deleteCourse,
     rateCourse,
+    updateCourse,
   };
 };
 

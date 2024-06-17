@@ -48,15 +48,6 @@ export const allColumns = ({ handleDelete }: ColumnProps): MUIDataTableColumn[] 
       },
     },
     {
-      name: 'xp',
-      label: 'Quá trình học',
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value: string) => tableBodyRender(value),
-      },
-    },
-    {
       name: '',
       label: '',
       options: {

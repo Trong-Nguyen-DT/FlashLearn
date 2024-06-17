@@ -5,11 +5,6 @@ export type ForgotPasswordPayload = {
   encodeOTP: string;
 };
 
-export type ChangePasswordPayload = {
-  tokenResetPassword: string;
-  newPassword: string;
-};
-
 export type SignInPayload = {
   email: string;
   password: string;

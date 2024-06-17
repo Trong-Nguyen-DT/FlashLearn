@@ -49,6 +49,10 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.post(`${ApiKey.USERS}${ApiKey.STUDENT}`, body);
   };
 
+  const inviteStudent = (body: AddStudentPayload) => {
+    return api.post(`${ApiKey.USERS}${ApiKey.STUDENT}/sendmail-student`, body);
+  };
+
   const deleteStudent = (body: RemoveStudentPayload) => {
     const { courseId, studentId } = body;
     return api.delete(`${ApiKey.USERS}${ApiKey.STUDENT}/${courseId}/${studentId}`, {});
@@ -62,6 +66,7 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     deleteStudent,
     joinCourseByCode,
     getRankingList,
+    inviteStudent,
   };
 };
 

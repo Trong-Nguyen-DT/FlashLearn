@@ -1,6 +1,7 @@
 import { COLOR_CODE } from '@appConfig';
 import { Image } from '@components';
 import { Card, Stack, Typography } from '@mui/material';
+import { Toastify } from '@services';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -8,12 +9,16 @@ type Props = {
   content: string;
   path?: string;
   image?: string;
+  disabled?: boolean;
 };
 
-const PracticeItem = ({ content, title, path, image }: Props) => {
+const PracticeItem = ({ content, title, path, image, disabled }: Props) => {
   const navigate = useNavigate();
 
   const handlePractice = () => {
+    if (disabled) {
+      return Toastify.error('Bạn phải bắt đầu học trước.');
+    }
     navigate(path);
   };
   return (

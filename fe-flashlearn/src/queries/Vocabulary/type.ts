@@ -35,9 +35,11 @@ export interface VocabularyPayload {
 }
 
 export interface VocabularyOfLessonPayload {
+  id?: number;
   vocabularyId: number;
   meaning: string;
-  image: UploadFileType;
+  image?: UploadFileType;
+  delete?: boolean;
 }
 
 export interface VocabulariesOfLessonPayload {

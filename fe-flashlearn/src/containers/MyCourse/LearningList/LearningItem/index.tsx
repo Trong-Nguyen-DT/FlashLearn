@@ -54,7 +54,7 @@ const LearningItem = ({ course }: Props) => {
       type: DialogType.CONTENT_DIALOG,
       data: <RatingForm courseId={course.id} />,
       hideTitle: true,
-      maxWidth: 'md',
+      maxWidth: 'xs',
     });
     openModal();
   };

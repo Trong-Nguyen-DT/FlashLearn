@@ -12,7 +12,7 @@ const LessonDetail = () => {
 
   const { lessonDetail, isLoading } = useGetLessonDetail({ id: lessonId });
 
-  const { vocabulary, isFetching } = useGetVocabularyOfLesson({ lessonId });
+  const { vocabularyOfLesson, isFetching } = useGetVocabularyOfLesson({ lessonId });
 
   if (isLoading || isFetching) {
     return (
@@ -52,9 +52,9 @@ const LessonDetail = () => {
         </Stack>
       </Stack>
       <Divider orientation="horizontal" style={{ width: '100%' }} />
-      {vocabulary?.length > 0 ? (
+      {vocabularyOfLesson?.length > 0 ? (
         <>
-          {vocabulary.map((value) => (
+          {vocabularyOfLesson.map((value) => (
             <VocabularyItem vocabulary={value} />
           ))}
         </>

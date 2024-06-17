@@ -2,12 +2,14 @@
 import { Stack } from '@mui/material';
 import PracticeItem from './PracticeItem';
 import { IMAGES, PATHS } from '@appConfig';
+import { useGetCourseDetail } from '@queries';
 
 type Props = {
   courseId: string;
 };
 
 const Practice = ({ courseId }: Props) => {
+  const { courseDetail } = useGetCourseDetail({ id: courseId });
   return (
     <Stack
       sx={{
@@ -21,12 +23,14 @@ const Practice = ({ courseId }: Props) => {
         title="Rèn luyện những từ bạn chưa vững."
         path={PATHS.practiceCourse.replace(':courseId', courseId)}
         image={IMAGES.learning}
+        disabled={courseDetail.totalVocabLearned === 0}
       />
       <PracticeItem
         content="Cải thiện kỹ năng nghe tiếng Anh của bạn qua các bài tập ngắn gọn và hiệu quả."
         title="Rèn Luyện Kỹ Năng Nghe."
         path={PATHS.practiceListen.replace(':courseId', courseId)}
         image={IMAGES.listening}
+        disabled={courseDetail.totalVocabLearned === 0}
       />
     </Stack>
   );

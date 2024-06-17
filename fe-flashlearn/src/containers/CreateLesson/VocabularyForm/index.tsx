@@ -68,6 +68,7 @@ const VocabularyForm: React.FC<Props> = ({ formik, handleDelete, prefix, index }
       >
         {values.vocabulary[index].image && (
           <ImagePreview
+            key={values.vocabulary[index].id}
             image={values.vocabulary[index].image}
             imageUrl={values.vocabulary[index].image.url}
             onRemove={() => {
@@ -127,7 +128,6 @@ const VocabularyForm: React.FC<Props> = ({ formik, handleDelete, prefix, index }
           noOptionsText={'not found'}
         />
         <Input
-          required
           label="Định Nghĩa của Từ"
           errorMessage={getFieldErrorMessage(`${prefix}.${VocabularyFormField.MEANING}`)}
           placeholder="Nhập Định Nghĩa của Từ"
@@ -139,7 +139,7 @@ const VocabularyForm: React.FC<Props> = ({ formik, handleDelete, prefix, index }
       <Stack sx={{ position: 'absolute', right: '-40px', top: '40%' }}>
         <Tooltip title="Xóa từ vựng" arrow placement="top">
           <IconButton
-            onClick={handleDelete}
+            onClick={() => handleDelete(index)}
             sx={{
               border: `1px solid ${COLOR_CODE.GREY_100}`,
               boxShadow: '0px 2px 2px #E0E0E0',

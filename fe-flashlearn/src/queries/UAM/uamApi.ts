@@ -1,13 +1,7 @@
 import axios from 'axios';
 import apisauce from 'apisauce';
 import appConfig from 'src/appConfig';
-import {
-  ChangePasswordPayload,
-  ForgotPasswordPayload,
-  SignInPayload,
-  SignUpPayload,
-  VerifyEmailPayload,
-} from './type';
+import { ForgotPasswordPayload, SignInPayload, SignUpPayload, VerifyEmailPayload } from './type';
 import { ApiKey } from '@queries/keys';
 
 axios.defaults.withCredentials = true;
@@ -39,10 +33,6 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     return api.post(`${ApiKey.AUTH}/forgot-password`, payload);
   };
 
-  const resetPassword = (body: ChangePasswordPayload) => {
-    return api.post(`${ApiKey.AUTH}/reset-password`, body, {});
-  };
-
   const verifyEmail = (body: VerifyEmailPayload) => {
     return api.post(`${ApiKey.OTP}/generateOtp`, body, {});
   };
@@ -51,7 +41,6 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     login,
     signup,
     forgotPassword,
-    resetPassword,
     verifyEmail,
   };
 };
