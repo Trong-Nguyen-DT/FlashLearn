@@ -129,7 +129,7 @@ Tạo ra một môi trường học tập đa dạng và thú vị, khuyến kh�
      source ~/venv/bin/activate
      pip install fastapi[all] langchain langchain_google_genai
      nohup python3 -m app.main &
-     \`\`\`
+     ```
 
 ### BackEnd - Java, Spring boot
 
