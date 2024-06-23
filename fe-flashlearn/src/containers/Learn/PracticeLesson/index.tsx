@@ -11,7 +11,7 @@ const PracticeLesson: React.FC<Props> = ({ lessonId, courseId }) => {
   const { question, isLoading, handleInvalidateQuestionPracticeLesson } =
     useGetQuestionPracticeLesson({ id: lessonId });
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Loading variant="primary" />;
 
   return (
     <LearnContainer

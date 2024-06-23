@@ -107,7 +107,7 @@ const LearnFooter: React.FC<Props> = ({
               variant="contained"
               onClick={handleNext}
               size="large"
-              startIcon={isLoading && <Loading />}
+              startIcon={isLoading && <Loading size="small" />}
               sx={{
                 fontSize: 24,
                 borderRadius: 3,

@@ -10,7 +10,7 @@ const PracticeListen: React.FC<Props> = ({ courseId }) => {
   const { question, isLoading, handleInvalidateQuestionPracticeCourseListen } =
     useGetQuestionPracticeCourseListen({ id: courseId, refetchOnMount: true });
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Loading variant="primary" />;
 
   return (
     <LearnContainer

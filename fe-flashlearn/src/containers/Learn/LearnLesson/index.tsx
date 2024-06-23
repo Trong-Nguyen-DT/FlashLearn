@@ -12,7 +12,7 @@ const LearnLesson: React.FC<Props> = ({ lessonId, courseId }) => {
     id: lessonId,
   });
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Loading variant="primary" />;
 
   return (
     <LearnContainer

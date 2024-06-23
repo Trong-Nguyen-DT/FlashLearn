@@ -1,16 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
-import { responseWrapper } from '@utils';
+import { ApiResponseType, responseWrapper } from '@utils';
 import { StudentApi } from '.';
+import { CourseResponse } from '@queries/Course';
 
-export function useJoinCourse(options?: UseMutationOptions<any, Error, { id: number }>) {
+export function useJoinCourse(
+  options?: UseMutationOptions<ApiResponseType<CourseResponse>, Error, { id: number }>,
+) {
   const {
     mutate: onJoinCourse,
     isLoading,
     isSuccess,
     isError,
     error,
-  } = useMutation<any, Error, { id: number }>({
+  } = useMutation<ApiResponseType<CourseResponse>, Error, { id: number }>({
     mutationFn: (payload: { id: number }) => responseWrapper(StudentApi.joinCourse, [payload]),
     ...options,
   });

@@ -2,9 +2,10 @@ import { COLOR_CODE } from '@appConfig';
 import { Image } from '@components';
 import { Button, Stack, Typography } from '@mui/material';
 import { Callback } from '@utils';
+import { ReactNode } from 'react';
 
 type Props = {
-  title?: string;
+  title?: ReactNode;
   image?: string;
   message?: string;
   onYes?: Callback;

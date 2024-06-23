@@ -23,11 +23,11 @@ const UserMenu = () => {
   const handleLogOut = () => {
     setDialogContent({
       type: DialogType.CONTENT_DIALOG,
-      title: 'Log out',
+      title: 'Đăng xuất',
       data: (
         <Stack gap={2}>
           <Typography fontSize={16} fontWeight={500}>
-            Are you sure you want to log out?
+            Bạn có chắc muốn đăng xuất
           </Typography>
           <Stack
             flexDirection={'row'}

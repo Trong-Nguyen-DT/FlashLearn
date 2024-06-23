@@ -65,7 +65,7 @@ const UserProfile = () => {
   };
 
   if (isLoading || isLoadingUpdate) {
-    return <Loading />;
+    return <Loading variant="primary" />;
   }
 
   return (
