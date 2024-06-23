@@ -44,6 +44,7 @@ const FillBlank: React.FC<Props> = ({ question, answer, setAnswer, repeat, isAns
               variant="standard"
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
+              defaultValue=""
               InputProps={{
                 disableUnderline: true,
                 sx: { fontSize: 'inherit' },

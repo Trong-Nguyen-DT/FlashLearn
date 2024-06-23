@@ -76,11 +76,17 @@ const create = (baseURL = `${appConfig.API_URL}`) => {
     });
   };
 
+  const deleteLesson = (body: { id: string }) => {
+    const { id } = body;
+    return api.delete(`${ApiKey.USERS}${ApiKey.LESSON}/${id}`, {});
+  };
+
   return {
     getLessonList,
     getLessonDetail,
     createLesson,
     updateLesson,
+    deleteLesson,
   };
 };
 

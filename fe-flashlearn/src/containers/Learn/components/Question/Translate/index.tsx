@@ -32,6 +32,7 @@ const Translate: React.FC<Props> = ({ question, answer, setAnswer, repeat, isAns
           title={'Nhập câu trả lời của bạn vào đây nhé'}
           value={answer}
           disabled={isAnswer}
+          defaultValue=""
           onChange={(e) => {
             const { value } = e.target;
             setAnswer(value);

@@ -6,7 +6,7 @@ const Navbar = React.lazy(() => import('../NavBar'));
 
 const Screen: React.FC<Props> = ({ children }) => {
   return (
-    <Stack justifyContent="space-between" alignItems="center">
+    <Stack justifyContent="space-between">
       <Navbar />
       {children}
     </Stack>

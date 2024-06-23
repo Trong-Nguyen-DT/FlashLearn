@@ -34,7 +34,7 @@ const LearnContainer: React.FC<Props> = ({ learnContent, courseId, invalidCallba
         overflowX: isMobileScreen && 'hidden',
         pt: `${NAVBAR_HEIGHT}px`,
         alignItems: 'center',
-        minHeight: 'calc(100vh - 80px)',
+        minHeight: `calc(100vh - 56px)`,
       }}
     >
       <LearnHeader courseId={courseId} stepContent={stepContent} step={step} />

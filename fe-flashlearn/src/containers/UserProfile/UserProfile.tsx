@@ -114,7 +114,7 @@ const UserProfile = () => {
           <Stack alignItems={'center'} gap={2}>
             <Button
               onClick={handleChangeAvatar}
-              startIcon={<RxAvatar size={20} />}
+              startIcon={<RxAvatar size={30} />}
               variant="contained"
               sx={{
                 width: 300,
@@ -129,7 +129,7 @@ const UserProfile = () => {
             </Button>
             <Button
               onClick={handleChangePassword}
-              startIcon={<RiLockPasswordFill size={20} />}
+              startIcon={<RiLockPasswordFill size={30} />}
               variant="contained"
               sx={{
                 width: 300,

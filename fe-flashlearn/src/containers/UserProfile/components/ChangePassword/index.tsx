@@ -44,6 +44,7 @@ const ChangePassword = () => {
         <Input
           required
           fullWidth
+          isPassword
           size="small"
           label="Mật Khẩu Cũ"
           placeholder="Nhập Mật Khẩu cũ"
@@ -53,6 +54,7 @@ const ChangePassword = () => {
         <Input
           required
           fullWidth
+          isPassword
           size="small"
           label="Mật Khẩu Mới"
           placeholder="Nhập Mật Khẩu Mới"

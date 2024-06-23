@@ -7,3 +7,4 @@ export * from './useGetLessons';
 export * from './useGetLessonDetail';
 export * from './useAddLesson';
 export * from './useUpdateLesson';
+export * from './useDeleteLesson';

@@ -1,10 +1,10 @@
 import { DialogContext, FileUpload, ImagePreview, Loading, UploadFileType } from '@components';
 import { Button, Stack, Typography } from '@mui/material';
-import { ChangeAvatarPayload, useChangeAvatar } from '@queries';
+import { ChangeAvatarPayload, useChangeAvatar, useGetProfile } from '@queries';
 import { Toastify } from '@services';
 import { useFormik } from 'formik';
 import { useContext } from 'react';
-import { ChangeAvatarField, ChangeAvatarSchema, changeAvatarInitValue } from './helpers';
+import { ChangeAvatarField, changeAvatarInitValue } from './helpers';
 
 type ChangeAvatarProps = {
   url?: string;
@@ -13,9 +13,12 @@ type ChangeAvatarProps = {
 const ChangeAvatar = ({ url }: ChangeAvatarProps) => {
   const { closeModal } = useContext(DialogContext);
 
+  const { handleInvalidateProfile } = useGetProfile();
+
   const { onChangeAvatar, isLoading } = useChangeAvatar({
     onSuccess() {
       Toastify.success('Đổi ảnh đại diện thành công');
+      handleInvalidateProfile();
       closeModal();
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,13 +28,16 @@ const ChangeAvatar = ({ url }: ChangeAvatarProps) => {
   });
 
   const handleFormSubmit = (formValues: ChangeAvatarPayload) => {
-    onChangeAvatar(formValues);
+    if (formValues.uploadFile.file) {
+      onChangeAvatar(formValues);
+    } else {
+      closeModal();
+    }
   };
 
   const { handleSubmit, values, setFieldValue } = useFormik<ChangeAvatarPayload>({
     initialValues: { ...changeAvatarInitValue, ...(url && { uploadFile: { url } }) },
     onSubmit: handleFormSubmit,
-    validationSchema: ChangeAvatarSchema,
     enableReinitialize: true,
   });
 

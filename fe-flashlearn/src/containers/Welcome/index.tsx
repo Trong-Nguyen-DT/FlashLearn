@@ -36,6 +36,7 @@ const Welcome: React.FC<WelcomeProps> = ({ isAuthenticated }) => {
         width: '100%',
         backgroundColor: 'white',
         marginTop: `${NAVBAR_HEIGHT}px`,
+        overflow: 'hidden',
       }}
     >
       <Image src={IMAGES.bannerHome} width={'100.55%'} />
@@ -56,7 +57,7 @@ const Welcome: React.FC<WelcomeProps> = ({ isAuthenticated }) => {
       >
         {isAuthenticated ? 'Khám phá nào' : 'Bắt đầu nào'}
       </Button>
-      <Stack mx={9} my={4}>
+      <Stack mx={9} my={4} overflow="hidden">
         {courses?.length > 0 ? (
           <>
             <Typography fontWeight={800} fontSize={32} color={COLOR_CODE.PRIMARY}>

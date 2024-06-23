@@ -51,8 +51,12 @@ export interface VocabulariesPayload {
   vocabularies: VocabularyPayload[];
 }
 
+export interface CreateVocabularyErrorResponse {
+  word: string;
+  message: string;
+}
 export interface CreateVocabulariesResponse {
   vocabularies: VocabularyResponse[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  errors: any[];
+  errors: CreateVocabularyErrorResponse[];
 }

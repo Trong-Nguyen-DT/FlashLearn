@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from 'src/appConfig/paths';
 import { getShortName } from './helpers';
+import ChangePassword from '@/containers/UserProfile/components/ChangePassword';
 
 const UserMenu = () => {
   const { profile } = useGetProfile({});
@@ -58,14 +59,13 @@ const UserMenu = () => {
 
   const handleChangePassword = () => {
     console.log('change password');
-    // setDialogContent({
-    //   type: DialogType.CONTENT_DIALOG,
-    //   title: 'Request Change Password',
-    //   data: <EmailVerify />,
-    //   maxWidth: 'sm',
-    // });
-
-    // openModal();
+    setDialogContent({
+      type: DialogType.CONTENT_DIALOG,
+      data: <ChangePassword />,
+      hideTitle: true,
+      maxWidth: 'sm',
+    });
+    openModal();
   };
 
   const menuOptions: DropdownItem[] = React.useMemo(

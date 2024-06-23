@@ -10,7 +10,7 @@ import {
 } from '@queries';
 import { Toastify } from '@services';
 import { Callback } from '@utils';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { StepContent, StepType } from '../../helpers';
 import LearnFooter, { FooterType } from '../Footer';
 import FillBlank from './FillBlank';
@@ -19,6 +19,7 @@ import ListenToWord from './ListenToWord';
 import MultipleChoice from './MultipleChoice';
 import Translate from './Translate';
 import WordToListen from './WordToListen';
+import { SOUNDS } from '@appConfig';
 
 type Props = {
   question: QuestionResponse;
@@ -60,10 +61,21 @@ const Question: React.FC<Props> = ({
     },
   });
 
+  const handlePlayCorrectSound = useCallback(() => {
+    const correctSound = new Audio(SOUNDS.correct);
+    correctSound.play();
+  }, []);
+
+  const handlePlayWrongSound = useCallback(() => {
+    const wrongSound = new Audio(SOUNDS.wrong);
+    wrongSound.play();
+  }, []);
+
   const correctAnswer = question.answers.find((item) => item.correct);
 
   const handleCheck = () => {
     if (answer.toLowerCase() === correctAnswer.title.toLowerCase()) {
+      handlePlayCorrectSound();
       setIsCorrect(true);
       const exist = xp.find((item) => item.id === question.id);
       const score = 1 / (repeat + 1);
@@ -72,6 +84,7 @@ const Question: React.FC<Props> = ({
         { id: question.id, quality: exist ? exist.quality + score : score },
       ]);
     } else {
+      handlePlayWrongSound();
       setIsCorrect(false);
       setStepContent([
         ...stepContent.filter((item) => item.type !== StepType.PREVIEW),
@@ -88,7 +101,7 @@ const Question: React.FC<Props> = ({
     if (step === stepContent.length - 2) {
       onUpdateLearnProgress({
         courseId: courseId,
-        learningVocabularies: xp.map((item) => ({ ...item, quality: (item.quality * 6) / 7 })),
+        learningVocabularies: xp.map((item) => ({ ...item, quality: (item.quality * 5) / 7 })),
       });
     }
   };

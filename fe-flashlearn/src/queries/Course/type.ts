@@ -16,6 +16,7 @@ export interface CourseResponse {
   owner: UserResponse;
   totalVocal: number;
   totalVocabLearned: number;
+  rating: number;
   totalStudent: number;
   createAt: string;
   updateAt: string;

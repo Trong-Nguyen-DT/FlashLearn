@@ -21,7 +21,7 @@ type Props = {
 const Preview: React.FC<Props> = ({ xp, courseId, learnContent, invalidCallback }) => {
   const navigate = useNavigate();
 
-  const totalXP = ((xp.reduce((acc, item) => acc + item.quality, 0) / 6) * 1000).toFixed(0);
+  const totalXP = ((xp.reduce((acc, item) => acc + item.quality, 0) / 7) * 1000).toFixed(0);
 
   const totalCorrect = (
     (xp.reduce((acc, item) => acc + Math.floor(item.quality), 0) / learnContent.questions.length) *

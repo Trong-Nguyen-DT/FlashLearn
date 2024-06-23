@@ -11,6 +11,7 @@ type Props = {
   onNo?: Callback;
   yesText?: string;
   noText?: string;
+  isError?: boolean;
 };
 
 const StopLearnModal: React.FC<Props> = ({
@@ -21,6 +22,7 @@ const StopLearnModal: React.FC<Props> = ({
   title,
   yesText = 'Xác nhận',
   noText = 'Hủy',
+  isError = false,
 }) => {
   return (
     <Stack gap={2} px={4} justifyContent="center" alignItems="center">
@@ -35,8 +37,10 @@ const StopLearnModal: React.FC<Props> = ({
             width: 300,
             height: 300,
             borderRadius: 100,
-            backgroundColor: COLOR_CODE.PRIMARY_300,
-            boxShadow: `0px 0px 0px 30px ${COLOR_CODE.PRIMARY_100}`,
+            backgroundColor: isError ? '#F87171' : COLOR_CODE.PRIMARY_300,
+            boxShadow: `0px 0px 0px 30px ${
+              isError ? COLOR_CODE.DANGER_BG : COLOR_CODE.PRIMARY_100
+            }`,
           }}
         >
           <Image src={image} alt="" sx={{ height: 300, width: 300 }} />
@@ -58,10 +62,13 @@ const StopLearnModal: React.FC<Props> = ({
         <Button
           variant="outlined"
           onClick={onNo}
+          color={isError ? 'error' : 'primary'}
           sx={{
             fontWeight: 800,
-            boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_400}`,
-            '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_400}` },
+            boxShadow: `4px 4px 0px ${isError ? COLOR_CODE.DANGER_BG : COLOR_CODE.PRIMARY_400}`,
+            '&:hover': {
+              boxShadow: `3px 3px 0px ${isError ? COLOR_CODE.DANGER_BG : COLOR_CODE.PRIMARY_400}`,
+            },
           }}
         >
           {noText}
@@ -69,10 +76,13 @@ const StopLearnModal: React.FC<Props> = ({
         <Button
           variant="contained"
           onClick={onYes}
+          color={isError ? 'error' : 'primary'}
           sx={{
             fontWeight: 800,
-            boxShadow: `4px 4px 0px ${COLOR_CODE.PRIMARY_600}`,
-            '&:hover': { boxShadow: `3px 3px 0px ${COLOR_CODE.PRIMARY_600}` },
+            boxShadow: `4px 4px 0px ${isError ? COLOR_CODE.DANGER_BG : COLOR_CODE.PRIMARY_600}`,
+            '&:hover': {
+              boxShadow: `3px 3px 0px ${isError ? COLOR_CODE.DANGER_BG : COLOR_CODE.PRIMARY_600}`,
+            },
           }}
         >
           {yesText}
