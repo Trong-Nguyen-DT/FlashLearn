@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
-import { AddStudentPayload } from './type';
+import { AddStudentsPayload } from './type';
 import { ApiResponseType, responseWrapper } from '@utils';
 import { StudentApi } from '.';
 
 export function useInviteStudents(
-  options?: UseMutationOptions<ApiResponseType<any>, Error, AddStudentPayload>,
+  options?: UseMutationOptions<ApiResponseType<any>, Error, AddStudentsPayload>,
 ) {
   const {
     mutate: onInviteStudents,
@@ -13,8 +13,8 @@ export function useInviteStudents(
     isSuccess,
     isError,
     error,
-  } = useMutation<ApiResponseType<any>, Error, AddStudentPayload>({
-    mutationFn: (payload: AddStudentPayload) =>
+  } = useMutation<ApiResponseType<any>, Error, AddStudentsPayload>({
+    mutationFn: (payload: AddStudentsPayload) =>
       responseWrapper(StudentApi.inviteStudent, [payload]),
     ...options,
   });

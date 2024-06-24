@@ -14,6 +14,11 @@ export interface AddStudentPayload {
   courseId: string;
 }
 
+export interface AddStudentsPayload {
+  emailStudents: string[];
+  courseId: string;
+}
+
 export interface RemoveStudentPayload {
   studentId: number;
   courseId: string;
