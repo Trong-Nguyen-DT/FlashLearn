@@ -3,19 +3,19 @@ import { COLOR_CODE, IMAGES, NAVBAR_HEIGHT, PATHS } from '@appConfig';
 import { DialogContext, DialogType, Image, Loading, YesNoImageModal } from '@components';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import {
+  useAddStudents,
   useGetAllCourse,
   useGetCourseDetail,
   useGetMyLearningCourse,
   useGetProfile,
   useGetStudents,
-  useJoinCourse,
 } from '@queries';
 import { IRootState } from '@redux/store';
+import { CourseEmailService, CourseService, Toastify } from '@services';
 import { useCallback, useContext, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import WelcomeItem from './WelcomeItem';
-import { CourseEmailService, CourseService, Toastify } from '@services';
 
 type WelcomeProps = ReturnType<typeof mapStateToProps>;
 
@@ -35,7 +35,7 @@ const Welcome: React.FC<WelcomeProps> = ({ isAuthenticated }) => {
 
   const { handleInvalidateStudentList } = useGetStudents();
 
-  const { onJoinCourse } = useJoinCourse({
+  const { onAddNewStudents } = useAddStudents({
     onSuccess(data) {
       navigate(PATHS.courseDetail.replace(':courseId', data.data.data.id.toString()));
       CourseService.clearValue();
@@ -58,7 +58,7 @@ const Welcome: React.FC<WelcomeProps> = ({ isAuthenticated }) => {
       data: (
         <YesNoImageModal
           onYes={() => {
-            onJoinCourse({ id: Number(courseId) });
+            onAddNewStudents({ courseId, emailStudents: [profile.email] });
             closeModal();
           }}
           onNo={() => closeModal()}

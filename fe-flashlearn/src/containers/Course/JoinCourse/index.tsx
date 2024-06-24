@@ -2,7 +2,7 @@
 import { NAVBAR_HEIGHT, PATHS } from '@appConfig';
 import { Loading } from '@components';
 import { Stack } from '@mui/material';
-import { useGetMyLearningCourse, useGetProfile, useGetStudents, useJoinCourse } from '@queries';
+import { useAddStudents, useGetMyLearningCourse, useGetProfile, useGetStudents } from '@queries';
 import { setAuthenticated, setProfile } from '@redux/auth/authSlice';
 import { IRootState } from '@redux/store';
 import { AuthService, CourseEmailService, CourseService, Toastify } from '@services';
@@ -29,7 +29,7 @@ const JoinCourse: React.FC<ContainerProps> = ({ isAuthenticated }) => {
 
   const { handleInvalidateStudentList } = useGetStudents();
 
-  const { onJoinCourse } = useJoinCourse({
+  const { onAddNewStudents } = useAddStudents({
     onSuccess(data) {
       navigate(PATHS.courseDetail.replace(':courseId', data.data.data.id.toString()));
       Toastify.success('Đăng ký khoá học thành công');
@@ -57,7 +57,7 @@ const JoinCourse: React.FC<ContainerProps> = ({ isAuthenticated }) => {
   useEffect(() => {
     if (hasExist && email && courseId) {
       if (hasExist === 'true' && isAuthenticated && profile?.email === email) {
-        return onJoinCourse({ id: Number(courseId) });
+        return onAddNewStudents({ courseId, emailStudents: [email] });
       }
       if (isAuthenticated || profile?.email !== email) {
         CourseService.setValue(courseId);
@@ -70,7 +70,7 @@ const JoinCourse: React.FC<ContainerProps> = ({ isAuthenticated }) => {
         }
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId, email, hasExist, isAuthenticated, profile]);
 
   return (
