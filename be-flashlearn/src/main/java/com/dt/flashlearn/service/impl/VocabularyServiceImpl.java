@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.converter.VocabularyConverter;
+import com.dt.flashlearn.entity.Vocabulary.PartOfSpeech;
 import com.dt.flashlearn.entity.Vocabulary.SentenceEntity;
 import com.dt.flashlearn.entity.Vocabulary.SimilarWordEntity;
 import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
@@ -73,11 +74,11 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     private VocabularyEntity createVocabularyEntity(VocabularyInput vocabulary) {
+        PartOfSpeech partOfSpeech = ValidateData.validatePartOfSpeech(vocabulary.getPartOfSpeech());
         VocabularyEntity entity = vocabularyRepository
-                .findByWordAndPartOfSpeech(vocabulary.getWord(),
-                        ValidateData.validatePartOfSpeech(vocabulary.getPartOfSpeech()));
+                .findByWordAndPartOfSpeech(vocabulary.getWord().toLowerCase(), partOfSpeech);
         if (entity == null) {
-            AIResponse aiResponse = aiService.generateSimilarWord(vocabulary.getWord(), vocabulary.getPartOfSpeech());
+            AIResponse aiResponse = aiService.generateSimilarWord(vocabulary.getWord(), partOfSpeech.name());
             if (aiResponse == null) {
                 throw new MessageException(ErrorConstants.SERVER_ERROR_MESSAGE, ErrorConstants.SERVER_ERROR_CODE);
             }

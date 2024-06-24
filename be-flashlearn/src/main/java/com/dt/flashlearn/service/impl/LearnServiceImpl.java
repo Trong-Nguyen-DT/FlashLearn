@@ -36,7 +36,7 @@ public class LearnServiceImpl implements LearnService {
 
         private static final double INITIAL_EASINESS = 2.5;
         private static final int MIN_INTERVAL = 1;
-        private static final double CONVERSION_RATE = 1.666666666666667;
+        private static final double CONVERSION_RATE = 2;
 
         @Autowired
         private LearningVocabularyRepository learningVocabularyRepository;

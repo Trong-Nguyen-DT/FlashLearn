@@ -44,6 +44,7 @@ public class ErrorConstants {
     public static final int EMAIL_ALREADY_EXISTS_CODE = 409;
     public static final String EMAIL_ALREADY_EXISTS_MESSAGE = "Email đã tồn tại trong hệ thống";
 
+    public static final int EMAIL_INVALID_CODE = 409;
     public static final String EMAIL_INVALID_MESSAGE = "Email không hợp lệ";
 
     public static final int SERVER_ERROR_CODE = 500;

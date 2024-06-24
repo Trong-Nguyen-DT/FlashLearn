@@ -17,7 +17,6 @@ import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
 import com.dt.flashlearn.exception.MessageException;
 import com.dt.flashlearn.model.request.VocabularyOfLessonInput;
 import com.dt.flashlearn.model.request.VocabularyOfLessonsInput;
-import com.dt.flashlearn.model.VocabularyOfLesson;
 import com.dt.flashlearn.model.response.ResponseData;
 import com.dt.flashlearn.model.response.VocabularyOfLessonResponse;
 import com.dt.flashlearn.model.response.VocabularyResponseError;
@@ -54,19 +53,18 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
     public ResponseData updateVocabularyOfLesson(VocabularyOfLessonsInput input) {
         LessonEntity lessonEntity = queryService.getLessonEntityById(input.getLessonId());
         CourseValidate.validateCourseOwner(lessonEntity.getCourse());
-        List<VocabularyOfLesson> vocabularyOfLessons = new ArrayList<>();
+        List<VocabularyOfLessonEntity> vocabularyOfLessonEntities = new ArrayList<>();
         List<VocabularyResponseError> errors = new ArrayList<>();
         input.getVocabularies().stream().forEach(vocabularyInput -> {
             try {
                 if (vocabularyInput.getId() == null) {
-                    System.out.println("vocabularyInput.getId() == null");
-                    vocabularyOfLessons.add(VocabularyConverter.vocabularyOfLessonToModel(addVocabularyOfLesson(vocabularyInput, lessonEntity)));
+                    vocabularyOfLessonEntities.add(addVocabularyOfLesson(vocabularyInput, lessonEntity));
                     
                 } else {
                     if (vocabularyInput.isDelete()) {
-                        vocabularyOfLessons.add(VocabularyConverter.vocabularyOfLessonToModel(deleteVocabularyOfLesson(vocabularyInput.getId())));
+                        vocabularyOfLessonEntities.add(deleteVocabularyOfLesson(vocabularyInput.getId()));
                     } else {
-                        vocabularyOfLessons.add(VocabularyConverter.vocabularyOfLessonToModel(updateVocabularyOfLesson(vocabularyInput)));
+                        vocabularyOfLessonEntities.add(updateVocabularyOfLesson(vocabularyInput));
                     }
                 }
             } catch (MessageException e) {
@@ -74,9 +72,15 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
                         e.getMessage()));
             }
         });
+        
         VocabularyOfLessonResponse response = new VocabularyOfLessonResponse();
-        response.setVocabularies(vocabularyOfLessons);
+        response.setVocabularies(vocabularyOfLessonEntities.stream().map(VocabularyConverter::vocabularyOfLessonToModel)
+                .toList());
         response.setErrors(errors);
+        LessonEntity lesson = queryService.getLessonEntityById(input.getLessonId());
+        CourseEntity courseEntity = courseRepository.save(lesson.getCourse());
+        courseEntity.setTotalVocal(courseEntity.calculateTotalVocab());
+        courseRepository.save(courseEntity);
         return new ResponseData(response);
     }
 
@@ -133,10 +137,6 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
         vocabularyOfLessonEntity.setDeleted(true);
         vocabularyOfLessonEntity.setUpdateAt(LocalDateTime.now());
         vocabularyOfLessonEntity = vocabularyOfLessonRepository.save(vocabularyOfLessonEntity);
-
-        CourseEntity courseEntity = vocabularyOfLessonEntity.getLesson().getCourse();
-        courseEntity.setTotalVocal(courseEntity.calculateTotalVocab());
-        courseRepository.save(courseEntity);
         return vocabularyOfLessonEntity;
     }
 

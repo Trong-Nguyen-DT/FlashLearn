@@ -64,7 +64,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseData addStudent(StudentInput input) {
-        CourseEntity courseEntity = queryService.getCourseEntityOnwerById(input.getCourseId());
+        CourseEntity courseEntity = queryService.getCourseEntityOwnerById(input.getCourseId());
         UserEntity userEntity = queryService.getUserEntity();
         if (!userEntity.getEmail().equals(input.getEmail())) {
             throw new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE);
@@ -136,8 +136,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseData removeStudent(Long courseId, Long studentId) {
-        CourseEntity courseEntity = queryService.getCourseEntityOnwerById(courseId);
-        StudentEntity studentEntity = queryService.getStudentEntityByCourse(courseEntity);
+        CourseEntity courseEntity = queryService.getCourseEntityOwnerById(courseId);
+        StudentEntity studentEntity = queryService.getStudentEntityByCourseAndStudentId(courseEntity, studentId);
         studentEntity.setDeleted(true);
         courseRepository.save(courseEntity);
         return createResponseData(courseEntity);
@@ -199,18 +199,21 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseData sendMailStudent(AddStudentInput input) {
-        CourseEntity courseEntity = queryService.getCourseEntityOnwerById(input.getCourseId());
+        CourseEntity courseEntity = queryService.getCourseEntityOwnerById(input.getCourseId());
         CourseValidate.validateCourseOwner(courseEntity);
-        UserEntity onwer = queryService.getUserEntity();
+        UserEntity owner = queryService.getUserEntity();
+        List<String> emailErrors = new ArrayList<>();
         for (String email : input.getEmailStudents()) {
             StudentEntity studentEntity = courseEntity.getStudents().stream()
                     .filter(student -> student.getUser().getEmail().equals(email)).findFirst().orElse(null);
             if (studentEntity == null || studentEntity.isDeleted()) {
-                String message = getMessageSendEmail(email, courseEntity, onwer, studentEntity);
+                String message = getMessageSendEmail(email, courseEntity, owner, studentEntity);
                 mailService.sendEmail(email, message, "Thư mời tham gia khóa học");
+            } else {
+                emailErrors.add("Học viên " + email + " đã tham gia khóa học");
             } 
         }
-        return new ResponseData(true);
+        return new ResponseData(emailErrors);
     }
 
     private String getMessageSendEmail(String email, CourseEntity courseEntity, UserEntity onwer, StudentEntity studentEntity) {

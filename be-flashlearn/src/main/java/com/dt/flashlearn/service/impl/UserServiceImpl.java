@@ -76,11 +76,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseData updateProfile(UserInput input) {
         UserEntity entity = queryService.getUserEntity();
-        if (queryService.checkEmail(input.getEmail())) {
-            throw new MessageException(ErrorConstants.EMAIL_ALREADY_EXISTS_MESSAGE,
-                    ErrorConstants.EMAIL_ALREADY_EXISTS_CODE);
+        if(!input.getEmail().equals(entity.getEmail())){
+            throw new MessageException(ErrorConstants.EMAIL_INVALID_MESSAGE, ErrorConstants.EMAIL_INVALID_CODE);
         }
-        entity.setEmail(input.getEmail());
         entity.setName(input.getName());
         entity.setPhone(input.getPhone() == null ? null : input.getPhone());
         entity.setUpdateAt(LocalDateTime.now());

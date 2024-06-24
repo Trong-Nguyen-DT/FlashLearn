@@ -16,7 +16,7 @@ public class LessonConverter {
         model.setDescription(entity.getDescription());
         model.setImage(entity.getImage() != null ? entity.getImage() : null);
         model.setTotalVocabOfLesson(entity.calculateTotalVocabOfLesson());
-        model.setTotalVocabLearned(entity.calculateTotalVocabLearned(studentEntity));
+        model.setTotalVocabLearned(studentEntity != null ? entity.calculateTotalVocabLearned(studentEntity) : 0);
         model.setLearned(model.getTotalVocabOfLesson() != 0 ? model.getTotalVocabLearned() == model.getTotalVocabOfLesson() : false);
         model.setCreateAt(entity.getCreateAt());
         model.setUpdateAt(entity.getUpdateAt());

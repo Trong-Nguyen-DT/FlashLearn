@@ -79,7 +79,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ResponseData getAllMyCourseStudy() {
         return new ResponseData(queryService.getCourseStudy().stream()
-                .map(course -> CourseConverter.toModel(course, queryService.getStudentEntityByCourse(course)))
+                .map(course -> {
+                    course.setTotalVocal(course.calculateTotalVocab());
+                    courseRepository.save(course);
+                    return CourseConverter.toModel(course, queryService.getStudentEntityByCourse(course));
+                })
                 .toList());
     }
 
@@ -135,7 +139,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ResponseData updateCourse(CourseInput input) {
-        CourseEntity courseEntity = queryService.getCourseEntityOnwerById(input.getId());
+        CourseEntity courseEntity = queryService.getCourseEntityOwnerById(input.getId());
         courseEntity.setName(input.getName());
         courseEntity.setDescription(input.getDescription());
         courseEntity.setStatus(CourseValidate.parseStatus(input.getStatus()));
@@ -149,7 +153,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ResponseData deleteCourse(Long id) {
-        CourseEntity courseEntity = queryService.getCourseEntityOnwerById(id);
+        CourseEntity courseEntity = queryService.getCourseEntityOwnerById(id);
         courseEntity.setDeleted(true);
         courseRepository.save(courseEntity);
         return createResponseData(courseRepository.save(courseEntity));

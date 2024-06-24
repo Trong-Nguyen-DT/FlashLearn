@@ -107,10 +107,10 @@ public class QueryService {
 
     protected List<CourseEntity> getCourseStudy() {
         UserEntity userEntity = getUserEntity();
-        return courseRepository.findAllCourseByStudentAndDeletedFlase(userEntity);
+        return courseRepository.findAllCourseByStudentAndDeletedFalse(userEntity);
     }
 
-    protected CourseEntity getCourseEntityOnwerById(Long id) {
+    protected CourseEntity getCourseEntityOwnerById(Long id) {
         return courseRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(
                         () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
@@ -127,6 +127,14 @@ public class QueryService {
     protected StudentEntity getStudentEntityByCourse(CourseEntity courseEntity) {
         return studentRepository.findByUserAndCourseAndDeletedFalse(getUserEntity(), courseEntity);
     }
+
+    protected StudentEntity getStudentEntityByCourseAndStudentId(CourseEntity courseEntity, Long studentId) {
+        return courseEntity.getStudents().stream()
+            .filter(student -> student.getId().equals(studentId) && !student.isDeleted())
+            .findFirst()
+            .orElseThrow(() -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+    }
+    
 
     protected List<StudentEntity> getAllStudentByCourse(CourseEntity courseEntity) {
         return studentRepository.findByCourseAndDeletedFalse(courseEntity);

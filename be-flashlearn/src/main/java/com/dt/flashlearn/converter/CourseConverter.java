@@ -17,7 +17,7 @@ public class CourseConverter {
         model.setDescription(entity.getDescription());
         model.setImage(entity.getImage() != null ? entity.getImage() : null);
         model.setStatus(entity.getStatus().name());
-        model.setTotalVocal(entity.getTotalVocal());
+        model.setTotalVocal(entity.calculateTotalVocab());
         model.setAvgRating(entity.getAvgRating());
         model.setTotalStudent(entity.calculateTotalStudent());
         model.setTotalVocabLearned(0L);
@@ -35,7 +35,7 @@ public class CourseConverter {
         model.setDescription(entity.getDescription());
         model.setImage(entity.getImage() != null ? entity.getImage() : null);
         model.setStatus(entity.getStatus().name());
-        model.setTotalVocal(entity.getTotalVocal());
+        model.setTotalVocal(entity.calculateTotalVocab());
         model.setTotalStudent(entity.calculateTotalStudent());
         model.setAvgRating(entity.getAvgRating());
         model.setTotalVocabLearned(entity.calculateTotalVocabLearned(studentEntity));

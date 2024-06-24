@@ -46,7 +46,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public ResponseData addLesson(LessonInput input) {
-        CourseEntity courseEntity = queryService.getCourseEntityOnwerById(input.getCourseId());
+        CourseEntity courseEntity = queryService.getCourseEntityOwnerById(input.getCourseId());
         LocalDateTime now = LocalDateTime.now();
         LessonEntity lessonEntity = new LessonEntity();
         lessonEntity.setName(input.getName());

@@ -1,5 +1,7 @@
 package com.dt.flashlearn.validate;
 
+import java.util.Map;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.dt.flashlearn.constant.ErrorConstants;
@@ -70,25 +72,28 @@ public class CourseValidate {
     }
 
     public static String[] parseSort(String sort) {
-        String[] sortParts = sort.split(":");
         String orderBy = "createAt";
-        String sortBy = "DESC";
+        String sortBy = "desc";
+
+        String[] sortParts = sort.split(":");
         if (sortParts.length == 2) {
             orderBy = sortParts[0];
             sortBy = sortParts[1];
         }
-        if ((!orderBy.equals(OrderByConstants.ORDER_BY_CREATE_AT)
-                && !orderBy.equals(OrderByConstants.ORDER_BY_RATING)
-                && !orderBy.equals(OrderByConstants.ORDER_BY_WORD_COUNT)
-                && !orderBy.equals(OrderByConstants.ORDER_BY_NAME))){
+
+        Map<String, String> orderByMap = Map.of(
+            OrderByConstants.ORDER_BY_CREATE_AT, "createAt",
+            OrderByConstants.ORDER_BY_RATING, "avgRating",
+            OrderByConstants.ORDER_BY_WORD_COUNT, "totalVocal",
+            OrderByConstants.ORDER_BY_NAME, "name"
+        );
+        if (!orderByMap.containsKey(orderBy)) {
             throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
         }
-        if (!sortBy.equals(OrderByConstants.SORT_BY_DESC) && !sortBy.equals(OrderByConstants.SORT_BY_ASC)) {
+        if (!sortBy.equalsIgnoreCase(OrderByConstants.SORT_BY_DESC) && !sortBy.equalsIgnoreCase(OrderByConstants.SORT_BY_ASC)) {
             throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
         }
-        if (sortBy.toUpperCase().equals(OrderByConstants.SORT_BY_ASC)) {
-            sortBy = "ASC";
-        }
-        return new String[] { orderBy, sortBy };
+        sortBy = sortBy.toLowerCase();
+        return new String[] { orderByMap.get(orderBy), sortBy };
     }
 }

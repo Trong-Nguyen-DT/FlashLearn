@@ -90,16 +90,17 @@ public class CourseEntity {
 
     public long calculateTotalVocab() {
         if (this.lessons == null || this.lessons.isEmpty()) {
-            return 0L; 
+            return 0L;
         }
+    
         long totalVocab = this.lessons.stream()
-                                .filter(lesson -> !lesson.isDeleted() && lesson.getVocabularies() != null)
-                                .flatMap(lesson -> lesson.getVocabularies().stream())
-                                .filter(vocabulary -> !vocabulary.isDeleted())
-                                .count();
-
+                                .filter(lesson -> !lesson.isDeleted())
+                                .mapToLong(lesson -> lesson.calculateTotalVocabOfLesson())
+                                .sum();
+    
         return totalVocab;
     }
+    
 
     public long calculateTotalStudent() {
         if (this.students == null || this.students.isEmpty()) {
