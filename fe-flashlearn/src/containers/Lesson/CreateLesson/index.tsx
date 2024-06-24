@@ -117,7 +117,7 @@ const CreateLesson = () => {
           return {
             vocabularyId: newVocal ? newVocal.id : Number(vocal.vocabularyId),
             image: vocal.image,
-            meaning: vocal.meaning || newVocal ? newVocal.meaning : null,
+            meaning: vocal.meaning || newVocal?.meaning || null,
           };
         });
 
@@ -150,7 +150,7 @@ const CreateLesson = () => {
           return {
             vocabularyId: newVocal ? newVocal.id : vocal.vocabularyId,
             image: vocal.image,
-            meaning: vocal.meaning || newVocal ? newVocal.meaning : null,
+            meaning: vocal.meaning || newVocal?.meaning || null,
             partOfSpeech: vocal.partOfSpeech,
             word: vocal.word,
           };
