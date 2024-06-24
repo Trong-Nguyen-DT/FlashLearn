@@ -57,7 +57,7 @@ const JoinCourse: React.FC<ContainerProps> = ({ isAuthenticated }) => {
   useEffect(() => {
     if (hasExist && email && courseId) {
       if (hasExist === 'true' && isAuthenticated && profile?.email === email) {
-        return onAddNewStudents({ courseId, emailStudents: [email] });
+        return onAddNewStudents({ courseId, email });
       }
       if (isAuthenticated || profile?.email !== email) {
         CourseService.setValue(courseId);

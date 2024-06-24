@@ -4,6 +4,7 @@ import { Stack, Typography } from '@mui/material';
 import { QuestionResponse } from '@queries';
 import { Callback } from '@utils';
 import RepeatIcon from '../../RepeatIcon';
+import { shuffle } from 'lodash';
 
 type Props = {
   question: QuestionResponse;
@@ -22,10 +23,12 @@ const MultipleChoice: React.FC<Props> = ({
   isAnswer,
   isCorrect,
 }) => {
-  const options = question.answers.map((item) => ({
-    label: item.title,
-    value: item.title,
-  }));
+  const options = shuffle(
+    question.answers.map((item) => ({
+      label: item.title,
+      value: item.title,
+    })),
+  );
 
   return (
     <Stack width={'100%'} sx={{ alignItems: 'center' }} gap={1}>

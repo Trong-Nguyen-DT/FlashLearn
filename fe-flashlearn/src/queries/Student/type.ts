@@ -10,7 +10,7 @@ export interface StudentResponse {
 }
 
 export interface AddStudentPayload {
-  emailStudents: string[];
+  email: string;
   courseId: string;
 }
 

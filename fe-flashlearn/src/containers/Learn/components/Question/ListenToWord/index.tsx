@@ -6,6 +6,7 @@ import { Callback } from '@utils';
 import { useMemo } from 'react';
 import { HiSpeakerWave } from 'react-icons/hi2';
 import RepeatIcon from '../../RepeatIcon';
+import { shuffle } from 'lodash';
 
 type Props = {
   question: QuestionResponse;
@@ -24,13 +25,11 @@ const ListenToWord: React.FC<Props> = ({
   isAnswer,
   isCorrect,
 }) => {
-  const options = useMemo(
-    () =>
-      question.answers.map((item) => ({
-        label: item.title,
-        value: item.title,
-      })),
-    [question],
+  const options = shuffle(
+    question.answers.map((item) => ({
+      label: item.title,
+      value: item.title,
+    })),
   );
 
   const utterance = useMemo(

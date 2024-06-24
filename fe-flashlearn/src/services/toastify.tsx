@@ -12,7 +12,7 @@ const error = (
   },
 ) => {
   console.log('errorHandler', error);
-  toast.error(error || 'An error has occurred. Please check your data and try again.', options);
+  toast.error(error || 'Có lỗi xãy ra. Vui lòng kiểm tra lại dữ liệu của bạn và thử lại.', options);
 };
 
 const success = (

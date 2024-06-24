@@ -58,7 +58,7 @@ const Welcome: React.FC<WelcomeProps> = ({ isAuthenticated }) => {
       data: (
         <YesNoImageModal
           onYes={() => {
-            onAddNewStudents({ courseId, emailStudents: [profile.email] });
+            onAddNewStudents({ courseId, email: profile.email });
             closeModal();
           }}
           onNo={() => closeModal()}

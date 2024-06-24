@@ -113,7 +113,9 @@ const CreateLesson = () => {
       handleInvalidateVocabularyList();
       if (isEmpty(data.data.data.errors)) {
         const vocalList: VocabularyOfLessonPayload[] = values.vocabulary.map((vocal) => {
-          const newVocal = data.data.data.vocabularies.find((voc) => voc.word === vocal.word);
+          const newVocal = data.data.data.vocabularies.find(
+            (voc) => voc.word?.trim().toLowerCase() === vocal.word?.trim().toLowerCase(),
+          );
           return {
             vocabularyId: newVocal ? newVocal.id : Number(vocal.vocabularyId),
             image: vocal.image,
@@ -182,8 +184,16 @@ const CreateLesson = () => {
   };
 
   const handleOnSubmit = (value: LessonVocabForm) => {
-    const payload = { ...value.lesson, ...(isUpdate && { id: paramLessonId }), courseId: courseId };
-    value.lesson.id ? onUpdateLesson(payload) : onAddNewLesson(payload);
+    if (value.vocabulary.length > 0) {
+      const payload = {
+        ...value.lesson,
+        ...(isUpdate && { id: paramLessonId }),
+        courseId: courseId,
+      };
+      value.lesson.id ? onUpdateLesson(payload) : onAddNewLesson(payload);
+    } else {
+      Toastify.error('Vui lòng thêm từ vựng');
+    }
   };
 
   const INITIAL: LessonVocabForm = useMemo(() => {
@@ -230,6 +240,7 @@ const CreateLesson = () => {
     ArrayHelperRef.current.push(newFunction);
     scrollToRef(lastVocalAddedRef);
   };
+  console.log('🚀 ~ CreateLesson ~ values:', values);
 
   const isLoading =
     isLoadingAddVocabularyOfLesson ||

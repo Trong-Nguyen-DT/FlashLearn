@@ -5,6 +5,7 @@ import { QuestionResponse } from '@queries';
 import { Callback } from '@utils';
 import { useMemo } from 'react';
 import RepeatIcon from '../../RepeatIcon';
+import { shuffle } from 'lodash';
 
 type Props = {
   question: QuestionResponse;
@@ -25,13 +26,11 @@ const FillBlankChoice: React.FC<Props> = ({
 }) => {
   const sentence = useMemo(() => question.question.split(':')[0], [question]);
 
-  const options = useMemo(
-    () =>
-      question.answers.map((item) => ({
-        label: item.title,
-        value: item.title,
-      })),
-    [question],
+  const options = shuffle(
+    question.answers.map((item) => ({
+      label: item.title,
+      value: item.title,
+    })),
   );
 
   return (

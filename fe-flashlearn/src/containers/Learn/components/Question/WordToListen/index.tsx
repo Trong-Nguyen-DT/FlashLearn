@@ -6,6 +6,7 @@ import { Callback } from '@utils';
 import { useCallback, useMemo } from 'react';
 import RepeatIcon from '../../RepeatIcon';
 import { HiSpeakerWave } from 'react-icons/hi2';
+import { shuffle } from 'lodash';
 
 type Props = {
   question: QuestionResponse;
@@ -34,29 +35,27 @@ const WordToListen: React.FC<Props> = ({
     [question],
   );
 
-  const options: ThemedRadioGroupOptionType[] = useMemo(
-    () =>
-      question.answers.map((item, index) => ({
-        label: (
-          <Stack gap={1} justifyContent={'center'} alignItems={'center'}>
-            <IconButton
-              onClick={() => handlePlay(utterance[index])}
-              style={{ width: 70, height: 70 }}
-            >
-              <HiSpeakerWave size={50} />
-            </IconButton>
-            {isAnswer && (
-              <Typography fontSize={20} fontWeight={700}>
-                {item.title}
-              </Typography>
-            )}
-          </Stack>
-        ),
-        value: item.title,
-      })),
-    [handlePlay, isAnswer, question, utterance],
+  const options: ThemedRadioGroupOptionType[] = shuffle(
+    question.answers.map((item, index) => ({
+      label: (
+        <Stack gap={1} justifyContent={'center'} alignItems={'center'}>
+          <IconButton
+            onClick={() => handlePlay(utterance[index])}
+            style={{ width: 70, height: 70 }}
+          >
+            <HiSpeakerWave size={50} />
+          </IconButton>
+          {isAnswer && (
+            <Typography fontSize={20} fontWeight={700}>
+              {item.title}
+            </Typography>
+          )}
+        </Stack>
+      ),
+      value: item.title,
+    })),
   );
-
+  
   return (
     <Stack width={'100%'} sx={{ alignItems: 'center' }} gap={1}>
       {repeat !== 0 && <RepeatIcon />}
