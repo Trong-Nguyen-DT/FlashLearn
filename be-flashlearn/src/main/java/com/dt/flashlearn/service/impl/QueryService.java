@@ -91,14 +91,24 @@ public class QueryService {
     protected Authentication getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getName().equals("anonymousUser")) {
-            throwUnauthorizedException();
+            return null;
         }
         return authentication;
     }
 
     protected UserEntity getUserEntity() {
+        if (getAuthentication() == null) {
+            throwUnauthorizedException();
+        }
         return userRepository.findUserByDeletedFalseAndEmail(getAuthentication().getName()).orElseThrow(
                 () -> new MessageException(ErrorConstants.USER_NOT_FOUND_MESSAGE, ErrorConstants.USER_NOT_FOUND_CODE));
+    }
+
+    protected UserEntity getUserOptional() {
+        if (getAuthentication() == null) {
+            return null;
+        }
+        return userRepository.findUserByDeletedFalseAndEmail(getAuthentication().getName()).orElse(null);
     }
 
     protected void throwUnauthorizedException() {
@@ -125,8 +135,16 @@ public class QueryService {
     }
 
     protected StudentEntity getStudentEntityByCourse(CourseEntity courseEntity) {
-        return studentRepository.findByUserAndCourseAndDeletedFalse(getUserEntity(), courseEntity);
+        return studentRepository.findByUserAndCourseAndDeletedFalse(getUserEntity(), courseEntity).orElse(null);
     }
+
+    protected StudentEntity getStudentEntityByCourseOptional(CourseEntity courseEntity) {
+        if (getUserOptional() == null) {
+            return null;
+        }
+        return studentRepository.findByUserAndCourseAndDeletedFalse(getUserEntity(), courseEntity).orElse(null);
+    }
+
 
     protected StudentEntity getStudentEntityByCourseAndStudentId(CourseEntity courseEntity, Long studentId) {
         return courseEntity.getStudents().stream()
@@ -150,7 +168,6 @@ public class QueryService {
 
     protected List<LessonEntity> getAllLessonByCourseId(Long courseId) {
         CourseEntity courseEntity = getCourseEntityById(courseId);
-        CourseValidate.validateCoursePrivate(courseEntity);
         return lessonRepository.findAllByCourseAndDeletedFalse(courseEntity, Sort.by(Sort.Direction.ASC, "createAt"));
     }
 

@@ -32,7 +32,7 @@ public class LessonServiceImpl implements LessonService {
     public ResponseData getAllLessonByCourse(Long courseId) {
         return new ResponseData(queryService.getAllLessonByCourseId(courseId).stream()
                 .map(lessonEntity -> LessonConverter.toModel(lessonEntity,
-                        queryService.getStudentEntityByCourse(lessonEntity.getCourse())))
+                        queryService.getStudentEntityByCourseOptional(lessonEntity.getCourse())))
                 .toList());
     }
 
@@ -41,7 +41,7 @@ public class LessonServiceImpl implements LessonService {
         LessonEntity lessonEntity = queryService.getLessonEntityById(lessonId);
         return new ResponseData(
                 LessonConverter.toModel(lessonEntity,
-                        queryService.getStudentEntityByCourse(lessonEntity.getCourse())));
+                        queryService.getStudentEntityByCourseOptional(lessonEntity.getCourse())));
     }
 
     @Override

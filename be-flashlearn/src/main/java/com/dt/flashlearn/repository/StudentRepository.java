@@ -1,6 +1,7 @@
 package com.dt.flashlearn.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,6 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long>{
 
     List<StudentEntity> findByCourseAndDeletedFalse(CourseEntity courseEntity);
 
-    StudentEntity findByUserAndCourseAndDeletedFalse(UserEntity userEntity, CourseEntity courseEntity);
+    Optional<StudentEntity> findByUserAndCourseAndDeletedFalse(UserEntity userEntity, CourseEntity courseEntity);
     
 }
