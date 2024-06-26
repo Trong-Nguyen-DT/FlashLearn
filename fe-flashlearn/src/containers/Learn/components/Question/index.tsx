@@ -3,6 +3,7 @@ import {
   ProgressPayload,
   QuestionResponse,
   TypeQuestion,
+  useGetCourseDetail,
   useGetLesson,
   useGetMyLearningCourse,
   useGetStudents,
@@ -47,6 +48,7 @@ const Question: React.FC<Props> = ({
   const [answer, setAnswer] = useState<string>(null);
   const [isCorrect, setIsCorrect] = useState<boolean>(null);
   const { handleInvalidateLessonList } = useGetLesson({ courseId });
+  const { handleInvalidateCourseDetail } = useGetCourseDetail({ id: courseId });
   const { handleInvalidateStudentList } = useGetStudents({ courseId });
   const { handleInvalidateMyLearningCourseList } = useGetMyLearningCourse();
   const { onUpdateLearnProgress, isLoading } = useUpdateLearnProgress({
@@ -54,6 +56,7 @@ const Question: React.FC<Props> = ({
       handleInvalidateLessonList();
       handleInvalidateStudentList();
       handleInvalidateMyLearningCourseList();
+      handleInvalidateCourseDetail();
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError(error: any) {

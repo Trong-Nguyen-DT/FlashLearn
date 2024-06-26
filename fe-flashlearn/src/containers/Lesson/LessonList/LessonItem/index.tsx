@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { COLOR_CODE, IMAGES, PATHS } from '@appConfig';
-import { Image } from '@components';
+import { DialogContext, DialogType, Image } from '@components';
 import {
   Box,
   Button,
@@ -16,7 +16,7 @@ import { LessonResponse, useDeleteLesson, useGetLesson } from '@queries';
 import { Toastify } from '@services';
 import { isOdd } from '@utils';
 import { isNaN } from 'lodash';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { BiEdit } from 'react-icons/bi';
 import { FaLock } from 'react-icons/fa';
 import { RiDeleteBin6Line } from 'react-icons/ri';
@@ -33,6 +33,8 @@ type Props = {
 
 const LessonItem: React.FC<Props> = ({ lesson, index, courseId, isNext, isOwner, isStudent }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const { setDialogContent, openModal, closeModal } = useContext(DialogContext);
 
   const { handleInvalidateLessonList } = useGetLesson({ courseId });
 
@@ -82,9 +84,22 @@ const LessonItem: React.FC<Props> = ({ lesson, index, courseId, isNext, isOwner,
   };
 
   const handleDelete = () => {
-    onDeleteLesson({
-      id: lesson?.id.toString(),
+    setDialogContent({
+      type: DialogType.YESNO_DIALOG,
+      contentText: 'Bạn có chắc chắn muốn xóa bài học này không? ',
+      hideTitle: true,
+      showIcon: true,
+      isWarning: true,
+      okText: 'Xóa',
+      cancelText: 'Không! Đừng Xóa',
+      onOk: () => {
+        closeModal();
+        onDeleteLesson({
+          id: lesson?.id.toString(),
+        });
+      },
     });
+    openModal();
   };
 
   const progress = lesson?.totalVocabLearned / lesson?.totalVocabOfLesson;

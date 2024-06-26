@@ -23,14 +23,14 @@ const Practice = ({ courseId }: Props) => {
         title="Rèn luyện những từ bạn chưa vững."
         path={PATHS.practiceCourse.replace(':courseId', courseId)}
         image={IMAGES.learning}
-        disabled={courseDetail.totalVocabLearned === 0}
+        disabled={courseDetail?.totalVocabLearned === 0}
       />
       <PracticeItem
         content="Cải thiện kỹ năng nghe tiếng Anh của bạn qua các bài tập ngắn gọn và hiệu quả."
         title="Rèn Luyện Kỹ Năng Nghe."
         path={PATHS.practiceListen.replace(':courseId', courseId)}
         image={IMAGES.listening}
-        disabled={courseDetail.totalVocabLearned === 0}
+        disabled={courseDetail?.totalVocabLearned === 0}
       />
     </Stack>
   );

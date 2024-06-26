@@ -1,18 +1,41 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IMAGES } from '@appConfig';
-import { Image, Loading } from '@components';
+import { IMAGES, PATHS } from '@appConfig';
+import { DialogContext, DialogType, Image, Loading } from '@components';
 import { Button, Divider, Stack, Typography } from '@mui/material';
-import { useGetLessonDetail, useGetVocabularyOfLesson } from '@queries';
+import {
+  useDeleteLesson,
+  useGetLesson,
+  useGetLessonDetail,
+  useGetVocabularyOfLesson,
+} from '@queries';
 import { IoChevronBack } from 'react-icons/io5';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import VocabularyItem from './VocabularyItem';
+import { Toastify } from '@services';
+import { useContext } from 'react';
 
 const LessonDetail = () => {
-  const { lessonId } = useParams<{ courseId: string; lessonId: string }>();
+  const navigate = useNavigate();
+  const { lessonId, courseId } = useParams<{ courseId: string; lessonId: string }>();
+
+  const { setDialogContent, openModal, closeModal } = useContext(DialogContext);
 
   const { lessonDetail, isLoading } = useGetLessonDetail({ id: lessonId });
 
   const { vocabularyOfLesson, isFetching } = useGetVocabularyOfLesson({ lessonId });
+
+  const { handleInvalidateLessonList } = useGetLesson({ courseId });
+
+  const { onDeleteLesson } = useDeleteLesson({
+    onSuccess() {
+      Toastify.success('Xóa lớp học thành công');
+      handleInvalidateLessonList();
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError(error: any) {
+      Toastify.error(error.message?.[0]?.errorMessage);
+    },
+  });
 
   if (isLoading || isFetching) {
     return (
@@ -26,6 +49,33 @@ const LessonDetail = () => {
     window.history.back();
   };
 
+  const handleEdit = () => {
+    navigate(
+      PATHS.lessonsUpdate
+        .replace(':lessonId', lessonDetail?.id.toString())
+        .replace(':courseId', courseId),
+    );
+  };
+
+  const handleDelete = () => {
+    setDialogContent({
+      type: DialogType.YESNO_DIALOG,
+      contentText: 'Bạn có chắc chắn muốn xóa bài học này không? ',
+      hideTitle: true,
+      showIcon: true,
+      isWarning: true,
+      okText: 'Xóa',
+      cancelText: 'Không! Đừng Xóa',
+      onOk: () => {
+        closeModal();
+        onDeleteLesson({
+          id: lessonDetail?.id.toString(),
+        });
+      },
+    });
+    openModal();
+  };
+
   return (
     <Stack
       sx={{
@@ -35,11 +85,19 @@ const LessonDetail = () => {
         gap: 3,
       }}
     >
-      <Stack width="100%">
+      <Stack width="100%" justifyContent={'space-between'} direction={'row'}>
         <Button sx={{ alignSelf: 'flex-start' }} onClick={handleBack}>
           <IoChevronBack />
           Trở về
         </Button>
+        <Stack direction={'row'} gap={2}>
+          <Button variant="outlined" color="error" onClick={handleDelete}>
+            Xóa
+          </Button>
+          <Button variant="contained" onClick={handleEdit}>
+            Chỉnh sửa
+          </Button>
+        </Stack>
       </Stack>
       <Divider orientation="horizontal" style={{ width: '100%' }} />
       <Stack direction="row" width="100%" gap={4} mx={12}>
