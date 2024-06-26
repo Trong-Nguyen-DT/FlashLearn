@@ -71,6 +71,9 @@ const CourseDetail = () => {
   const isOwner = profile?.id === courseDetail?.owner.id;
 
   const isStudent = courses?.some((course) => course.id === courseDetail?.id);
+  console.log('🚀 ~ CourseDetail ~ courseDetail:', courseDetail);
+  console.log('🚀 ~ CourseDetail ~ courses:', courses);
+  console.log('🚀 ~ CourseDetail ~ isStudent:', isStudent);
 
   const renderBody = () => {
     switch (tab) {

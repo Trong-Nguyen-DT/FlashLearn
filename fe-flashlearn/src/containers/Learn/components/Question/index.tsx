@@ -95,7 +95,7 @@ const Question: React.FC<Props> = ({
   };
 
   const handleNext = () => {
-    setAnswer(null);
+    setAnswer('');
     setIsCorrect(null);
     setStep(step + 1);
     if (step === stepContent.length - 2) {

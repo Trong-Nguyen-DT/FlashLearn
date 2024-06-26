@@ -40,7 +40,7 @@ export const getInitialGridState = (query: URLSearchParams) => {
       : 12,
     page: query?.has(TableQueryParams._PAGE) ? Number(query.get(TableQueryParams._PAGE)) : 0,
     rating: query?.has(COURSE_FILTER_QUERY_KEY.Rating)
-      ? Number(query.get(COURSE_FILTER_QUERY_KEY.Rating))
+      ? query.get(COURSE_FILTER_QUERY_KEY.Rating)
       : null,
     wordCount: query?.has(COURSE_FILTER_QUERY_KEY.WordCount)
       ? query.get(COURSE_FILTER_QUERY_KEY.WordCount)

@@ -26,11 +26,16 @@ const FillBlankChoice: React.FC<Props> = ({
 }) => {
   const sentence = useMemo(() => question.question.split(':')[0], [question]);
 
-  const options = shuffle(
-    question.answers.map((item) => ({
-      label: item.title,
-      value: item.title,
-    })),
+  const options = useMemo(
+    () =>
+      shuffle(
+        question.answers.map((item) => ({
+          label: item.title,
+          value: item.title,
+        })),
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [question, repeat],
   );
 
   return (

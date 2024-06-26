@@ -30,8 +30,8 @@ const JoinCourse: React.FC<ContainerProps> = ({ isAuthenticated }) => {
   const { handleInvalidateStudentList } = useGetStudents();
 
   const { onAddNewStudents } = useAddStudents({
-    onSuccess(data) {
-      navigate(PATHS.courseDetail.replace(':courseId', data.data.data.id.toString()));
+    onSuccess() {
+      navigate(PATHS.courseDetail.replace(':courseId', courseId));
       Toastify.success('Đăng ký khoá học thành công');
       handleInvalidateMyLearningCourseList();
       handleInvalidateStudentList();

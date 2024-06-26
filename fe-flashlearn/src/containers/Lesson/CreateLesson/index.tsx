@@ -1,6 +1,7 @@
 import { COLOR_CODE, NAVBAR_HEIGHT, PATHS } from '@appConfig';
 import { IconButton, Stack, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import {
+  CreateVocabularyErrorResponse,
   VocabularyOfLessonPayload,
   useAddLesson,
   useAddVocabularies,
@@ -93,7 +94,10 @@ const CreateLesson = () => {
     useAddVocabulariesOfLesson({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError(error: any) {
-        Toastify.error(error.message?.[0]?.errorMessage);
+        setFieldValue(LessonVocabFormField.ERRORS, [...values.errors, ...error.errorMessage]);
+        ((error?.errorMessage as CreateVocabularyErrorResponse[]) || []).forEach((err) => {
+          Toastify.error(err.word + ' ' + err.message);
+        });
       },
       onSuccess() {
         Toastify.success(isUpdate ? 'Cập nhật bài học thành công' : 'Tạo bài học thành công');
@@ -107,15 +111,19 @@ const CreateLesson = () => {
   const { onAddNewVocabulary, isLoading: isLoadingAddVocabulary } = useAddVocabularies({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError(error: any) {
-      Toastify.error(error.message?.[0]?.errorMessage);
+      setFieldValue(LessonVocabFormField.ERRORS, [...values.errors, ...error.errorMessage]);
+      ((error?.errorMessage as CreateVocabularyErrorResponse[]) || []).forEach((err) => {
+        Toastify.error(err.word + ' ' + err.message);
+      });
     },
     onSuccess(data) {
       handleInvalidateVocabularyList();
       if (isEmpty(data.data.data.errors)) {
         const vocalList: VocabularyOfLessonPayload[] = values.vocabulary.map((vocal) => {
-          const newVocal = data.data.data.vocabularies.find(
-            (voc) => voc.word?.trim().toLowerCase() === vocal.word?.trim().toLowerCase(),
-          );
+          const newVocal =
+            data.data.data.vocabularies?.find(
+              (voc) => voc.word?.trim().toLowerCase() === vocal.word?.trim().toLowerCase(),
+            ) || null;
           return {
             vocabularyId: newVocal ? newVocal.id : Number(vocal.vocabularyId),
             image: vocal.image,
@@ -213,6 +221,7 @@ const CreateLesson = () => {
           partOfSpeech: voc.vocabulary.partOfSpeech,
           ...(voc.image && { image: { url: voc.image } }),
           meaning: voc.meaning,
+          word: voc.vocabulary.word,
         })),
       };
     }

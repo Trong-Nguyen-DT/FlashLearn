@@ -36,10 +36,10 @@ const UserMenu = () => {
             pt={2}
           >
             <Button onClick={closeModal} variant="outlined" color="inherit">
-              Cancel
+              Hủy
             </Button>
             <Button onClick={logout} variant="contained" color="primary">
-              Log out
+              Đăng Xuất
             </Button>
           </Stack>
         </Stack>

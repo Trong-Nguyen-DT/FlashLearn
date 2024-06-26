@@ -1,5 +1,5 @@
 import { COLOR_CODE } from '@appConfig';
-import { DialogContext, Input } from '@components';
+import { DialogContext, Input, Loading } from '@components';
 import { Button, Divider, Stack, Typography } from '@mui/material';
 import { useGetCourseDetail, useGetStudents } from '@queries';
 import { useInviteStudents } from '@queries/Student/useInviteStudents';
@@ -19,7 +19,7 @@ const AddStudentModal: React.FC<Props> = ({ courseId }) => {
   const { closeModal } = useContext(DialogContext);
   const { handleInvalidateStudentList } = useGetStudents();
 
-  const { onInviteStudents } = useInviteStudents({
+  const { onInviteStudents, isLoading } = useInviteStudents({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError(error: any) {
       Toastify.error(error.message?.[0]?.errorMessage);
@@ -57,7 +57,6 @@ const AddStudentModal: React.FC<Props> = ({ courseId }) => {
           emailStudents: emails as string[],
         });
       }
-      closeModal();
     } else {
       setError('Có Email không đúng định dạng');
     }
@@ -126,6 +125,7 @@ const AddStudentModal: React.FC<Props> = ({ courseId }) => {
         <Button
           type="submit"
           variant="contained"
+          startIcon={isLoading && <Loading size="small" />}
           onClick={handleSubmit}
           sx={{
             fontWeight: 800,
