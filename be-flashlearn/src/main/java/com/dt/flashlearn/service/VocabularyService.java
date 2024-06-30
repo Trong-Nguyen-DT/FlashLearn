@@ -12,4 +12,6 @@ public interface VocabularyService {
 
     ResponseData createNewVocabularies(VocabulariesInput input);
 
+    ResponseData getSimilarWord();
+
 }

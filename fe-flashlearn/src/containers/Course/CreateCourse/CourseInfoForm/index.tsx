@@ -1,21 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { COLOR_CODE, PATHS } from '@appConfig';
-import {
-  CreatableSelect,
-  FileUpload,
-  ImagePreview,
-  Input,
-  Loading,
-  UploadFileType,
-} from '@components';
+import { FileUpload, ImagePreview, Input, Loading, Select, UploadFileType } from '@components';
 import { Box, Button, Stack } from '@mui/material';
-import {
-  CoursePayload,
-  useAddCourse,
-  useGetAllCourse,
-  useGetMyLearningCourse,
-  useGetMyTeachingCourse,
-} from '@queries';
+import { CoursePayload, useAddCourse, useGetAllCourse, useGetMyTeachingCourse } from '@queries';
 import { Toastify } from '@services';
 import { Callback, getErrorMessage } from '@utils';
 import { Form, FormikProvider, useFormik } from 'formik';
@@ -42,7 +29,6 @@ const CourseInfoForm: React.FC<Props> = ({ step, setStep }) => {
   };
 
   const { handleInvalidateMyTeachingCourseList } = useGetMyTeachingCourse();
-  const { handleInvalidateMyLearningCourseList } = useGetMyLearningCourse();
   const { handleInvalidateCourseList } = useGetAllCourse();
 
   const { onAddNewCourse, isLoading } = useAddCourse({
@@ -50,7 +36,6 @@ const CourseInfoForm: React.FC<Props> = ({ step, setStep }) => {
       Toastify.success('Tạo khoá học thành công');
       navigate(`${PATHS.courses}/${data.data.data.id}`);
       handleInvalidateMyTeachingCourseList();
-      handleInvalidateMyLearningCourseList();
       handleInvalidateCourseList();
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -121,14 +106,14 @@ const CourseInfoForm: React.FC<Props> = ({ step, setStep }) => {
                       },
                     }}
                   />
-                  <CreatableSelect
-                    label="Hãy chọn trạng thái cho lớp học của bạn"
+                  <Select
+                    label="Hãy chọn trang thái cho lớp học của bạn"
                     placeholder="Chọn Trạng Thái Lớp Học"
                     required
                     size="small"
                     errorMessage={getFieldErrorMessage(CourseFormField.STATUS)}
                     {...getFieldProps(CourseFormField.STATUS)}
-                    onChange={(_: any, value: any) => setFieldValue(CourseFormField.STATUS, value)}
+                    onChange={(_, value) => setFieldValue(CourseFormField.STATUS, value)}
                     options={courseStatusOptions}
                     noOptionsText={'not found'}
                   />

@@ -14,11 +14,20 @@ public class RestErrorHandler {
     private static final Logger logger = LoggerFactory.getLogger(MessageException.class);
 
     @ExceptionHandler(MessageException.class)
-    @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Object processValidationError(MessageException ex) {
         String result = ex.getErrorMessage();
-        logger.error("Unauthorized error Message {}", result);
+        logger.error("Error Message {}", result);
+        return ex;
+    }
+
+    @ExceptionHandler(VocabularyException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Object processValidationError(VocabularyException ex) {
+        String result = ex.getErrorMessage().toString();
+        logger.error("Vocabulary error Message {}", result);
         return ex;
     }
 }

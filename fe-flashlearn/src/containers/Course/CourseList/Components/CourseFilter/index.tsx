@@ -1,12 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { COLOR_CODE } from '@appConfig';
-import { CreatableSelect, Slider, TableQueryParams } from '@components';
+import { CreatableSelect, TableQueryParams } from '@components';
 import { Button, Container, Grid, Stack, Typography } from '@mui/material';
 import { getErrorMessage, isEmpty } from '@utils';
 import { Form, FormikProvider, useFormik } from 'formik';
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { COURSE_FILTER_QUERY_KEY, CourseFilterFormValue, wordOptions } from './helpers';
+import {
+  COURSE_FILTER_QUERY_KEY,
+  CourseFilterFormValue,
+  ratingOptions,
+  wordOptions,
+} from './helpers';
 
 const CourseFilter: React.FC<Props> = ({ searchValues, handleClosePopup }) => {
   const navigate = useNavigate();
@@ -19,7 +24,7 @@ const CourseFilter: React.FC<Props> = ({ searchValues, handleClosePopup }) => {
     query.delete(TableQueryParams._PAGE);
 
     if (!isEmpty(rating)) {
-      query.set(COURSE_FILTER_QUERY_KEY.Rating, `${rating[0]}:${rating[1]}`);
+      query.set(COURSE_FILTER_QUERY_KEY.Rating, rating.toString());
     } else {
       query.delete(COURSE_FILTER_QUERY_KEY.Rating);
     }
@@ -61,13 +66,6 @@ const CourseFilter: React.FC<Props> = ({ searchValues, handleClosePopup }) => {
   const getFieldErrorMessage = (fieldName: string) =>
     getErrorMessage(fieldName, { touched, errors });
 
-  const handleChange1 = (_event: Event, newValue: number | number[]) => {
-    if (!Array.isArray(newValue)) {
-      return;
-    }
-    setFieldValue(COURSE_FILTER_QUERY_KEY.Rating, newValue);
-  };
-
   return (
     <Container maxWidth="xs" sx={{ p: 2 }}>
       <Stack direction="row" alignItems="flex-end" mb={2} justifyContent="space-between">
@@ -80,23 +78,25 @@ const CourseFilter: React.FC<Props> = ({ searchValues, handleClosePopup }) => {
         <Form onSubmit={handleSubmit} autoComplete="off">
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Slider
+              <CreatableSelect
                 label="Mức đánh giá"
+                placeholder="Chọn mức đánh giá"
+                required
+                isClearable
+                size="small"
                 {...getFieldProps(COURSE_FILTER_QUERY_KEY.Rating)}
-                onChange={handleChange1}
-                valueLabelDisplay="auto"
-                disableSwap
+                onChange={(_: any, value: any) =>
+                  setFieldValue(COURSE_FILTER_QUERY_KEY.Rating, value)
+                }
+                options={ratingOptions}
                 errorMessage={getFieldErrorMessage(COURSE_FILTER_QUERY_KEY.Rating)}
-                min={0}
-                max={5}
-                step={1}
-                marks
               />
             </Grid>
             <Grid item xs={12}>
               <CreatableSelect
                 label="Số lượng từ"
                 placeholder="Chọn số lượng từ"
+                required
                 isClearable
                 size="small"
                 {...getFieldProps(COURSE_FILTER_QUERY_KEY.WordCount)}

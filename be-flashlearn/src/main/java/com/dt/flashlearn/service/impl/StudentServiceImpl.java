@@ -1,5 +1,6 @@
 package com.dt.flashlearn.service.impl;
 
+import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -221,8 +222,10 @@ public class StudentServiceImpl implements StudentService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'tháng' MM 'năm' yyyy", new Locale("vi", "VN"));
         String formattedDate = dateNow.format(formatter);
         UserEntity userEntity = userRepository.findUserByDeletedFalseAndEmail(email).orElse(null);
-        String clientUrl = client + "/join-course/?hasExist=true&email=" + email + "&courseId=" + courseEntity.getId();
+        String clientUrl = client + "join-course/?hasExist=true&email=" + email + "&courseId=" + courseEntity.getId() + "&courseName=" + URLEncoder.encode(courseEntity.getName());
+        
         if (studentEntity != null) {
+            System.out.println("clientUrl: " + clientUrl);
             return "<!DOCTYPE html>" +
             "<html lang=\"en\">" +
             "<head>" +
@@ -371,9 +374,10 @@ public class StudentServiceImpl implements StudentService {
         } else {
             String content = "Hãy nhấp vào nút dưới đây để tham gia khóa học";
             if (userEntity == null) {
-                clientUrl = clientUrl + "?hasExist=false&email=" + email + "&courseId=" + courseEntity.getId();
+                clientUrl = client + "join-course/?hasExist=false&email=" + email + "&courseId=" + courseEntity.getId() + "&courseName=" + URLEncoder.encode(courseEntity.getName());
                 content = "Hãy nhấp vào nút dưới đây để đăng ký và tham gia khóa học";
             }
+            System.out.println("clientUrl1111: " + clientUrl);
             return "<!DOCTYPE html>" +
             "<html lang=\"en\">" +
             "<head>" +

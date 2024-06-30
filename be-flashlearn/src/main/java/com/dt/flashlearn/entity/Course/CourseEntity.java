@@ -116,6 +116,9 @@ public class CourseEntity {
         if (studentEntity == null) {
             return 0L;
         }
+        if (this.lessons == null) {
+            return 0L;
+        }
         long totalVocabLearned = this.lessons.stream()
                                 .filter(lesson -> !lesson.isDeleted() && lesson.getVocabularies() != null)
                                 .flatMap(lesson -> lesson.getVocabularies().stream())

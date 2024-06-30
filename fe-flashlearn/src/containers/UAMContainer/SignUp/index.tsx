@@ -128,7 +128,7 @@ const SignUp = () => {
                   fullWidth
                   size="small"
                   label="Email"
-                  placeholder="Vui lòng nhập Email"
+                  placeholder="Enter your Email"
                   errorMessage={getFieldErrorMessage(SignUpFormField.EMAIL)}
                   {...getFieldProps(SignUpFormField.EMAIL)}
                 />
@@ -136,8 +136,8 @@ const SignUp = () => {
                   required
                   fullWidth
                   size="small"
-                  label="Tên"
-                  placeholder="Vui lòng nhập tên của bạn"
+                  label="Name"
+                  placeholder="Enter your name"
                   errorMessage={getFieldErrorMessage(SignUpFormField.NAME)}
                   {...getFieldProps(SignUpFormField.NAME)}
                 />
@@ -145,8 +145,8 @@ const SignUp = () => {
                   required
                   fullWidth
                   size="small"
-                  label="Nhật khẩu"
-                  placeholder="Vui lòng nhập mật khẩu"
+                  label="Password"
+                  placeholder="Enter your Password"
                   isPassword
                   errorMessage={getFieldErrorMessage(SignUpFormField.PASSWORD)}
                   {...getFieldProps(SignUpFormField.PASSWORD)}

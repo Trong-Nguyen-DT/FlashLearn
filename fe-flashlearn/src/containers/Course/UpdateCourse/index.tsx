@@ -228,7 +228,7 @@ const UpdateCourse = ({ courseDetail }: Props) => {
                 }}
               />
               <CreatableSelect
-                label="Hãy chọn trạng thái cho lớp học của bạn"
+                label="Hãy chọn trang thái cho lớp học của bạn"
                 placeholder="Chọn Trạng Thái Lớp Học"
                 required
                 size="small"

@@ -2,10 +2,14 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 import { ApiResponseType, responseWrapper } from '@utils';
 import { VocabularyApi } from '.';
-import { VocabulariesPayload, VocabularyResponse } from './type';
+import { VocabulariesPayload, CreateVocabulariesResponse } from './type';
 
 export function useAddVocabularies(
-  options?: UseMutationOptions<ApiResponseType<VocabularyResponse[]>, Error, VocabulariesPayload>,
+  options?: UseMutationOptions<
+    ApiResponseType<CreateVocabulariesResponse>,
+    Error,
+    VocabulariesPayload
+  >,
 ) {
   const {
     mutate: onAddNewVocabulary,
@@ -13,7 +17,7 @@ export function useAddVocabularies(
     isSuccess,
     isError,
     error,
-  } = useMutation<ApiResponseType<VocabularyResponse[]>, Error, VocabulariesPayload>({
+  } = useMutation<ApiResponseType<CreateVocabulariesResponse>, Error, VocabulariesPayload>({
     mutationFn: (payload: VocabulariesPayload) =>
       responseWrapper(VocabularyApi.createVocabularies, [payload]),
     ...options,

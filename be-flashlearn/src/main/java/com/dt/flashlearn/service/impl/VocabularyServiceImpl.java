@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.converter.VocabularyConverter;
@@ -14,12 +15,12 @@ import com.dt.flashlearn.entity.Vocabulary.SentenceEntity;
 import com.dt.flashlearn.entity.Vocabulary.SimilarWordEntity;
 import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
 import com.dt.flashlearn.exception.MessageException;
+import com.dt.flashlearn.exception.VocabularyException;
 import com.dt.flashlearn.model.request.VocabulariesInput;
 import com.dt.flashlearn.model.request.VocabularyInput;
 import com.dt.flashlearn.model.response.AIResponse;
 import com.dt.flashlearn.model.response.ResponseData;
 import com.dt.flashlearn.model.response.Sentence;
-import com.dt.flashlearn.model.response.VocabulariesResponse;
 import com.dt.flashlearn.model.response.VocabularyResponseError;
 import com.dt.flashlearn.model.response.Word;
 import com.dt.flashlearn.repository.SentenceRepository;
@@ -47,7 +48,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     @Override
     public ResponseData getAllVocabulary() {
         return new ResponseData(
-                vocabularyRepository.findByDeletedFalse().stream().map(VocabularyConverter::toModel).toList());
+                vocabularyRepository.findByDeletedFalseOrderByWordAsc().stream().map(VocabularyConverter::toModel).toList());
     }
 
     @Override
@@ -57,6 +58,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     @Override
+    @Transactional
     public ResponseData createNewVocabularies(VocabulariesInput input) {
         List<VocabularyEntity> entities = new ArrayList<>();
         List<VocabularyResponseError> errors = new ArrayList<>();
@@ -67,10 +69,10 @@ public class VocabularyServiceImpl implements VocabularyService {
                 errors.add(new VocabularyResponseError(vocabulary.getWord(), e.getErrorMessage()));
             }
         });
-        VocabulariesResponse response = new VocabulariesResponse();
-        response.setVocabularies(entities.stream().map(VocabularyConverter::toModel).toList());
-        response.setErrors(errors);
-        return new ResponseData(response);
+        if (!errors.isEmpty()) {
+            throw new VocabularyException(ErrorConstants.INVALID_DATA_CODE, errors);
+        }
+        return new ResponseData(entities.stream().map(VocabularyConverter::toModel).toList());
     }
 
     private VocabularyEntity createVocabularyEntity(VocabularyInput vocabulary) {
@@ -122,17 +124,19 @@ public class VocabularyServiceImpl implements VocabularyService {
         List<String> duplicateWord = new ArrayList<>();
         List<SimilarWordEntity> similarWordEntities = new ArrayList<>();
         similarWords.forEach(word -> {
-            boolean isDuplicate = duplicateWord.stream().anyMatch(w -> w.equals(word.getWord()));
-            if (!word.getWord().equals(entity.getWord()) && !isDuplicate) {
-                SimilarWordEntity similarWordEntity = new SimilarWordEntity();
-                similarWordEntity.setWord(word.getWord().toLowerCase());
-                similarWordEntity.setMeaning(word.getMeaning().toLowerCase());
-                similarWordEntity.setVocabulary(entity);
-                similarWordEntity.setCreateAt(now);
-                similarWordEntity.setUpdateAt(now);
-                similarWordEntity.setDeleted(false);
-                similarWordEntities.add(similarWordEntity);
-                duplicateWord.add(word.getWord());
+            if (!word.getMeaning().equals("Từ này không có nghĩa trong tiếng Anh")) {
+                boolean isDuplicate = duplicateWord.stream().anyMatch(w -> w.toLowerCase().equals(word.getWord().toLowerCase()));
+                if (!word.getWord().equals(entity.getWord()) && !isDuplicate) {
+                    SimilarWordEntity similarWordEntity = new SimilarWordEntity();
+                    similarWordEntity.setWord(word.getWord().toLowerCase());
+                    similarWordEntity.setMeaning(word.getMeaning().toLowerCase());
+                    similarWordEntity.setVocabulary(entity);
+                    similarWordEntity.setCreateAt(now);
+                    similarWordEntity.setUpdateAt(now);
+                    similarWordEntity.setDeleted(false);
+                    similarWordEntities.add(similarWordEntity);
+                    duplicateWord.add(word.getWord());
+                }
             }
         });
         if (similarWordEntities.size() < 4){
@@ -155,6 +159,38 @@ public class VocabularyServiceImpl implements VocabularyService {
             sentenceEntity.setDeleted(false);
             sentenceRepository.save(sentenceEntity);
         });
+    }
+
+    @Override
+    public ResponseData getSimilarWord() {
+        List<VocabularyEntity> entities = new ArrayList<>();
+        vocabularyRepository.findByDeletedFalseOrderByWordAsc().forEach(entity -> {
+            VocabularyEntity vocabularyEntity = new VocabularyEntity();
+            vocabularyEntity.setId(entity.getId());
+            vocabularyEntity.setWord(entity.getWord());
+            vocabularyEntity.setMeaning(entity.getMeaning());
+            List<SimilarWordEntity> similarWordEntities = new ArrayList<>();
+            entity.getSimilarWords().forEach(similarWord -> {
+                SimilarWordEntity similarWordEntity = new SimilarWordEntity();
+                similarWordEntity.setId(similarWord.getId());
+                similarWordEntity.setWord(similarWord.getWord());
+                similarWordEntity.setMeaning(similarWord.getMeaning());
+                similarWordEntities.add(similarWordEntity);
+            });
+            vocabularyEntity.setSimilarWords(similarWordEntities);
+            List<SentenceEntity> sentenceEntities = new ArrayList<>();
+            entity.getSentences().forEach(sentence -> {
+                SentenceEntity sentenceEntity = new SentenceEntity();
+                sentenceEntity.setId(sentence.getId());
+                sentenceEntity.setSentence(sentence.getSentence());
+                sentenceEntity.setMeaning(sentence.getMeaning());
+                sentenceEntities.add(sentenceEntity);
+            });
+            vocabularyEntity.setSentences(sentenceEntities);
+            entities.add(vocabularyEntity);
+            
+        });
+        return new ResponseData(entities);        
     }
 
 }

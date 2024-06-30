@@ -57,6 +57,9 @@ public class LessonEntity {
     }
 
     public long calculateTotalVocabLearned(StudentEntity studentEntity) {
+        if (this.vocabularies == null) {
+            return 0;
+        }
         return this.vocabularies.stream().filter(vocabulary -> !vocabulary.isDeleted() && studentEntity.getLearningVocabularies().stream()
                 .anyMatch(learningVocabulary -> learningVocabulary.getVocabularyOfLesson().getId().equals(vocabulary.getId()))).count();
     }

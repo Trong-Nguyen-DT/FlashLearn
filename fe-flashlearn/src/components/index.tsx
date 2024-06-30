@@ -22,7 +22,6 @@ export { default as CreatableSelect } from './CreatableSelect';
 export { default as InputMask } from './MuiInputMask';
 export { default as Form } from './Form';
 export { default as ConfirmationCodeField } from './ConfirmationCodeField';
-export { default as Slider } from './Slider';
 
 export * from './CustomDropdown';
 export * from './Dialog';

@@ -178,7 +178,7 @@ public class QueryService {
     protected VocabularyEntity getVocabularyEntityById(Long id) {
         return vocabularyRepository.findVocabularyByIdAndDeletedFalse(id)
                 .orElseThrow(
-                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, ErrorConstants.NOT_FOUND_CODE));
+                        () -> new MessageException(ErrorConstants.NOT_FOUND_MESSAGE, "Từ vựng id: " + id));
     }
 
     protected VocabularyOfLessonEntity getVocabularyOfLessonEntityById(Long id) {

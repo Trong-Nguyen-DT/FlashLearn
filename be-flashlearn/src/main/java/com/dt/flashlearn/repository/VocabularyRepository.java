@@ -12,7 +12,7 @@ import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
 @Repository
 public interface VocabularyRepository extends JpaRepository<VocabularyEntity, Long> {
 
-    List<VocabularyEntity> findByDeletedFalse();
+    List<VocabularyEntity> findByDeletedFalseOrderByWordAsc();
 
     Optional<VocabularyEntity> findVocabularyByIdAndDeletedFalse(Long id);
 

@@ -10,6 +10,7 @@ import lombok.Setter;
 public class MessageException extends RuntimeException{
 
     private int errorCode;
+    private String wordError;
     private String errorMessage;
 
     public MessageException(Throwable throwable) {
@@ -27,6 +28,12 @@ public class MessageException extends RuntimeException{
     public MessageException(String message, int errorCode) {
         super();
         this.errorCode = errorCode;
+        this.errorMessage = message;
+    }
+
+    public MessageException(String message, String wordError) {
+        super();
+        this.wordError = wordError;
         this.errorMessage = message;
     }
 

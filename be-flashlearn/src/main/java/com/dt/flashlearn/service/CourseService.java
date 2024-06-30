@@ -9,13 +9,13 @@ public interface CourseService {
 
     ResponseData getAllCoursePublic(int page, int perPage,
             String searchText,
-            int rating,
+            int minRating, int maxRating,
             int startCount, int endCount,
             String orderBy, String sortBy);
 
     ResponseData getAllMyCourse(int page, int perPage,
             String searchText,
-            int rating,
+            int minRating, int maxRating,
             int startCount, int endCount,
             CourseStatus status,
             String orderBy, String sortBy);

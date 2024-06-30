@@ -35,7 +35,7 @@ const LessonDetail = () => {
         gap: 3,
       }}
     >
-      <Stack width="100%" justifyContent={'space-between'} direction={'row'}>
+      <Stack width="100%">
         <Button sx={{ alignSelf: 'flex-start' }} onClick={handleBack}>
           <IoChevronBack />
           Trở về

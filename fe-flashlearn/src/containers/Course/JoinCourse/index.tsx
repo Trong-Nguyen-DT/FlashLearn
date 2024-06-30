@@ -5,13 +5,7 @@ import { Stack } from '@mui/material';
 import { useAddStudents, useGetMyLearningCourse, useGetProfile, useGetStudents } from '@queries';
 import { setAuthenticated, setProfile } from '@redux/auth/authSlice';
 import { IRootState } from '@redux/store';
-import {
-  AuthService,
-  CourseEmailService,
-  CourseNameService,
-  CourseService,
-  Toastify,
-} from '@services';
+import { AuthService, CourseEmailService, CourseService, Toastify } from '@services';
 import { useEffect, useMemo } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -36,8 +30,8 @@ const JoinCourse: React.FC<ContainerProps> = ({ isAuthenticated }) => {
   const { handleInvalidateStudentList } = useGetStudents();
 
   const { onAddNewStudents } = useAddStudents({
-    onSuccess() {
-      navigate(PATHS.courseDetail.replace(':courseId', courseId));
+    onSuccess(data) {
+      navigate(PATHS.courseDetail.replace(':courseId', data.data.data.id.toString()));
       Toastify.success('Đăng ký khoá học thành công');
       handleInvalidateMyLearningCourseList();
       handleInvalidateStudentList();
@@ -54,8 +48,6 @@ const JoinCourse: React.FC<ContainerProps> = ({ isAuthenticated }) => {
 
   const courseId = query.has('courseId') ? query.get('courseId') : null;
 
-  const courseName = query.has('courseName') ? query.get('courseName') : null;
-
   const logout = () => {
     AuthService.clearToken();
     dispatch(setAuthenticated(false));
@@ -70,7 +62,6 @@ const JoinCourse: React.FC<ContainerProps> = ({ isAuthenticated }) => {
       if (isAuthenticated || profile?.email !== email) {
         CourseService.setValue(courseId);
         CourseEmailService.setValue(email);
-        CourseNameService.setValue(courseName);
         logout();
         if (hasExist === 'true') {
           navigate(PATHS.signIn);

@@ -7,7 +7,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.constant.TypeImageConstants;
 import com.dt.flashlearn.converter.VocabularyConverter;
 import com.dt.flashlearn.entity.LessonEntity;
@@ -15,10 +17,10 @@ import com.dt.flashlearn.entity.VocabularyOfLessonEntity;
 import com.dt.flashlearn.entity.Course.CourseEntity;
 import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
 import com.dt.flashlearn.exception.MessageException;
+import com.dt.flashlearn.exception.VocabularyException;
 import com.dt.flashlearn.model.request.VocabularyOfLessonInput;
 import com.dt.flashlearn.model.request.VocabularyOfLessonsInput;
 import com.dt.flashlearn.model.response.ResponseData;
-import com.dt.flashlearn.model.response.VocabularyOfLessonResponse;
 import com.dt.flashlearn.model.response.VocabularyResponseError;
 import com.dt.flashlearn.repository.CourseRepository;
 import com.dt.flashlearn.repository.VocabularyOfLessonRepository;
@@ -49,7 +51,9 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
                 .toList());
     }
 
+    
     @Override
+    @Transactional
     public ResponseData updateVocabularyOfLesson(VocabularyOfLessonsInput input) {
         LessonEntity lessonEntity = queryService.getLessonEntityById(input.getLessonId());
         CourseValidate.validateCourseOwner(lessonEntity.getCourse());
@@ -68,24 +72,23 @@ public class VocabularyOfLessonServiceImpl implements VocabularyOfLessonService 
                     }
                 }
             } catch (MessageException e) {
-                errors.add(new VocabularyResponseError("Từ vựng có id: " + vocabularyInput.getId() + "Không tồn tại",
-                        e.getMessage()));
+                errors.add(new VocabularyResponseError(e.getWordError(), e.getErrorMessage()));
             }
         });
-        
-        VocabularyOfLessonResponse response = new VocabularyOfLessonResponse();
-        response.setVocabularies(vocabularyOfLessonEntities.stream().map(VocabularyConverter::vocabularyOfLessonToModel)
-                .toList());
-        response.setErrors(errors);
+
+        if (!errors.isEmpty()) {
+            throw new VocabularyException(ErrorConstants.INVALID_DATA_CODE, errors);
+        }
         LessonEntity lesson = queryService.getLessonEntityById(input.getLessonId());
         CourseEntity courseEntity = courseRepository.save(lesson.getCourse());
         courseEntity.setTotalVocal(courseEntity.calculateTotalVocab());
         courseRepository.save(courseEntity);
-        return new ResponseData(response);
+        return new ResponseData(vocabularyOfLessonEntities.stream().map(VocabularyConverter::vocabularyOfLessonToModel).toList());
     }
 
     private VocabularyOfLessonEntity addVocabularyOfLesson(VocabularyOfLessonInput vocabularyInput, LessonEntity lessonEntity) {
         VocabularyEntity entity = queryService.getVocabularyEntityById(vocabularyInput.getVocabularyId());
+        CourseValidate.validateVocabularyOfCourse(lessonEntity.getCourse(), entity);
         Optional<VocabularyOfLessonEntity> optionalVocabulary = lessonEntity.getVocabularies().stream()
                 .filter(vocabulary -> vocabulary.getVocabulary().getId().equals(vocabularyInput.getVocabularyId()))
                 .findFirst();

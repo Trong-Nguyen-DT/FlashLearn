@@ -6,7 +6,7 @@ export enum COURSE_FILTER_QUERY_KEY {
 export const filterParamsKey = [COURSE_FILTER_QUERY_KEY.Rating, COURSE_FILTER_QUERY_KEY.WordCount];
 
 export type CourseFilterFormValue = {
-  rating: number[];
+  rating: string;
   wordCount: string;
 };
 

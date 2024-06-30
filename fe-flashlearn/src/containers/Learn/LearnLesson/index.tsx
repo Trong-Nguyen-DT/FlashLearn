@@ -1,7 +1,6 @@
 import { useGetQuestionLean } from '@queries';
 import LearnContainer from '../components/LearnContainer';
 import { Loading } from '@components';
-import { Stack } from '@mui/material';
 
 type Props = {
   lessonId: string;
@@ -13,10 +12,7 @@ const LearnLesson: React.FC<Props> = ({ lessonId, courseId }) => {
     id: lessonId,
   });
 
-  if (isLoading) return;
-  <Stack width={'100%'} alignItems={'center'} pt={3}>
-    <Loading variant="primary" />
-  </Stack>;
+  if (isLoading) return <Loading variant="primary" />;
 
   return (
     <LearnContainer

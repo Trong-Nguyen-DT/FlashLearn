@@ -48,11 +48,15 @@ public class CourseUserController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int perPage,
             @RequestParam(defaultValue = "") String searchText,
-            @RequestParam(defaultValue = "0") int rating,
+            @RequestParam(defaultValue = "0:5") String rating,
             @RequestParam(defaultValue = "null") String status,
             @RequestParam(defaultValue = "0:9999999") String wordCount,
             @RequestParam(defaultValue = "createAt:desc") String sort) {
         try {
+            int[] ratingParts = CourseValidate.parseRating(rating);
+            int minRating = ratingParts[0];
+            int maxRating = ratingParts[1];
+
             int[] wordCountParts = CourseValidate.parseWordCount(wordCount);
             int startCount = wordCountParts[0];
             int endCount = wordCountParts[1];
@@ -63,7 +67,7 @@ public class CourseUserController {
 
             CourseStatus statusCourse = CourseValidate.parseStatus(status);
 
-            return ResponseEntity.ok(responseHandler.createSuccessResponse(courseService.getAllMyCourse(page, perPage, searchText, rating, startCount, endCount, statusCourse, orderBy, sortBy)));
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(courseService.getAllMyCourse(page, perPage, searchText, minRating, maxRating, startCount, endCount, statusCourse, orderBy, sortBy)));
         } catch (MessageException e) {
             return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
         }

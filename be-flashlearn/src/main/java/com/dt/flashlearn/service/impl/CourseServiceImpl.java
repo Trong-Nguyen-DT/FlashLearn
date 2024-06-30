@@ -42,12 +42,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ResponseData getAllCoursePublic(int page, int perPage,
             String searchText,
-            int rating,
+            int minRating, int maxRating,
             int startCount, int endCount,
             String orderBy, String sortBy) {
         
         CourseStatus status = CourseStatus.PUBLIC;
-        Page<CourseEntity> courses = courseRepository.findAllCourses(searchText, rating, startCount, endCount, null, status,
+        Page<CourseEntity> courses = courseRepository.findAllCourses(searchText, minRating, maxRating, startCount, endCount, null, status,
                     orderBy, sortBy,
                     PageRequest.of(page - 1, perPage));
             
@@ -62,13 +62,13 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ResponseData getAllMyCourse(int page, int perPage,
             String searchText,
-            int rating,
+            int minRating, int maxRating,
             int startCount, int endCount,
             CourseStatus status,
             String orderBy, String sortBy) {
         
         UserEntity userEntity = queryService.getUserEntity();
-        Page<CourseEntity> courses = courseRepository.findAllCourses(searchText, rating, startCount, endCount, userEntity, status,
+        Page<CourseEntity> courses = courseRepository.findAllCourses(searchText, minRating, maxRating, startCount, endCount, userEntity, status,
                     orderBy, sortBy,
                     PageRequest.of(page - 1, perPage));
         return new ResponseData(courses.getContent().stream().map(CourseConverter::toModel).toList(),
@@ -104,19 +104,16 @@ public class CourseServiceImpl implements CourseService {
         courseEntity.setCode(generateUniqueCourseCode());
         courseEntity.setDeleted(false);
         courseEntity = courseRepository.save(courseEntity);
-        createStudentEntity(courseEntity, userEntity);
-        return createResponseData(courseEntity);
-    }
 
-    private StudentEntity createStudentEntity(CourseEntity courseEntity, UserEntity userEntity) {
         StudentEntity studentEntity = new StudentEntity();
         studentEntity.setCourse(courseEntity);
         studentEntity.setUser(userEntity);
         studentEntity.setRating(0);
-        studentEntity.setCreateAt(LocalDateTime.now());
-        studentEntity.setUpdateAt(LocalDateTime.now());
+        studentEntity.setCreateAt(now);
+        studentEntity.setUpdateAt(now);
         studentEntity.setDeleted(false);
-        return studentRepository.save(studentEntity);
+        studentRepository.save(studentEntity);
+        return createResponseData(courseEntity);
     }
 
     private String generateUniqueCourseCode() {
@@ -163,7 +160,7 @@ public class CourseServiceImpl implements CourseService {
     public ResponseData getCourseById(Long id) {
         CourseEntity courseEntity = queryService.getCourseEntityById(id);
         CourseValidate.validateCoursePrivate(courseEntity);
-        return createResponseData(courseRepository.save(courseEntity));
+        return createResponseData(courseEntity);
     }
 
     @Override
@@ -178,7 +175,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     private ResponseData createResponseData(CourseEntity courseEntity) {
-        return new ResponseData(CourseConverter.toModel(courseEntity));
+        return new ResponseData(CourseConverter.toModel(courseEntity, queryService.getStudentEntityByCourseOptional(courseEntity)));
     }
 
 }

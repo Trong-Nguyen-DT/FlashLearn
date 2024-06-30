@@ -8,6 +8,7 @@ import com.dt.flashlearn.constant.ErrorConstants;
 import com.dt.flashlearn.constant.OrderByConstants;
 import com.dt.flashlearn.entity.Course.CourseEntity;
 import com.dt.flashlearn.entity.Course.CourseStatus;
+import com.dt.flashlearn.entity.Vocabulary.VocabularyEntity;
 import com.dt.flashlearn.exception.MessageException;
 
 public class CourseValidate {
@@ -56,6 +57,24 @@ public class CourseValidate {
         throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
     }
 
+    public static int[] parseRating(String rating) {
+        String[] ratingParts = rating.split(":");
+        int minRating = 0;
+        int maxRating = 5;
+        try {
+            if (ratingParts.length == 2) {
+                minRating = Integer.parseInt(ratingParts[0]);
+                maxRating = Integer.parseInt(ratingParts[1]);
+                if (minRating < 0 || minRating > 5 || maxRating < 0 || maxRating > 5 || minRating > maxRating) {
+                    throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
+                }
+            }
+        } catch (NumberFormatException e) {
+            throw new MessageException(ErrorConstants.INVALID_DATA_MESSAGE, ErrorConstants.INVALID_DATA_CODE);
+        }
+        return new int[] { minRating, maxRating };
+    }
+
     public static int[] parseWordCount(String wordCount) {
         String[] wordCountParts = wordCount.split(":");
         int startCount = 0;
@@ -95,5 +114,15 @@ public class CourseValidate {
         }
         sortBy = sortBy.toLowerCase();
         return new String[] { orderByMap.get(orderBy), sortBy };
+    }
+
+    public static void validateVocabularyOfCourse(CourseEntity course, VocabularyEntity vocabulary) {
+        boolean vocabularyExists = course.getLessons().stream()
+            .flatMap(lesson -> lesson.getVocabularies().stream())
+            .anyMatch(vocabOfLesson -> vocabOfLesson.getVocabulary().getId().equals(vocabulary.getId()));
+        
+        if (vocabularyExists) {
+            throw new MessageException(ErrorConstants.VOCABULARY_EXIST_MESSAGE, vocabulary.getWord());
+        }
     }
 }

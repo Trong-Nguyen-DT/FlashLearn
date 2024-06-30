@@ -48,4 +48,13 @@ public class VocabularyController {
         }
     }
 
+    @GetMapping("similar-word")
+    public ResponseEntity<?> getSimilarWord() {
+        try {
+            return ResponseEntity.ok(responseHandler.createSuccessResponse(vocabularyService.getSimilarWord()));
+        } catch (MessageException e) {
+            return ResponseEntity.status(e.getErrorCode()).body(responseHandler.createErrorResponse(e));
+        }
+    }
+
 }

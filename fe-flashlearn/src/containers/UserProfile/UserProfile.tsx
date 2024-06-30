@@ -65,11 +65,7 @@ const UserProfile = () => {
   };
 
   if (isLoading || isLoadingUpdate) {
-    return (
-      <Stack width={'100%'} alignItems={'center'} pt={3}>
-        <Loading variant="primary" />
-      </Stack>
-    );
+    return <Loading variant="primary" />;
   }
 
   return (

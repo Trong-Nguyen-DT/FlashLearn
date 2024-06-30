@@ -30,41 +30,32 @@ const WordToListen: React.FC<Props> = ({
     synth.speak(utterance);
   }, []);
 
-  const shuffleOptions = useMemo(() => {
-    const options = shuffle(question.answers);
-    return options;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [question, repeat]);
-
   const utterance = useMemo(
-    () => shuffleOptions.map((value) => new SpeechSynthesisUtterance(value.title)),
-    [shuffleOptions],
+    () => question.answers.map((value) => new SpeechSynthesisUtterance(value.title)),
+    [question],
   );
 
-  const options: ThemedRadioGroupOptionType[] = useMemo(
-    () =>
-      shuffleOptions.map((item, index) => ({
-        label: (
-          <Stack gap={1} justifyContent={'center'} alignItems={'center'}>
-            <IconButton
-              onClick={() => handlePlay(utterance[index])}
-              style={{ width: 70, height: 70 }}
-            >
-              <HiSpeakerWave size={50} />
-            </IconButton>
-            {isAnswer && (
-              <Typography fontSize={20} fontWeight={700}>
-                {item.title}
-              </Typography>
-            )}
-          </Stack>
-        ),
-        value: item.title,
-      })),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [shuffleOptions, isAnswer],
+  const options: ThemedRadioGroupOptionType[] = shuffle(
+    question.answers.map((item, index) => ({
+      label: (
+        <Stack gap={1} justifyContent={'center'} alignItems={'center'}>
+          <IconButton
+            onClick={() => handlePlay(utterance[index])}
+            style={{ width: 70, height: 70 }}
+          >
+            <HiSpeakerWave size={50} />
+          </IconButton>
+          {isAnswer && (
+            <Typography fontSize={20} fontWeight={700}>
+              {item.title}
+            </Typography>
+          )}
+        </Stack>
+      ),
+      value: item.title,
+    })),
   );
-
+  
   return (
     <Stack width={'100%'} sx={{ alignItems: 'center' }} gap={1}>
       {repeat !== 0 && <RepeatIcon />}

@@ -25,16 +25,11 @@ const ListenToWord: React.FC<Props> = ({
   isAnswer,
   isCorrect,
 }) => {
-  const options = useMemo(
-    () =>
-      shuffle(
-        question.answers.map((item) => ({
-          label: item.title,
-          value: item.title,
-        })),
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [question, repeat],
+  const options = shuffle(
+    question.answers.map((item) => ({
+      label: item.title,
+      value: item.title,
+    })),
   );
 
   const utterance = useMemo(

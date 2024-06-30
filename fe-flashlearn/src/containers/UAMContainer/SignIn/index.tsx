@@ -73,7 +73,7 @@ const SignIn = () => {
                   fullWidth
                   size="small"
                   label="Email"
-                  placeholder="Vui lòng nhập email"
+                  placeholder="Enter your Email"
                   errorMessage={getFieldErrorMessage(SignInFormField.EMAIL)}
                   {...getFieldProps(SignInFormField.EMAIL)}
                 />
@@ -81,8 +81,8 @@ const SignIn = () => {
                   required
                   fullWidth
                   size="small"
-                  label="Mật khẩu"
-                  placeholder="Vui lòng nhập mật khẩu"
+                  label="Password"
+                  placeholder="Enter your Password"
                   isPassword
                   errorMessage={getFieldErrorMessage(SignInFormField.PASSWORD)}
                   {...getFieldProps(SignInFormField.PASSWORD)}

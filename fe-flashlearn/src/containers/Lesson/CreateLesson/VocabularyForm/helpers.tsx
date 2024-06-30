@@ -14,7 +14,7 @@ export enum VocabularyFormField {
 }
 
 export type VocabularyFormType = {
-  id?: number | string;
+  id?: number;
   vocabularyId?: string | number;
   partOfSpeech: PartOfSpeech;
   meaning: string;
@@ -42,32 +42,8 @@ export const VocalFormSchema = yup.object().shape({
     .test('validWord', 'Từ vựng không tồn tại', (_, context) => {
       const { word } = context.parent;
       const values = context.from[1].value;
-      if (
-        (values.errors as CreateVocabularyErrorResponse[])?.some(
-          (error) => error.word === word && error.message.includes('hợp lệ'),
-        )
-      )
+      if ((values.errors as CreateVocabularyErrorResponse[])?.some((error) => error.word === word))
         return false;
-      return true;
-    })
-    .test('duplicate', 'Từ vựng đã tồn tại trong khóa học', (_, context) => {
-      const { word } = context.parent;
-      const values = context.from[1].value;
-      if (
-        (values.errors as CreateVocabularyErrorResponse[])?.some(
-          (error) => error.word === word && error.message.includes('đã tồn tại'),
-        )
-      )
-        return false;
-      return true;
-    })
-    .test('unique', 'Không thể chọn từ vựng trùng nhau', (_, context) => {
-      const { word, partOfSpeech } = context.parent;
-      const values = context.from[1].value;
-      const duplicate = (values.vocabulary as VocabularyFormType[])?.filter(
-        (vocab) => word === vocab.word && partOfSpeech === vocab.partOfSpeech,
-      );
-      if (duplicate.length > 1) return false;
       return true;
     }),
   [VocabularyFormField.WORD]: yup
