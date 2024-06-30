@@ -21,7 +21,10 @@ const Ranking = ({ courseId }: Props) => {
     setPeriod(newPeriod);
   };
 
-  if (isFetching) return <Loading variant="primary" />;
+  if (isFetching) return;
+  <Stack width={'100%'} alignItems={'center'} pt={3}>
+    <Loading variant="primary" />
+  </Stack>;
 
   return (
     <Stack

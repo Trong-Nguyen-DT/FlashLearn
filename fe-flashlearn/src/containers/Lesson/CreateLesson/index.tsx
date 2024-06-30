@@ -1,6 +1,7 @@
 import { COLOR_CODE, NAVBAR_HEIGHT, PATHS } from '@appConfig';
 import { IconButton, Stack, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import {
+  CreateVocabularyErrorResponse,
   VocabularyOfLessonPayload,
   useAddLesson,
   useAddVocabularies,
@@ -21,7 +22,7 @@ import {
   validateYupSchema,
   yupToFormErrors,
 } from 'formik';
-import { isEmpty, isNumber } from 'lodash';
+import { isNumber } from 'lodash';
 import { useMemo, useRef } from 'react';
 import { IoMdAdd } from 'react-icons/io';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -93,7 +94,10 @@ const CreateLesson = () => {
     useAddVocabulariesOfLesson({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError(error: any) {
-        Toastify.error(error.message?.[0]?.errorMessage);
+        setFieldValue(LessonVocabFormField.ERRORS, [...values.errors, ...error.errorMessage]);
+        ((error?.errorMessage as CreateVocabularyErrorResponse[]) || []).forEach((err) => {
+          Toastify.error(err.word + ' ' + err.message);
+        });
       },
       onSuccess() {
         Toastify.success(isUpdate ? 'Cập nhật bài học thành công' : 'Tạo bài học thành công');
@@ -107,62 +111,46 @@ const CreateLesson = () => {
   const { onAddNewVocabulary, isLoading: isLoadingAddVocabulary } = useAddVocabularies({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError(error: any) {
-      Toastify.error(error.message?.[0]?.errorMessage);
+      setFieldValue(LessonVocabFormField.ERRORS, [...values.errors, ...error.errorMessage]);
+      ((error?.errorMessage as CreateVocabularyErrorResponse[]) || []).forEach((err) => {
+        Toastify.error(err.word + ' ' + err.message);
+      });
     },
     onSuccess(data) {
       handleInvalidateVocabularyList();
-      if (isEmpty(data.data.data.errors)) {
-        const vocalList: VocabularyOfLessonPayload[] = values.vocabulary.map((vocal) => {
-          const newVocal = data.data.data.vocabularies.find(
+      const vocalList: VocabularyOfLessonPayload[] = values.vocabulary.map((vocal) => {
+        const newVocal =
+          data.data.data?.find(
             (voc) => voc.word?.trim().toLowerCase() === vocal.word?.trim().toLowerCase(),
-          );
-          return {
-            vocabularyId: newVocal ? newVocal.id : Number(vocal.vocabularyId),
-            image: vocal.image,
-            meaning: vocal.meaning || newVocal?.meaning || null,
-          };
-        });
+          ) || null;
+        return {
+          vocabularyId: newVocal ? newVocal.id : Number(vocal.vocabularyId),
+          image: vocal.image,
+          meaning: vocal.meaning || newVocal?.meaning || null,
+        };
+      });
 
-        const deletedVocal: VocabularyOfLessonPayload[] = vocabularyOfLesson
-          .filter((value) => {
-            const existVocal = values.vocabulary
-              .map((v) => v.vocabularyId)
-              .includes(value.vocabulary.id);
-            return !existVocal;
-          })
-          .map((v) => ({
-            id: v.id,
-            delete: true,
-            vocabularyId: v.vocabulary.id,
-            meaning: v.meaning,
-          }));
-        const payload = [...vocalList, ...deletedVocal].map((value) => {
-          const id = vocabularyOfLesson.find((v) => v.vocabulary.id === value.vocabularyId)?.id;
-          return { ...value, id };
-        });
-        onAddVocabularyOfLesson({
-          vocabularies: payload,
-          lessonId: Number(values.lesson.id),
-        });
-      } else {
-        const newValues: VocabularyFormType[] = values.vocabulary.map((vocal) => {
-          const newVocal = data.data.data.vocabularies.find(
-            (voc) => voc.word === vocal.word && voc.partOfSpeech === vocal.partOfSpeech,
-          );
-          return {
-            vocabularyId: newVocal ? newVocal.id : vocal.vocabularyId,
-            image: vocal.image,
-            meaning: vocal.meaning || newVocal?.meaning || null,
-            partOfSpeech: vocal.partOfSpeech,
-            word: vocal.word,
-          };
-        });
-        setFieldValue(LessonVocabFormField.VOCABULARY, newValues);
-        setFieldValue(LessonVocabFormField.ERRORS, data.data.data.errors);
-        data.data.data.errors.forEach((err) => {
-          Toastify.error(err.word + ' ' + err.message);
-        });
-      }
+      const deletedVocal: VocabularyOfLessonPayload[] = vocabularyOfLesson
+        .filter((value) => {
+          const existVocal = values.vocabulary
+            .map((v) => v.vocabularyId)
+            .includes(value.vocabulary.id);
+          return !existVocal;
+        })
+        .map((v) => ({
+          id: v.id,
+          delete: true,
+          vocabularyId: v.vocabulary.id,
+          meaning: v.meaning,
+        }));
+      const payload = [...vocalList, ...deletedVocal].map((value) => {
+        const id = vocabularyOfLesson.find((v) => v.vocabulary.id === value.vocabularyId)?.id;
+        return { ...value, id };
+      });
+      onAddVocabularyOfLesson({
+        vocabularies: payload,
+        lessonId: Number(values.lesson.id),
+      });
     },
   });
 
@@ -213,6 +201,7 @@ const CreateLesson = () => {
           partOfSpeech: voc.vocabulary.partOfSpeech,
           ...(voc.image && { image: { url: voc.image } }),
           meaning: voc.meaning,
+          word: voc.vocabulary.word,
         })),
       };
     }

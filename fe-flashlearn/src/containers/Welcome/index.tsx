@@ -5,13 +5,12 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import {
   useAddStudents,
   useGetAllCourse,
-  useGetCourseDetail,
   useGetMyLearningCourse,
   useGetProfile,
   useGetStudents,
 } from '@queries';
 import { IRootState } from '@redux/store';
-import { CourseEmailService, CourseService, Toastify } from '@services';
+import { CourseEmailService, CourseNameService, CourseService, Toastify } from '@services';
 import { useCallback, useContext, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -29,15 +28,14 @@ const Welcome: React.FC<WelcomeProps> = ({ isAuthenticated }) => {
 
   const { profile } = useGetProfile();
 
-  const { courseDetail } = useGetCourseDetail({ id: CourseService.getValue() });
-
   const { handleInvalidateMyLearningCourseList } = useGetMyLearningCourse();
 
   const { handleInvalidateStudentList } = useGetStudents();
 
   const { onAddNewStudents } = useAddStudents({
-    onSuccess(data) {
-      navigate(PATHS.courseDetail.replace(':courseId', data.data.data.id.toString()));
+    onSuccess() {
+      const courseId = CourseService.getValue();
+      navigate(PATHS.courseDetail.replace(':courseId', courseId));
       CourseService.clearValue();
       CourseEmailService.clearValue();
       Toastify.success('Đăng ký khoá học thành công');
@@ -52,46 +50,57 @@ const Welcome: React.FC<WelcomeProps> = ({ isAuthenticated }) => {
 
   const { setDialogContent, openModal, closeModal } = useContext(DialogContext);
 
-  const joinCourse = useCallback((courseId: string) => {
-    setDialogContent({
-      type: DialogType.CONTENT_DIALOG,
-      data: (
-        <YesNoImageModal
-          onYes={() => {
-            onAddNewStudents({ courseId, email: profile.email });
-            closeModal();
-          }}
-          onNo={() => closeModal()}
-          title={`Bạn được mời tham gia khóa học ${courseDetail?.name}. Bạn sẽ tham gia chứ?`}
-          image={IMAGES.raiseHand}
-          yesText="Tham gia"
-        />
-      ),
-      maxWidth: 'sm',
-      hideTitle: true,
-    });
-    openModal();
+  const joinCourse = useCallback(
+    (courseId: string, courseName: string) => {
+      setDialogContent({
+        type: DialogType.CONTENT_DIALOG,
+        data: (
+          <YesNoImageModal
+            onYes={() => {
+              onAddNewStudents({ courseId, email: profile.email });
+              closeModal();
+            }}
+            onNo={() => closeModal()}
+            title={`Bạn được mời tham gia khóa học ${courseName || ''}. Bạn sẽ tham gia chứ?`}
+            image={IMAGES.raiseHand}
+            yesText="Tham gia"
+          />
+        ),
+        maxWidth: 'sm',
+        hideTitle: true,
+      });
+      openModal();
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    [profile],
+  );
 
   useEffect(() => {
     const courseId = CourseService.getValue();
     const email = CourseEmailService.getValue();
-    if (courseDetail && courseId && email === profile.email) {
-      joinCourse(courseId);
+    const name = CourseNameService.getValue();
+
+    if (courseId && email === profile.email) {
+      joinCourse(courseId, name);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile, courseDetail]);
+  }, [profile]);
 
   useEffect(() => {
     setParams({ page: 1, perPage: 10, sort: 'rating:desc' });
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleStart = () => {
     navigate(isAuthenticated ? PATHS.courses : PATHS.signIn);
   };
 
-  if (isFetching) return <Loading variant="primary" />;
+  if (isFetching)
+    return (
+      <Stack width={'100%'} alignItems={'center'} pt={3} mt={NAVBAR_HEIGHT}>
+        <Loading variant="primary" />
+      </Stack>
+    );
 
   return (
     <Stack

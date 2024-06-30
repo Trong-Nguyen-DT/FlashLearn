@@ -5,6 +5,7 @@ import { QuestionResponse } from '@queries';
 import { Callback } from '@utils';
 import RepeatIcon from '../../RepeatIcon';
 import { shuffle } from 'lodash';
+import { useMemo } from 'react';
 
 type Props = {
   question: QuestionResponse;
@@ -23,11 +24,16 @@ const MultipleChoice: React.FC<Props> = ({
   isAnswer,
   isCorrect,
 }) => {
-  const options = shuffle(
-    question.answers.map((item) => ({
-      label: item.title,
-      value: item.title,
-    })),
+  const options = useMemo(
+    () =>
+      shuffle(
+        question.answers.map((item) => ({
+          label: item.title,
+          value: item.title,
+        })),
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [question, repeat],
   );
 
   return (

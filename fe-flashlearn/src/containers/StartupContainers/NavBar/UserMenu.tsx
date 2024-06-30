@@ -36,10 +36,10 @@ const UserMenu = () => {
             pt={2}
           >
             <Button onClick={closeModal} variant="outlined" color="inherit">
-              Cancel
+              Hủy
             </Button>
             <Button onClick={logout} variant="contained" color="primary">
-              Log out
+              Đăng Xuất
             </Button>
           </Stack>
         </Stack>
@@ -58,7 +58,6 @@ const UserMenu = () => {
   };
 
   const handleChangePassword = () => {
-    console.log('change password');
     setDialogContent({
       type: DialogType.CONTENT_DIALOG,
       data: <ChangePassword />,
@@ -71,21 +70,21 @@ const UserMenu = () => {
   const menuOptions: DropdownItem[] = React.useMemo(
     () => [
       {
-        label: 'My Profile',
+        label: 'Hồ sơ của tôi',
         onClick: () => {
           navigate(PATHS.profile);
         },
         icon: <AiOutlineUser size={18} />,
       },
       {
-        label: 'Change Password',
+        label: 'Đổi mật khẩu',
         onClick: () => {
           handleChangePassword();
         },
         icon: <AiOutlineLock size={18} />,
       },
       {
-        label: 'Log Out',
+        label: 'Đăng xuất',
         onClick: handleLogOut,
         icon: <IoLogOutOutline size={18} />,
       },

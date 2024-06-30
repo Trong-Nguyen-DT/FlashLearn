@@ -41,8 +41,11 @@ const CourseHeader = () => {
     const ratingQuery = query.get(COURSE_FILTER_QUERY_KEY.Rating) || undefined;
     const wordCountQuery = query.get(COURSE_FILTER_QUERY_KEY.WordCount) || undefined;
 
+    const startRating = ratingQuery ? Number(ratingQuery.split(':')[0]) : 0;
+    const endRating = ratingQuery ? Number(ratingQuery.split(':')[1]) : 0;
+
     return {
-      rating: ratingQuery,
+      rating: [startRating, endRating],
       wordCount: wordCountQuery,
     };
   }, [query]);
